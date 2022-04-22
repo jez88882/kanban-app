@@ -15,10 +15,12 @@ const sequelize = new Sequelize('database', 'username', 'password', {
 })
 
 // ensure db is connected
-(async function connect() {
+async function connect() {
   await sequelize.authenticate(); // wait until the promise resolves (*)
   console.log('Connection has been established successfully.');
-})();
+}
+
+connect();
 
 const User = require(`./user`)(sequelize);
 const Project = require(`./project`)(sequelize);

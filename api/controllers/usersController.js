@@ -1,23 +1,29 @@
+const ErrorHandler = require('../utils/errorHandler');
+const asyncErrors = require('../middlewares/asyncErrors');
 const { User } = require('../models/db');
 
 // users#index
 exports.index = function(req, res) {
     (async function() {
         const users = await User.findAll();
-        res.status(200).json(users);
+        res.status(200).json({
+            success: true,
+            data: users
+        });
     })();
 };
 
 // users#show
-exports.show = function(req, res) {
+exports.show = asyncErrors (async function(req, res, next) {
     // Find by user ID
-    (async function() {
-        const user = await User.findAll({ where: { 
-            id: req.params.id
-        } })[0];
-        res.status(200).json(user);
-    })();
-};
+    const user = await User.findAll({ where: { 
+        id: req.params.id
+    } })[0];
+    res.status(200).json({
+        success: true,
+        data: user
+    });
+});
 
 // users#create
 exports.create = function(req, res) {
@@ -33,12 +39,20 @@ exports.create = function(req, res) {
     User.create(userDetails)
     .then((newUser) => {
         console.log(newUser);
-        res.send('ok');
+        res.json({
+            success: true,
+            message: 'user created',
+            data: newUser
+        });
     });
 };
 
 // users#update
-exports.update = function(req, res) {
+exports.update = async function(req, res, next) {
+
+    const user = User.findAll({ where: { 
+        id: req.params.id
+    }})[0];
 
     const hashed = hash(req.body.password);
 
@@ -47,11 +61,8 @@ exports.update = function(req, res) {
         email: req.body.email,
         password: hashed
     };
-    User.findAll({ where: { 
-        id: req.params.id
-    }})
-    .then(users => users[0].update(newUserDetails))
-    .then(() => res.send('ok'));
+
+    user.update(newUserDetails).then(() => res.send('ok'));
 };
 
 // users#disable
