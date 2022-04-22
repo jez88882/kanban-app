@@ -19,9 +19,9 @@ process.on('uncaughtException', err => {
 const app = express();
 
 /** load middlewares */
-app.use(logger('dev'));
 app.use(express.json()) // for parsing application/json
-app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+// app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+app.use(logger('dev'));
 app.use(cookieParser());
 app.use(cors());
 
@@ -31,8 +31,8 @@ const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
 
 // use routers
-// app.use('/auth', authRouter);
-app.use('/users', userRouter);
+app.use('/api/v1', authRouter);
+app.use('/api/users', userRouter);
 
 // handling unhandled routes
 app.all('*', (req, res, next) => {

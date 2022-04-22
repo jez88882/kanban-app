@@ -3,11 +3,6 @@ const router = express.Router();
 
 var authController = require('../controllers/authcontroller.js');
 
-/* users#signup */
-// router.post('/signup', passport.authenticate('local-signup', {
-//   successRedirect: '/dashboard',
-//   failureRedirect: '/signup'
-// }
+router.post('/register', authController.registerUser)
 
-// ));
-// module.exports = router;
+module.exports = router;
