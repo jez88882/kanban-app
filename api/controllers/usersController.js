@@ -2,17 +2,21 @@ const { User } = require('../models/db');
 
 // users#index
 exports.index = function(req, res) {
-    User.findAll()
-    .then(users => res.status(200).json(users));
+    (async function() {
+        const users = await User.findAll();
+        res.status(200).json(users);
+    })();
 };
 
 // users#show
 exports.show = function(req, res) {
     // Find by user ID
-    User.findAll({ where: { 
-        id: req.params.id
-    }})
-    .then(users => res.status(200).json(users[0]));
+    (async function() {
+        const user = await User.findAll({ where: { 
+            id: req.params.id
+        } })[0];
+        res.status(200).json(user);
+    })();
 };
 
 // users#create
@@ -52,12 +56,13 @@ exports.update = function(req, res) {
 
 // users#disable
 exports.disable = function(req, res) {
-    User.findAll({ where: { 
-        id: req.params.id
-    }})
-    .then(users => users[0].update({is_disabled: 1}))
-    .then((updatedUser) => {
-        console.log(updatedUser);
+    (async function() {
+        const user = await User.findAll({ where: { 
+            id: req.params.id
+        } })[0];
+
+        const disabledUser = user.update({ is_disabled: 1 });
+        console.log(disabledUser);
         res.send('ok');
-    });
+    })();
 };
