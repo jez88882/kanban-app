@@ -1,0 +1,29 @@
+/** connect to database */
+// const mysql = require('mysql2');
+const { Sequelize } = require('sequelize');
+
+/** connect to database */
+const sequelize = new Sequelize('database', 'username', 'password', {
+  dialect: 'mysql',
+  dialectOptions: {
+    // Your mysql2 options here
+    host     : 'localhost',
+    user     : 'root',
+    password : '1234567',
+    database : 'nodelogin'
+  }
+})
+
+// ensure db is connected
+(async function connect() {
+  await sequelize.authenticate(); // wait until the promise resolves (*)
+  console.log('Connection has been established successfully.');
+})();
+
+const User = require(`./user`)(sequelize);
+const Project = require(`./project`)(sequelize);
+
+module.exports = {
+  User: User,
+  Project: Project
+};
