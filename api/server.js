@@ -6,7 +6,15 @@ const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const env = require('dotenv').config();
 const errorsMiddleware = require('./middlewares/errors')
-const port = 8080;
+const ErrorHandler = require('./utils/errorHandler');
+const PORT = process.env.PORT;
+
+// handling Uncaught Exception
+process.on('uncaughtException', err => {
+  console.log(`ERROR: ${err.message}`);
+  console.log("Shutting down due to uncaught exception.");
+  process.exit(1);
+});
 
 const app = express();
 
@@ -16,33 +24,34 @@ app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cookieParser());
 app.use(cors());
-app.use(errorsMiddleware);
 
-/** error handling */
-// catch 404 and forward to error handler
-// app.use(function(req, res, next) {
-//   next(createError(404));
-// });
 
-// error handler
-// app.use(function(err, req, res, next) {
-//   // set locals, only providing error in development
-//   res.locals.message = err.message;
-//   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-//   // render the error page
-//   res.status(err.status || 500);
-//   res.render('error');
-// });
- 
 /** routers */
 const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
+
 // use routers
 // app.use('/auth', authRouter);
 app.use('/users', userRouter);
 
+// handling unhandled routes
+app.all('*', (req, res, next) => {
+  next(new ErrorHandler(`${req.originalUrl} route not found`), 404);
+});
+
+/** error handling */
+app.use(errorsMiddleware);
+
 /** App listening on port */
-app.listen(port, () => {
-  console.log(`MyBank app listening at http://localhost:${port}`);
+const server = app.listen(PORT, () => {
+  console.log(`MyBank app listening at http://localhost:${PORT}`);
+});
+
+// handling Unhandled Promise Rejection
+process.on('unhandledRejection', err => {
+  console.log(`Error: ${err.message}`);
+  console.log("Shutting down server due to unhandled promise rejection.");
+  server.close(() => {
+    process.exit(1);
+  });
 });

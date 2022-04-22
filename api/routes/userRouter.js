@@ -6,6 +6,7 @@ const usersController = require('../controllers/usersController');
 /* users#index */
 router.get('/', usersController.index);
 
+router.get('/test', usersController.test);
 /* users#show */
 router.get('/:id', usersController.show);
 
