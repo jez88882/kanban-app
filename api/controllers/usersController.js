@@ -1,6 +1,7 @@
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const { User } = require('../models/db');
+const user = require('../models/user');
 
 // users#index
 exports.index = catchAsyncErrors( async function(req, res, next) {
@@ -30,37 +31,40 @@ exports.show = catchAsyncErrors(async function(req, res, next) {
 
 // users#create
 exports.create = catchAsyncErrors( async function(req, res) {
-    const hashed = hash(req.body.password);
+    console.log('creating user')
     const userDetails = {
         username: req.body.username,
         email: req.body.email,
-        password: hashed
+        password: req.body.password
     };
 
-    const newuser = await User.create(userDetails);
+    const user = await User.create(userDetails);
     res.json({
         success: true,
         message: 'user created',
-        data: newUser
+        data: user
     });
+    console.log('user created')
 });
 
 // users#update
 exports.update = catchAsyncErrors( async function(req, res, next) {
-
-    const user = await User.findAll({ where: { 
-        id: req.params.id
-    }})[0];
-
-    const hashed = hash(req.body.password);
-
-    const newUserDetails = {
+    const newInfo = {
         username: req.body.username,
         email: req.body.email,
-        password: hashed
+        password: req.body.password
     };
 
-    const updatedUser = await user.update(newUserDetails);
+    const authorizedFields = ['email', 'password'];
+    if (user.is_admin) {
+        authorizedFields.push('username')
+    }
+
+    const updatedUser = await user.update(newInfo, { 
+        fields: authorizedFields,
+        where: { id: req.body.id }
+    });
+
     res.json({
         success: true,
         message: "updated user",
@@ -70,26 +74,19 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
 
 // users#disable
 exports.disable = catchAsyncErrors( async function(req, res) {
-    const user = await User.findAll({ where: { 
-        id: req.params.id
-    } })[0];
-    const disabledUser = user.update({ is_disabled: 1 });
-    console.log(disabledUser);
+    await User.update({ is_disabled: 1 }, {
+        where: {
+          id: req.params.id
+        }
+      });
+
     res.json({
         success: true,
-        message: 'user disabled',
-        data: disabledUser
+        message: 'user disabled'
     });
 });
 
-exports.test = catchAsyncErrors( async function(req, res, next) {
-    const userDetails = {
-        email: req.body.email,
-        password: "dfad"
-    };
-    const newUser = await User.create(userDetails);
-    res.json({
-        success: true,
-        data: newUser
-    })
-});
+
+function getAuthorizedfields() {
+
+}

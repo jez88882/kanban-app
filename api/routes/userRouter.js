@@ -1,23 +1,24 @@
 const express = require('express');
 const router = express.Router();
 
-const usersController = require('../controllers/usersController');
+const { index, show, create, update, disable } = require('../controllers/usersController');
+const { isAuthenticatedUser, checkAdmin } = require('../middlewares/auth');
 
-/* users#index */
-router.get('/', usersController.index);
+router.use(isAuthenticatedUser);
 
-router.get('/test', usersController.test);
-/* users#show */
-router.get('/:id', usersController.show);
+// /* users#index */
+router.get('/',index);
 
-/* users#create */
-router.post('/', usersController.create);
+// /* users#show */
+router.get('/:id', show);
 
-/* users#update */
-router.put('/:id',  usersController.update);
+// /* users#create */
+router.post('/', checkAdmin, create);
 
-/* users#disable */
-router.get('/:id/disable', usersController.disable);
+// /* users#update */
+router.put('/:id', checkAdmin, update);
 
+// /* users#disable */
+router.get('/:id/disable', checkAdmin, disable);
 
 module.exports = router;

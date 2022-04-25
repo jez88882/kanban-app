@@ -7,12 +7,12 @@ const axios = require('axios');
 export default function HomePage(props) {
     const [users, setUsers] = useState([]);
 
-    useEffect(() => {
-        // Make a request for a user with a given ID
-        fetch("http://localhost:8080/users")
-        .then(response => response.json())
-        .then(data => console.log(data));
-      },[]);
+    // useEffect(() => {
+    //     // Make a request for a user with a given ID
+    //     fetch("http://localhost:8080/users")
+    //     .then(response => response.json())
+    //     .then(data => console.log(data));
+    //   },[]);
 
     return(
         <Page title="Home">

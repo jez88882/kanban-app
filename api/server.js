@@ -4,10 +4,9 @@ const logger = require('morgan');
 const cors = require('cors');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
-const env = require('dotenv').config();
+const dotenv = require('dotenv');
 const errorsMiddleware = require('./middlewares/errors')
 const ErrorHandler = require('./utils/errorHandler');
-const PORT = process.env.PORT;
 
 // handling Uncaught Exception
 process.on('uncaughtException', err => {
@@ -17,6 +16,9 @@ process.on('uncaughtException', err => {
 });
 
 const app = express();
+
+// set up config.env file variables
+dotenv.config({path : './config/config.env'});
 
 /** load middlewares */
 app.use(express.json()) // for parsing application/json
@@ -32,7 +34,7 @@ const userRouter = require('./routes/userRouter');
 
 // use routers
 app.use('/api/v1', authRouter);
-app.use('/api/users', userRouter);
+app.use('/api/v1/users', userRouter);
 
 // handling unhandled routes
 app.all('*', (req, res, next) => {
@@ -43,8 +45,8 @@ app.all('*', (req, res, next) => {
 app.use(errorsMiddleware);
 
 /** App listening on port */
-const server = app.listen(PORT, () => {
-  console.log(`MyBank app listening at http://localhost:${PORT}`);
+const server = app.listen(process.env.PORT, () => {
+  console.log(`server listening at http://localhost:${process.env.PORT} in ${process.env.NODE_ENV} mode`);
 });
 
 // handling Unhandled Promise Rejection

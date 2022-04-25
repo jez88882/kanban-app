@@ -7,8 +7,9 @@ import {
 } from "react-router-dom";
 
 import './index.css';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
+import HomePage from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import reportWebVitals from './reportWebVitals';
 
 import '@fontsource/roboto/300.css';
@@ -23,7 +24,8 @@ root.render(
       <Routes>
         <Route path="/">
           <Route index element={<HomePage />}/>
-          <Route path="login" element={<LoginPage />}/>
+          <Route path="login" element={<Login />}/>
+          <Route path="register" element={<Register />}/>
         </Route>
       </Routes>
     </BrowserRouter>

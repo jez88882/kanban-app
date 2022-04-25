@@ -13,7 +13,6 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     database : 'nodelogin'
   }
 })
-
 // ensure db is connected
 async function connect() {
   await sequelize.authenticate(); // wait until the promise resolves (*)
@@ -22,9 +21,13 @@ async function connect() {
 connect();
 
 const User = require(`./user`)(sequelize);
+console.log("loaded User model");
+/**
 const Project = require(`./project`)(sequelize);
+console.log("loaded Project model");
+*/
 
 module.exports = {
-  User: User,
-  Project: Project
+  User
+  // Project
 };
