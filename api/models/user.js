@@ -35,6 +35,12 @@ module.exports = function(sequelize) {
     is_admin: {
       type: DataTypes.BOOLEAN,
       defaultValue: 0
+    },
+    resetPasswordToken: {
+      type: DataTypes.TEXT
+    },
+    resetPasswordExpire: {
+      type: DataTypes.DATE
     }
   }, {
     tableName: 'users'
@@ -62,8 +68,7 @@ module.exports = function(sequelize) {
     const resetToken = crypto.randomBytes(20).toString('hex');
 
     // hash and set resetPasswordToken
-    this.resetPasswordToken = crypto
-                                .createHash('sha256')
+    this.resetPasswordToken = crypto.createHash('sha256')
                                 .update(resetToken)
                                 .digest('hex');
     // set token expire time

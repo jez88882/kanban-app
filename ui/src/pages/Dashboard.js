@@ -17,8 +17,11 @@ import Link from '@mui/material/Link';
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import { mainListItems, secondaryListItems } from './listItems';
-import Orders from './Orders';
+import { mainListItems, secondaryListItems } from '../components/listItems';
+import Orders from '../components/Orders';
+import AccountButton from '../components/AccountButton';
+
+
 
 function Copyright(props) {
   return (
@@ -81,8 +84,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 const mdTheme = createTheme();
 
-function DashboardContent() {
-  const [open, setOpen] = React.useState(true);
+function DashboardContent(props) {
+  const [open, setOpen] = React.useState(false);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -118,6 +121,7 @@ function DashboardContent() {
             >
               Dashboard
             </Typography>
+            <AccountButton setLoggedIn={props.setLoggedIn} />
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />

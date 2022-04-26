@@ -4,6 +4,8 @@ const ErrorHandler = require('../utils/errorHandler');
 const sendToken = require('../utils/jwtToken');
 const sendEmail = require('../utils/sendEmail');
 const user = require('../models/user');
+const crypto = require('crypto');
+const { Op } = require('sequelize');
 
 // register a new user
 exports.register = catchAsyncErrors(async function(req, res, next) {
@@ -14,20 +16,25 @@ exports.register = catchAsyncErrors(async function(req, res, next) {
 });
 
 exports.login = catchAsyncErrors(async function(req, res, next) {
+  console.log('logging in...');
+  console.log('parsing cookies');
+  console.log(req.cookies)
+  console.log(req.signedCookies)
+
   const { email, password } = req.body;
 
   // check if email or password is entered by user
   if (!email || !password) {
     return next(new ErrorHandler('Please enter email and password'), 400);
   }
-
+  console.log("getting user...")
   // get user
   const user = await User.findOne({ where: { email }});
 
   if (!user) {
     return next(new ErrorHandler('Invalid email or password', 401));
   }
-
+  console.log("checking password...")
   // check if password is correct
   const passwordMatches = await user.checkPassword(password);
   if (!passwordMatches) {
@@ -69,10 +76,45 @@ exports.forgotPassword = catchAsyncErrors( async function(req, res, next) {
     });
     
   } catch (error) {
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpire = undefined;
+      user.resetPasswordToken = '';
+      user.resetPasswordExpire = Date.now();
       await user.save();
 
       return next(new ErrorHandler('email is not sent', 500));
   }
+})
+
+// reset password => api/v1/password/reset/:token
+exports.resetPassword = catchAsyncErrors( async function(req, res, next) {
+    // hash url token (to compare with the hashed token in the database)
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    const user = await User.findOne({where: {
+      resetPasswordToken,
+      resetPasswordExpire: { [Op.gt] : Date.now() } // password expiry time should be greater than today
+    }});
+
+    if (!user) {
+      return next(new ErrorHandler('Password Reset Token is invalid or has expired', 400));
+    }
+
+    //setup new password
+    user.password = req.body.password;
+    user.resetPasswordToken = '';
+    user.resetPasswordExpire = Date.now();
+    await user.save();
+
+    sendToken(user, 200, res);
+});
+
+// logout user
+exports.logout = catchAsyncErrors( async function(req, res, next){
+  res.cookie('token', 'none', {
+    expire: new Date(Date.now()),
+    httpOnly: true
+  });
+  res.status(200).json({
+    success: true,
+    message: 'Logged out successfully'
+  });
 })

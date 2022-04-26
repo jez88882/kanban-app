@@ -25,7 +25,16 @@ app.use(express.json()) // for parsing application/json
 // app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(logger('dev'));
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin:'http://localhost:3000',
+  credentials: true
+}));
+app.use(session({
+  secret: 'ads',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {secure: true}
+}));
 
 
 /** routers */

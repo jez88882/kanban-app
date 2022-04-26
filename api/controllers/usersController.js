@@ -65,6 +65,11 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
         where: { id: req.body.id }
     });
 
+    try {
+
+    } catch(e){
+
+    }
     res.json({
         success: true,
         message: "updated user",
