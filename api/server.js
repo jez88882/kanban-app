@@ -1,7 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const logger = require('morgan');
-const cors = require('cors');
+// const cors = require('cors');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
@@ -25,10 +25,10 @@ app.use(express.json()) // for parsing application/json
 // app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(logger('dev'));
 app.use(cookieParser());
-app.use(cors({
-  origin:'http://localhost:3000',
-  credentials: true
-}));
+// app.use(cors({
+//   origin:'http://localhost:3000',
+//   credentials: true
+// }));
 app.use(session({
   secret: 'ads',
   resave: false,

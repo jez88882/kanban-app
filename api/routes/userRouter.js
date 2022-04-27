@@ -4,7 +4,7 @@ const router = express.Router();
 const { index, show, create, update, disable } = require('../controllers/usersController');
 const { isAuthenticatedUser, checkAdmin } = require('../middlewares/auth');
 
-router.use(isAuthenticatedUser);
+// router.use(isAuthenticatedUser);
 
 // /* users#index */
 router.get('/',index);
@@ -13,12 +13,15 @@ router.get('/',index);
 router.get('/:id', show);
 
 // /* users#create */
-router.post('/', checkAdmin, create);
+// checkAdmin
+router.post('/', create);
 
 // /* users#update */
-router.put('/:id', checkAdmin, update);
+// checkAdmin
+router.put('/:id', update);
 
 // /* users#disable */
-router.get('/:id/disable', checkAdmin, disable);
+// checkAdmin
+router.get('/:id/disable', disable);
 
 module.exports = router;
