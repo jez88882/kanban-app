@@ -29,7 +29,7 @@ exports.login = catchAsyncErrors(async function(req, res, next) {
   }
   console.log("getting user...")
   // get user
-  const user = await User.findOne({ where: { email }});
+  const user = await User.unscoped().findOne({ where: { email }});
 
   if (!user) {
     return next(new ErrorHandler('Invalid email or password', 401));
@@ -46,7 +46,7 @@ exports.login = catchAsyncErrors(async function(req, res, next) {
 
 // forgot password
 exports.forgotPassword = catchAsyncErrors( async function(req, res, next) {
-  const user = await User.findOne({ where: { email: req.body.email }});
+  const user = await User.unscoped().findOne({ where: { email: req.body.email }});
   
 // check if user exists
   if (!user) {
@@ -89,7 +89,7 @@ exports.resetPassword = catchAsyncErrors( async function(req, res, next) {
     // hash url token (to compare with the hashed token in the database)
     const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
 
-    const user = await User.findOne({where: {
+    const user = await User.unscoped().findOne({where: {
       resetPasswordToken,
       resetPasswordExpire: { [Op.gt] : Date.now() } // password expiry time should be greater than today
     }});

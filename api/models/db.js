@@ -7,10 +7,10 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   dialect: 'mysql',
   dialectOptions: {
     // Your mysql2 options here
-    host     : 'localhost',
-    user     : 'root',
-    password : '1234567',
-    database : 'nodelogin'
+    host     : process.env.DB_HOST,
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DB_DATABASE
   }
 })
 // ensure db is connected

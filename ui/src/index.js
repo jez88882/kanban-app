@@ -4,36 +4,31 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Link
 } from "react-router-dom";
 
 import './index.css';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
+import { Dashboard, Login, Register, Landing, Error } from './pages'
+import { AppProvider } from './context/appContext'
 import reportWebVitals from './reportWebVitals';
-
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-
+import Axios from 'axios';
 
 function App(props) {
   const [loggedIn, setLoggedIn] = useState(false);
-  
-  // function renderPage(element){
-  //   // debugger;
-  //   return loggedIn ? element : <Login setLoggedIn={setLoggedIn}/>
-  // }
 
   return(
     <React.StrictMode>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/">
-            <Route index element={loggedIn ? <Dashboard setLoggedIn={setLoggedIn}/>:<Login setLoggedIn={setLoggedIn}/>}/>
-          </Route>
-        </Routes>
-      </BrowserRouter>
+      <AppProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/landing" element={<Landing/>}/>
+            <Route path="/register" element={<Register/>}/>
+            <Route path="/login" element={<Login/>}/>
+            <Route path="*" element={<Error />}/>
+          </Routes>
+        </BrowserRouter>
+      </AppProvider>
     </React.StrictMode>
   );
 }

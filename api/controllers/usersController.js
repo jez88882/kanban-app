@@ -2,10 +2,12 @@ const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const { User } = require('../models/db');
 const user = require('../models/user');
+const Filter = require('../utils/filters');
 
 // users#index
 exports.index = catchAsyncErrors( async function(req, res, next) {
-    const users = await User.findAll();
+    
+    const users = await User.findAll({ where: req.query});
     res.status(200).json({
         success: true,
         data: users

@@ -43,8 +43,10 @@ module.exports = function(sequelize) {
       type: DataTypes.DATE
     }
   }, {
+    defaultScope: { attributes: { exclude: ['password'] }},
     tableName: 'users'
   });
+
   // User.sync({ alter: true })
   User.beforeSave(async function(user, options) {
     const hashedPassword = await argon.hash(user.password);
