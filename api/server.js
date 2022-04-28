@@ -23,7 +23,9 @@ dotenv.config({path : './config/config.env'});
 /** load middlewares */
 app.use(express.json()) // for parsing application/json
 // app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(logger('dev'));
+}
 app.use(cookieParser());
 // app.use(cors({
 //   origin:'http://localhost:3000',

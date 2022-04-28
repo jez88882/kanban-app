@@ -1,40 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Link
-} from "react-router-dom";
-
 import './index.css';
-import { Dashboard, Login, Register, Landing, Error } from './pages'
+import App from './App'
 import { AppProvider } from './context/appContext'
 import reportWebVitals from './reportWebVitals';
-import Axios from 'axios';
 
-function App(props) {
-  const [loggedIn, setLoggedIn] = useState(false);
-
+function Root(props) {
   return(
     <React.StrictMode>
       <AppProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/dashboard" element={<Dashboard/>}/>
-            <Route path="/landing" element={<Landing/>}/>
-            <Route path="/register" element={<Register/>}/>
-            <Route path="/login" element={<Login/>}/>
-            <Route path="*" element={<Error />}/>
-          </Routes>
-        </BrowserRouter>
+        <App />
       </AppProvider>
     </React.StrictMode>
   );
 }
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+root.render(<Root />);
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
