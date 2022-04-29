@@ -5,6 +5,7 @@ const logger = require('morgan');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const hpp = require('hpp');
 const errorsMiddleware = require('./middlewares/errors')
 const ErrorHandler = require('./utils/errorHandler');
 
@@ -23,7 +24,9 @@ dotenv.config({path : './config/config.env'});
 /** load middlewares */
 app.use(express.json()) // for parsing application/json
 // app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
-app.use(logger('dev'));
+if (process.env.NODE_ENV !== 'production') {
+  app.use(logger('dev'));
+}
 app.use(cookieParser());
 // app.use(cors({
 //   origin:'http://localhost:3000',
@@ -36,6 +39,8 @@ app.use(session({
   cookie: {secure: true}
 }));
 
+// prevent parameter pollution
+app.use(hpp());
 
 /** routers */
 const authRouter = require('./routes/authRouter');

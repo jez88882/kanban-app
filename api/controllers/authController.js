@@ -40,6 +40,7 @@ exports.login = catchAsyncErrors(async function(req, res, next) {
   if (!passwordMatches) {
     return next(new ErrorHandler('Invalid email or password',401));
   }
+  console.log('sending token...')
 
   sendToken(user, 200, res);
 });
@@ -116,5 +117,13 @@ exports.logout = catchAsyncErrors( async function(req, res, next){
   res.status(200).json({
     success: true,
     message: 'Logged out successfully'
+  });
+})
+
+// authenticate user (for refresh)
+exports.authenticateUser = catchAsyncErrors( async function(req, res, next){
+  res.status(200).json({
+    success: true,
+    user: req.user
   });
 })
