@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Axios } from 'axios';
 import { FormRow, Alert } from '../components'
+import { CLEAR_ALERT } from '../context/actions'
 import { useAppContext } from '../context/appContext'
 
 const initialState = {
@@ -14,14 +14,14 @@ export default function Login() {
   const [values, setValues] = useState(initialState)
 
   // global state and usenavigate
-  const {isLoading, displayAlert, loginUser, user} = useAppContext()
+  const {isLoading, displayAlert, loginUser, user, clearAlert } = useAppContext()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (user) {
       setTimeout(() => {
         navigate('/')
-      }, 2000)
+      }, 500)
     }
   }, [user, navigate])
 
@@ -31,13 +31,32 @@ export default function Login() {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password, isMember } = values
+    const { email, password } = values
     if (email==="" || !password==="") {
-      displayAlert()
+      displayAlert({
+        type: 'error',
+        text: 'please enter all values'
+      })
       return
     }
     const currentUser = { email, password }
-    loginUser(currentUser)
+    try {
+      loginUser(currentUser)
+      displayAlert({
+        type:'success',
+        text:'success. logging in...'
+      })
+
+      setTimeout(()=>{
+        clearAlert();
+      },500)
+      
+    } catch (error) {
+      displayAlert({
+        type:'there was an error',
+        text:error.response.errMessage
+      })
+    }
   }
 
   return (

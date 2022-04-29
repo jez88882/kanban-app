@@ -2,7 +2,14 @@ import axios from 'axios';
 import React,{ useEffect, useContext } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useImmerReducer} from 'use-immer'
-import { DISPLAY_ALERT, CLEAR_ALERT, LOGIN_USER_BEGIN, LOGIN_USER_SUCCESS, LOGIN_USER_ERROR } from './actions';
+import {  DISPLAY_ALERT, 
+          CLEAR_ALERT, 
+          LOGIN_USER_BEGIN, 
+          LOGIN_USER_SUCCESS, 
+          LOGIN_USER_ERROR, 
+          CREATE_USER_BEGIN,
+          CREATE_USER_SUCCESS 
+        } from './actions';
 import reducer from './reducer'
 
 // const token = localStorage.getItem('token')
@@ -15,6 +22,7 @@ const initialState = {
   alertText: '',
   alertType: '',
   user: null,
+  // token: null
   // userLocation: location || ''
 }
 
@@ -23,7 +31,7 @@ const AppProvider = ({children}) => {
 
   const [state, dispatch] = useImmerReducer(reducer, initialState)
 
-  const fetching = async () => {
+  const fetchUser = async () => {
     const response = await axios.get('/api/v1/auth')
     const user =  response.data.user
     dispatch({
@@ -32,22 +40,22 @@ const AppProvider = ({children}) => {
     })
   }
 
-  const displayAlert = () => {
-    dispatch({type: DISPLAY_ALERT})
-    // clearAlert()
+  const displayAlert = (type, text) => {
+    dispatch({
+      type: DISPLAY_ALERT,
+      payload: { type, text }
+    })
   }
   
   const clearAlert = () => {
-    setTimeout(()=>{
-      dispatch({type: CLEAR_ALERT})
-    }, 3000)
+    dispatch({type: CLEAR_ALERT})
   }
 
-  const addUserToLocalStorage = () => {
+  // const addUserToLocalStorage = () => {
     // localStorage.setItem('user', JSON.stringify(user))
     // localStorage.setItem('token', token)
     // localStorage.setItem('location', location)
-  }
+  // }
 
   const loginUser = async (currentUser) => {
     dispatch({type: LOGIN_USER_BEGIN})
@@ -60,8 +68,12 @@ const AppProvider = ({children}) => {
         type: LOGIN_USER_SUCCESS,
         payload: { user, token, location: 'dashboard' }
       })
+      
+      setTimeout(()=>{
+        clearAlert()
+      }, 1000)
       // local storage later
-      addUserToLocalStorage({user, token, location: 'dashboard'})
+      // addUserToLocalStorage({user, token, location: 'dashboard'})
     } catch (error) {
       console.log(error.response)
       dispatch({
@@ -71,11 +83,57 @@ const AppProvider = ({children}) => {
         }
       })
     }
-    clearAlert()
+  }
+
+  const createUser = async (currentUser) => {
+    dispatch({type: CREATE_USER_BEGIN})
+    try {
+      const response = await axios.post('/api/v1/users', currentUser)
+      // console.log(response.data)
+      // const { user, token} = response.data
+      dispatch({
+        type: CREATE_USER_SUCCESS
+      })
+      // local storage later
+      // addUserToLocalStorage({user, token, location: 'dashboard'})
+    } catch (error) {
+      console.log(error.response)
+      dispatch({
+        type: LOGIN_USER_ERROR,
+        payload: {
+          message: error.response.data.errMessage
+        }
+      })
+    }
+    
+    setTimeout(()=>{
+      clearAlert()
+    }, 5000)
+  }
+  
+  const disableUser = async (userId) => {
+    try {
+      const response = await axios.get(`/api/v1/users/${userId}/disable`)
+      dispatch({
+        type: DISPLAY_ALERT,
+        payload: {
+          type: 'success',
+          text: `user ${userId} disabled`
+        }
+      })
+    } catch (error) {
+      dispatch({
+        type: LOGIN_USER_ERROR,
+        payload: {
+          type: 'error',
+          text: error.response.data.errMessage
+        }
+      })
+    }
   }
 
   return (
-  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetching }}>
+  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser }}>
     {children}
   </AppContext.Provider>);
 }

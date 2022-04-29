@@ -14,7 +14,7 @@ router.get('/:id', show);
 
 // /* users#create */
 // checkAdmin
-router.post('/', create);
+router.post('/', checkAdmin, create);
 
 // /* users#update */
 // checkAdmin

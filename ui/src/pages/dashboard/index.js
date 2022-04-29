@@ -1,10 +1,10 @@
-import Organisation from "./Organisation";
+import Overview from "./Overview";
 import Admin from './Admin';
 import UserManagement from "./UserManagement";
 import Shared from "./Shared";
 
 export {
-  Organisation,
+  Overview,
   Admin,
   UserManagement,
   Shared

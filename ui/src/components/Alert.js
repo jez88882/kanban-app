@@ -5,7 +5,7 @@ const Alert = () => {
   const shadow = alertType.length > 0 ? 'shadow-lg' : ''
 
   return (
-    <div className={`alert-${alertType} alert  ${shadow}`}>
+    <div className={`alert alert-${alertType} ${shadow}`}>
       <span>{alertText}</span>
     </div>
 

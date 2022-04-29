@@ -3,16 +3,16 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { Organisation, Admin, UserManagement, Shared } from './pages/dashboard'
+import { Overview, Admin, UserManagement, Shared } from './pages/dashboard'
 import { Dashboard, Login, Register, Error, ProtectedRoute } from './pages'
 import { useEffect } from "react";
 import { useAppContext } from "./context/appContext";
 
 export default function App(props){
-  const { fetching } = useAppContext()
+  const { fetchUser } = useAppContext()
 
   useEffect(()=>{
-    fetching();
+    fetchUser();
   },[])
 
   return(
@@ -23,7 +23,7 @@ export default function App(props){
               <Shared />
             </ProtectedRoute>
           }>
-            <Route index element={<Organisation/>}/>
+            <Route index element={<Overview/>}/>
             <Route path="admin" element={<Admin/>}/>
             <Route path="user-management" element={<UserManagement/>}/>
           </Route>

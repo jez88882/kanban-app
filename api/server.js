@@ -5,6 +5,7 @@ const logger = require('morgan');
 const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const hpp = require('hpp');
 const errorsMiddleware = require('./middlewares/errors')
 const ErrorHandler = require('./utils/errorHandler');
 
@@ -38,6 +39,8 @@ app.use(session({
   cookie: {secure: true}
 }));
 
+// prevent parameter pollution
+app.use(hpp());
 
 /** routers */
 const authRouter = require('./routes/authRouter');
