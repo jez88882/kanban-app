@@ -78,5 +78,9 @@ module.exports = function(sequelize) {
     return resetToken
   }
 
+  User.prototype.checkGroup = function() {
+    return 
+  }
+
   return User;
 }

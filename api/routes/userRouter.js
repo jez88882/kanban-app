@@ -22,6 +22,6 @@ router.put('/:id', update);
 
 // /* users#disable */
 // checkAdmin
-router.get('/:id/disable', disable);
+router.get('/:id/disable', checkAdmin, disable);
 
 module.exports = router;

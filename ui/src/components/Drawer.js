@@ -3,33 +3,22 @@ import { Link } from 'react-router-dom'
 
 const Drawer = (props) => {
   return (
-    <div className="drawer">
-      <input id="my-drawer-3" type="checkbox" className="drawer-toggle"/> 
-      <div className="drawer-content flex flex-col">
-        {/* <!-- Navbar --> */}
-        <div className="w-full navbar bg-base-300">
-          <div className="flex-none 2xl:hidden">
-            <label htmlFor="my-drawer-3" className="btn btn-square btn-ghost">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </label>
-          </div> 
-          <div className="flex-1 px-2 mx-2">Navbar Title</div>
-          <div className="flex-none hidden lg:block">
-            <ul className="menu menu-horizontal">
-              <li><label htmlFor="my-drawer-3" ><Link to="/">Overview</Link></label></li>
-              <li><Link to="user-management">User Management</Link></li>
-            </ul>
-          </div>
-        </div>
+    <div class="drawer drawer-mobile">
+      <input id="my-drawer-2" type="checkbox" class="drawer-toggle"/>
+      <div class="drawer-content flex flex-col">
+        {/* <!-- Page content here --> */}
+        <label for="my-drawer-2" class="btn btn-primary drawer-button lg:hidden">Open drawer</label>
         {props.children}
+      
       </div> 
-      <div className="drawer-side">
-        <label htmlFor="my-drawer-3" className="drawer-overlay"></label> 
-        <ul className="menu p-4 overflow-y-auto w-80 bg-base-100">
+      <div class="drawer-side border-r-2 bg-neutral">
+        <label for="my-drawer-2" class="drawer-overlay"></label> 
+        <ul class="menu p-4 overflow-y-auto w-60 bg-base-100 text-base-content">
           {/* <!-- Sidebar content here --> */}
-          <li><Link to="/">Overview</Link></li>
-          <li><Link to="user-management">User Management</Link></li>
+          <li><Link to="" className="no-underline">All Users</Link></li>
+          <li><Link to="new" className="no-underline">Create User</Link></li>
         </ul>
+      
       </div>
     </div>
   );

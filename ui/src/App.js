@@ -3,8 +3,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { Overview, Admin, UserManagement, Shared } from './pages/dashboard'
-import { Dashboard, Login, Register, Error, ProtectedRoute } from './pages'
+import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser } from './pages/dashboard'
+import { Login, Error, ProtectedRoute } from './pages'
 import { useEffect } from "react";
 import { useAppContext } from "./context/appContext";
 
@@ -16,6 +16,7 @@ export default function App(props){
   },[])
 
   return(
+    <>
     <BrowserRouter>
       <Routes>
           <Route path="/" element={
@@ -23,14 +24,19 @@ export default function App(props){
               <Shared />
             </ProtectedRoute>
           }>
-            <Route index element={<Overview/>}/>
-            <Route path="admin" element={<Admin/>}/>
-            <Route path="user-management" element={<UserManagement/>}/>
+            <Route path="account" element={<Account/>}/>
+            <Route path="users" element={<UserManagement/>}>
+              <Route index element={<AllUsers />}/>
+              <Route path="new" element={<CreateUser/>}/>
+              <Route path="edit/:id" element={<EditUser/>}/>
+            </Route>
           </Route>
           <Route path="/login" element={<Login/>}/>
           {/* <Route path="/register" element={<Register/>}/> */}
           <Route path="*" element={<Error />}/>
       </Routes>
     </BrowserRouter>
+    
+    </>
   )
 }

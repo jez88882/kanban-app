@@ -22,6 +22,7 @@ exports.login = catchAsyncErrors(async function(req, res, next) {
   console.log(req.signedCookies)
 
   const { email, password } = req.body;
+  console.log({email, password})
 
   // check if email or password is entered by user
   if (!email || !password) {

@@ -1,11 +1,17 @@
 import Overview from "./Overview";
-import Admin from './Admin';
+import Account from './Account';
 import UserManagement from "./UserManagement";
 import Shared from "./Shared";
+import CreateUser from "./CreateUser";
+import AllUsers from "./AllUsers";
+import EditUser from "./EditUser";
 
 export {
   Overview,
-  Admin,
+  Account,
   UserManagement,
-  Shared
+  Shared,
+  CreateUser,
+  AllUsers,
+  EditUser,
 }

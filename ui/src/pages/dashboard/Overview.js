@@ -57,46 +57,7 @@ const Overview = () => {
 
   return (
     <div>
-      organization
-      <div className="overflow-x-auto w-full">
-      <table className="table w-full">
-        {/* <!-- head --> */}
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>User Group</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* iterate over users in rows*/}
-          {listUsers}
-        </tbody>
-        {/* <!-- foot --> */}
-        <tfoot>
-          <tr>
-            <th>Name</th>
-            <th>User group</th>
-            <th></th>
-          </tr>
-        </tfoot>
-        
-      </table>
-      </div>
-      {showAlert && <Alert />} 
-      <div>
-        <input type="checkbox" id="update-user" class="modal-toggle"/>
-          <label for="update-user" class="modal cursor-pointer modal-bottom sm:modal-middle">
-            <label class="modal-box relative" for="">
-              <form className='form-control w-fit max-w-xs' onSubmit={handleSubmit}>
-                <FormRow type="username" name="username" value={values.username} handleChange={handleChange}/>
-                <FormRow type="email" name="email" value={values.email} handleChange={handleChange}/>
-                <FormRow type="password" name="password" value={values.password} handleChange={handleChange}/>
-                <button type="submit" className="btn btn-block mt-2" disabled={isLoading}>Login</button>
-              </form>
-            </label>
-          </label>
-      </div>
+      <h1>User Management</h1>
     </div>
   );
 };

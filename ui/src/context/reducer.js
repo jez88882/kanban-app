@@ -41,9 +41,9 @@ const reducer = (draft, action) => {
       return
     case CREATE_USER_SUCCESS:
       draft.isLoading = false
-      draft.showAlert = true
       draft.alertType = 'success'
       draft.alertText = 'Created user!'
+      draft.showAlert = true
       return
     default:
       throw new Error(`no such action: ${action.type}`)

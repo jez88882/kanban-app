@@ -40,10 +40,12 @@ const AppProvider = ({children}) => {
     })
   }
 
-  const displayAlert = (type, text) => {
+  const displayAlert = (alerttype, alerttext) => {
     dispatch({
       type: DISPLAY_ALERT,
-      payload: { type, text }
+      payload: { 
+        type: alerttype, 
+        text: alerttext }
     })
   }
   
@@ -72,8 +74,7 @@ const AppProvider = ({children}) => {
       setTimeout(()=>{
         clearAlert()
       }, 1000)
-      // local storage later
-      // addUserToLocalStorage({user, token, location: 'dashboard'})
+      
     } catch (error) {
       console.log(error.response)
       dispatch({
@@ -121,6 +122,11 @@ const AppProvider = ({children}) => {
           text: `user ${userId} disabled`
         }
       })
+
+      setTimeout(()=>{
+        dispatch({type: CLEAR_ALERT})
+      }, 5000)
+      
     } catch (error) {
       dispatch({
         type: LOGIN_USER_ERROR,
@@ -142,4 +148,4 @@ const useAppContext = () => {
   return useContext(AppContext)
 }
 
-export { AppProvider, initialState, useAppContext }
+export { AppProvider, useAppContext }
