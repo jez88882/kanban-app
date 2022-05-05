@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { index, show, create, update, disable } = require('../controllers/usersController');
+const { index, show, create, update, disable, createUserGroup, checkUserGroup } = require('../controllers/usersController');
 const { isAuthenticatedUser, checkAdmin } = require('../middlewares/auth');
 
 router.use(isAuthenticatedUser);
@@ -23,5 +23,11 @@ router.put('/:id', update);
 // /* users#disable */
 // checkAdmin
 router.get('/:id/disable', checkAdmin, disable);
+
+// /* users#checkGroup */
+router.post('/:id/groups', checkAdmin, createUserGroup);
+
+// /* users#checkGroup */
+router.get('/:id/groups', checkAdmin, checkUserGroup);
 
 module.exports = router;

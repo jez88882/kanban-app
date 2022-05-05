@@ -1,15 +1,25 @@
 import { Link, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react';
 import axios from 'axios'
 import { useAppContext } from '../context/appContext';
 
 const Navbar = () => {
   const navigate = useNavigate()
-  const { displayAlert } = useAppContext()
+  const { displayAlert, user, clearAlert, logoutUser } = useAppContext()
+ 
+  useEffect(() => {
+    if (!user) {
+      setTimeout(() => {
+        navigate('/login')
+      }, 500)
+    }
+  }, [user, clearAlert, navigate])
 
   const handleLogout = async() => {
-    const res = await axios.get('api/v1/logout')
-    
-    displayAlert('success', res.data.message)
+    logoutUser();
+    setTimeout(()=>{
+      clearAlert()
+    },2000)
   }
 
 
@@ -20,7 +30,7 @@ const Navbar = () => {
   </div>
   <div className="flex-none">
     <ul className="menu menu-horizontal p-0">
-      <li><Link to="/account">My account</Link></li>
+      <li><Link to="/account" className='font-bold'>{user.username}</Link></li>
       <li tabIndex="0">
         <Link to="/users">
           User Management

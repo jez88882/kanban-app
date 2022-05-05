@@ -1,11 +1,11 @@
-var { User } = require('../models/db');
+const { User } = require('../models/db');
 const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
 const ErrorHandler = require('../utils/errorHandler');
 const sendToken = require('../utils/jwtToken');
 const sendEmail = require('../utils/sendEmail');
-const user = require('../models/user');
 const crypto = require('crypto');
-const { Op } = require('sequelize');
+const { Sequelize } = require('sequelize');
+
 
 // register a new user
 exports.register = catchAsyncErrors(async function(req, res, next) {
@@ -21,16 +21,17 @@ exports.login = catchAsyncErrors(async function(req, res, next) {
   console.log(req.cookies)
   console.log(req.signedCookies)
 
-  const { email, password } = req.body;
-  console.log({email, password})
+  const { username, password } = req.body;
+  console.log({username, password})
 
   // check if email or password is entered by user
-  if (!email || !password) {
-    return next(new ErrorHandler('Please enter email and password'), 400);
+  if (!username || !password) {
+    return next(new ErrorHandler('Please enter username and password'), 400);
   }
   console.log("getting user...")
   // get user
-  const user = await User.unscoped().findOne({ where: { email }});
+  console.log(User)
+  const user = await User.unscoped().findOne({ where: { username }});
 
   if (!user) {
     return next(new ErrorHandler('Invalid email or password', 401));

@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 const argon = require('argon2');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
@@ -44,10 +44,9 @@ module.exports = function(sequelize) {
     }
   }, {
     defaultScope: { attributes: { exclude: ['password'] }},
-    tableName: 'users'
+    tableName: 'accounts'
   });
 
-  // User.sync({ alter: true })
   User.beforeSave(async function(user, options) {
     const hashedPassword = await argon.hash(user.password);
     user.password = hashedPassword;

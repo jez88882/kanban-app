@@ -15,34 +15,19 @@ const AllUsers = () => {
 
   const fetchUsers = async () => {
     console.log('fetching users')
-    const res = await axios.get('/api/v1/users')
+    const res = await axios.get('/api/v1/users?username=')
     setUsers(res.data.data)
   }
   
-  const handleClick = async (e) => {
-    const id = e.currentTarget.dataset.userid
-    const res = await axios.get(`/api/v1/users/${id}`)
-    const {username, email} = res.data.data
-    setValues({ username, email })
-    
-  }
-  const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value })
-  }
-  // const handleClick = async (user, index)=>{
-  //   disableUser(user.id)
-  //   const updated = [...users]
-  //   updated[index].is_disabled = true
-  //   setUsers(updated)
-  // }
-
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    console.log(values.username)
+    setValues({ ...values, [e.target.name]: e.target.value })
     
-    const res = await axios.get(`/api/v1/users?username=${values.username}`)
-    setUsers(res.data.data)
-    }
+    setTimeout(async()=>{
+      const res = await axios.get(`/api/v1/users?username=${values.username}`)
+      setUsers(res.data.data)
+    }, 1000)
+  }
 
   useEffect(()=>{
     fetchUsers();
@@ -59,13 +44,12 @@ const AllUsers = () => {
   </Link>
     )
 
-
   return (
     <div className='p-4'>
       <h2 className='font-bold text-lg'>All Users</h2>
       <div>
-        <form onSubmit={handleSearch}>
-          <FormRow type="text" name="username" value={values.username} labelText="Search by username" handleChange={handleChange}/>
+        <form className='form-control' onSubmit={handleSearch}>
+          <FormRow type="text" name="username" value={values.username} labelText="Search by username" handleChange={handleSearch}/>
           <button type="submit" className="btn btn-block mt-2" disabled={isLoading}>Search</button>
         </form>
         {showAlert && <Alert />}

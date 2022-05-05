@@ -8,7 +8,8 @@ import {  DISPLAY_ALERT,
           LOGIN_USER_SUCCESS, 
           LOGIN_USER_ERROR, 
           CREATE_USER_BEGIN,
-          CREATE_USER_SUCCESS 
+          CREATE_USER_SUCCESS, 
+          LOGOUT_USER_SUCCESS
         } from './actions';
 import reducer from './reducer'
 
@@ -128,8 +129,9 @@ const AppProvider = ({children}) => {
       }, 5000)
       
     } catch (error) {
+      console.log(error.response)
       dispatch({
-        type: LOGIN_USER_ERROR,
+        type: DISPLAY_ALERT,
         payload: {
           type: 'error',
           text: error.response.data.errMessage
@@ -138,8 +140,27 @@ const AppProvider = ({children}) => {
     }
   }
 
+  const logoutUser = async () => {
+    try {
+      const res = await axios.get('/api/v1/logout');
+      dispatch({
+        type: LOGOUT_USER_SUCCESS
+      })
+      dispatch({
+        type: DISPLAY_ALERT,
+        payload:{
+          type: 'success',
+          text: 'logged out successfully'
+        }
+      })
+      
+    } catch (error) {
+      
+    }
+  }
+
   return (
-  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser }}>
+  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser }}>
     {children}
   </AppContext.Provider>);
 }

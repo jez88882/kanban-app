@@ -1,6 +1,5 @@
-/** connect to database */
 // const mysql = require('mysql2');
-const { Sequelize } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
 /** connect to database */
 const sequelize = new Sequelize('database', 'username', 'password', {
@@ -13,21 +12,23 @@ const sequelize = new Sequelize('database', 'username', 'password', {
     database : process.env.DB_DATABASE
   }
 })
-// ensure db is connected
-async function connect() {
-  await sequelize.authenticate(); // wait until the promise resolves (*)
-  console.log('Connection has been established successfully.');
-}
-connect();
 
+  // ensure db is connected
+  // await sequelize.authenticate(); // wait until the promise resolves (*)
+  // console.log('Connection has been established successfully.');
+  
 const User = require(`./user`)(sequelize);
-console.log("loaded User model");
-/**
 const Project = require(`./project`)(sequelize);
-console.log("loaded Project model");
-*/
+const UserGroup = require(`./userGroup`)(sequelize);
+
+User.hasMany(UserGroup, { foreignKey: 'user_id'} )
+UserGroup.belongsTo(User, { foreignKey: 'user_id'} )
 
 module.exports = {
-  User
-  // Project
+  User,
+  Project,
+  UserGroup
 };
+
+
+  

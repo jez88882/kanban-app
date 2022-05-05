@@ -1,13 +1,19 @@
 const ErrorHandler = require('../utils/errorHandler');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
-const { User } = require('../models/db');
-const user = require('../models/user');
+const { User, UserGroup } = require('../models/db');
 const Filter = require('../utils/filters');
+const { Op } = require('sequelize');
 
 // users#index
 exports.index = catchAsyncErrors( async function(req, res, next) {
-    console.log(req.query)
-    const users = await User.findAll({ where: req.query});
+    console.log(req.query.username)
+    // const users = await User.findAll({ where: req.query });
+    const users = await User.findAll({ where: {
+        username: {
+            [Op.like]: `%${req.query.username}%`
+        }
+    }
+    });
     res.status(200).json({
         success: true,
         data: users
@@ -50,9 +56,11 @@ exports.create = catchAsyncErrors( async function(req, res) {
 
 // users#update
 exports.update = catchAsyncErrors( async function(req, res, next) {
+    if (req.params.id != req.user.id||!req.user.is_admin) {
+        return next(new ErrorHandler(`not authorized to change other's password. you need to be an admin.`, 403));
+    }
     console.log('updating')
     const user = await User.unscoped().findByPk(req.params.id)
-    const authorizedFields = ['email', 'username'];
     // if (user.is_admin) {
     //     authorizedFields.push('password')
     // }
@@ -61,11 +69,10 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
     user.email=req.body.email
     user.username=req.body.username
 
-    const canChangePassword = req.params.id === req.user.id || req.user.is_admin
-
-    if (req.body.password && canChangePassword) {
+    if (req.body.password) {
         user.password = req.body.password
     }
+    
     user.save()
     res.json({
         success: true,
@@ -89,7 +96,33 @@ exports.disable = catchAsyncErrors( async function(req, res) {
     });
 });
 
+exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
+    console.log('creating group')
+    console.log(req.body)
+    const { user_id, name } = req.body
 
-function getAuthorizedfields() {
+    const usergroup = await UserGroup.build({ user_id, name})
+    console.log(usergroup)
+    await usergroup.save()
 
-}
+    const user = await User.findByPk(user_id)
+    await usergroup.setUser(user)
+    
+    console.log('getting user:')
+    console.log(await usergroup.getUser())
+    console.log('========================')
+    console.log('getting user groups:')
+    console.log(await user.getUserGroups())
+    console.log('========================')
+    res.json({
+        success: true,
+        message: 'ok',
+    })
+});
+
+const checkGroup = require('../utils/checkGroup')
+
+exports.checkUserGroup =  catchAsyncErrors( async function(req, res) {
+    console.log('checking group')
+    
+});

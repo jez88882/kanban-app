@@ -6,7 +6,8 @@ import {  DISPLAY_ALERT,
           LOGIN_USER_SUCCESS, 
           LOGIN_USER_ERROR,
           CREATE_USER_BEGIN,
-          CREATE_USER_SUCCESS
+          CREATE_USER_SUCCESS,
+          LOGOUT_USER_SUCCESS
         } from "./actions"
 
 const reducer = (draft, action) => {
@@ -44,6 +45,9 @@ const reducer = (draft, action) => {
       draft.alertType = 'success'
       draft.alertText = 'Created user!'
       draft.showAlert = true
+      return
+    case LOGOUT_USER_SUCCESS:
+      draft.user = null
       return
     default:
       throw new Error(`no such action: ${action.type}`)

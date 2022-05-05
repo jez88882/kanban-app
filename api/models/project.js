@@ -25,7 +25,6 @@ module.exports = function(sequelize) {
   }, {
     tableName: 'projects'
   });
-  Project.sync({ alter: true })
   return Project;
 }  
 

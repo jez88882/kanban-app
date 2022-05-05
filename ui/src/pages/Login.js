@@ -6,7 +6,7 @@ import { useAppContext } from '../context/appContext'
 
 export default function Login() {
   const initialState = {
-    email: 'test_id@email.com',
+    username: 'testuser',
     password: '123456A!',
     isMember: false
   }
@@ -21,19 +21,18 @@ export default function Login() {
       setTimeout(() => {
         navigate('/')
         clearAlert()
-      }, 500)
+      }, 100)
     }
   }, [user, navigate])
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
-    console.log(values)
   }
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { email, password } = values
-    if (email==="" || !password==="") {
+    const { username, password } = values
+    if (username==="" || !password==="") {
       displayAlert({
         type: 'error',
         text: 'please enter all values'
@@ -41,7 +40,7 @@ export default function Login() {
       return
     }
     try {
-      loginUser({email, password})
+      loginUser({username, password})
       displayAlert({
         type:'success',
         text:'success. logging in...'
@@ -62,7 +61,7 @@ export default function Login() {
           <h1 className='text-5xl font-bold my-2'>Login</h1>
           {displayAlert && <Alert />}
           <form className='form-control w-fit max-w-xs' onSubmit={handleSubmit}>
-            <FormRow type="email" name="email" value={values.email} labelText="Email" handleChange={handleChange}/>
+            <FormRow type="username" name="username" value={values.username} labelText="Username" handleChange={handleChange}/>
             <FormRow type="password" name="password" value={values.password} labelText="Password" handleChange={handleChange}/>
             <button type="submit" className="btn btn-block mt-2" disabled={isLoading}>Login</button>
           </form>

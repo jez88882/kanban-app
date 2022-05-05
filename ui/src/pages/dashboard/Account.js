@@ -10,7 +10,7 @@ const Account = () => {
     id: user.id,
     username: user.username,
     email: user.email,
-    password: user.password,
+    password: null,
   }
 
   const [values, setValues] = useState(initialState);
@@ -57,9 +57,15 @@ const Account = () => {
       
     }
   }
+
+  const checkGroup = async () => {
+    const response = await axios.get(`api/v1/users/${user.id}/checkGroup`)
+    console.log(response.data)
+  }
   return (
     <div>
       <h1>My account</h1>
+      <button class="btn btn-primary" onClick={checkGroup}>Check Group</button>
       <button onClick={toggleForm} class="btn">Edit</button>
       <form onSubmit={handleSubmit} disabled={formDisabled}>
         <FormRow type="text" name="username" labelText="Username" value={values.username} handleChange={handleChange} disabled={formDisabled}/>
