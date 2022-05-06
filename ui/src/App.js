@@ -3,16 +3,17 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser } from './pages/dashboard'
+import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser, ResetEmail, ResetPassword, AccountInfo } from './pages/dashboard'
 import { Login, Error, ProtectedRoute } from './pages'
 import { useEffect } from "react";
 import { useAppContext } from "./context/appContext";
 
 export default function App(props){
-  const { fetchUser } = useAppContext()
+  const { user, fetchUser, checkGroup } = useAppContext()
 
   useEffect(()=>{
-    fetchUser();
+    fetchUser()
+    // checkGroup(user.id, "admin");
   },[])
 
   return(
@@ -24,7 +25,11 @@ export default function App(props){
               <Shared />
             </ProtectedRoute>
           }>
-            <Route path="account" element={<Account/>}/>
+            <Route path="" element={<Account/>}>
+              <Route index element={<AccountInfo />}/>
+              <Route path="reset-email" element={<ResetEmail/>}/>
+              <Route path="reset-password" element={<ResetPassword/>}/>
+            </Route>
             <Route path="users" element={<UserManagement/>}>
               <Route index element={<AllUsers />}/>
               <Route path="new" element={<CreateUser/>}/>

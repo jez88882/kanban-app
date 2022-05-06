@@ -36,7 +36,7 @@ const AllUsers = () => {
 
   const listUsers = users.map( (user, index) =>
   <Link to={`edit/${user.id}`}>
-    <div className={`rounded-box my-2 p-2 ${user.is_disabled ? "bg-base-300 " : "bg-neutral"}`}>
+    <div className={`border border-2 border-primary	rounded-md text-primary hover:bg-primary hover:text-white my-2 p-2 ${user.is_disabled ? "bg-base-300 " : ""}`}>
       <p className={user.is_disabled ? "text-slate-400" : ""}>
         {user.username}
       </p>
@@ -46,17 +46,19 @@ const AllUsers = () => {
 
   return (
     <div className='p-4'>
-      <h2 className='font-bold text-lg'>All Users</h2>
-      <div>
+      <h2 className='font-bold text-2xl'>All Users</h2>
+      <div className='w-8/12'>
         <form className='form-control' onSubmit={handleSearch}>
-          <FormRow type="text" name="username" value={values.username} labelText="Search by username" handleChange={handleSearch}/>
-          <button type="submit" className="btn btn-block mt-2" disabled={isLoading}>Search</button>
+          <div className='w-3/12 flex items-end'>
+            <FormRow type="text" name="username" value={values.username} labelText="Search by username" handleChange={handleSearch}/>
+            <button type="submit" className="btn btn-primary mt-2 mx-2" disabled={isLoading}>Search</button>
+          </div>
         </form>
         {showAlert && <Alert />}
+        <div className="w-full justify-items-center">
+          {listUsers}
+        </div>     
       </div>
-      <div className="w-full justify-items-center">
-        {listUsers}
-      </div>     
     </div>
   );
 };

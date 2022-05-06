@@ -1,6 +1,5 @@
 import axios from 'axios';
 import React,{ useEffect, useContext } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
 import { useImmerReducer} from 'use-immer'
 import {  DISPLAY_ALERT, 
           CLEAR_ALERT, 
@@ -9,7 +8,8 @@ import {  DISPLAY_ALERT,
           LOGIN_USER_ERROR, 
           CREATE_USER_BEGIN,
           CREATE_USER_SUCCESS, 
-          LOGOUT_USER_SUCCESS
+          LOGOUT_USER_SUCCESS,
+          CHECK_GROUP
         } from './actions';
 import reducer from './reducer'
 
@@ -23,6 +23,7 @@ const initialState = {
   alertText: '',
   alertType: '',
   user: null,
+  is_admin: null
   // token: null
   // userLocation: location || ''
 }
@@ -41,6 +42,14 @@ const AppProvider = ({children}) => {
     })
   }
 
+  const checkGroup = async (id, userGroup) => {
+    const response = await axios.get(`/api/v1/auth/${id}?group=${userGroup}`)
+    dispatch({
+      type: CHECK_GROUP,
+      payload: response.data
+    })
+  }
+
   const displayAlert = (alerttype, alerttext) => {
     dispatch({
       type: DISPLAY_ALERT,
@@ -54,22 +63,16 @@ const AppProvider = ({children}) => {
     dispatch({type: CLEAR_ALERT})
   }
 
-  // const addUserToLocalStorage = () => {
-    // localStorage.setItem('user', JSON.stringify(user))
-    // localStorage.setItem('token', token)
-    // localStorage.setItem('location', location)
-  // }
-
   const loginUser = async (currentUser) => {
     dispatch({type: LOGIN_USER_BEGIN})
     try {
       const response = await axios.post('/api/v1/login', currentUser)
       console.log(response.data)
       // console.log(data)
-      const { user, token} = response.data
+      const { user, token } = response.data
       dispatch({
         type: LOGIN_USER_SUCCESS,
-        payload: { user, token, location: 'dashboard' }
+        payload: { user, token }
       })
       
       setTimeout(()=>{
@@ -134,7 +137,7 @@ const AppProvider = ({children}) => {
         type: DISPLAY_ALERT,
         payload: {
           type: 'error',
-          text: error.response.data.errMessage
+          text: error.response.data.errMessagef
         }
       })
     }
@@ -160,7 +163,7 @@ const AppProvider = ({children}) => {
   }
 
   return (
-  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser }}>
+  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser, checkGroup }}>
     {children}
   </AppContext.Provider>);
 }

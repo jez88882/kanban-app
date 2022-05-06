@@ -1,8 +1,11 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { useAppContext } from '../../context/appContext'
 import { Modal, FormRow, Alert } from '../../components'
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 
 const initialState = {
@@ -18,13 +21,12 @@ const EditUser = () => {
   const params = useParams();
   const [values, setValues] = useState(initialState)
 
-  const { isLoading, disableUser, showAlert, displayAlert, clearAlert } = useAppContext()
+  const {disableUser, showAlert, displayAlert, clearAlert } = useAppContext()
 
   const fetchUser = async () => {
     const res = await axios.get(`/api/v1/users/${params.id}`)
     const { id, username, email, is_disabled } = res.data.data
     setValues({ id, username, email, is_disabled })
-    console.log(res.data.data)
   }
   
   useEffect(()=>{
@@ -34,18 +36,15 @@ const EditUser = () => {
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
   }
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+
+  const handleClick = async (e) => {
     const data = {
       id: values.id,
-      username: values.username,
       email: values.email,
       password: values.password
     }
     try {
       const res = await axios.put(`/api/v1/users/${values.id}`, data)
-      console.log(res.data)
       displayAlert('success', res.data.message)
       setTimeout(()=>{
         clearAlert();
@@ -53,8 +52,11 @@ const EditUser = () => {
       
     } catch (error) {
       console.log(error.response)
-      
     }
+  }
+  
+  const handleSubmit = (e) => {
+    e.preventDefault();
   }
   
   const handleDisable = () => {
@@ -67,39 +69,45 @@ const EditUser = () => {
       name: values.userGroup,
       user_id: values.id
     }
-    console.log(data)
     const res = await axios.post(`/api/v1/users/${values.id}/groups`, data)
-
     console.log(res.data)
+    displayAlert('success', "Added user group")
+    setTimeout(()=>{
+      clearAlert()
+    }, 2000)
   }
- 
+
   return (
-    <div>
-      <h1 class="font-bold">Edit User</h1>
-      <div class="flex w-full">
-        <div class="grid flex-grow card place-items-center">
-          {showAlert && <Alert />}
-          <form onSubmit={handleSubmit}>
-            <FormRow type="text" name="username" value={values.username} labelText="Username" handleChange={handleChange}/>
-            <FormRow type="text" name="email" value={values.email} labelText="Email" handleChange={handleChange}/>
-            <FormRow type="password" name="password" value={values.password} labelText="Password" handleChange={handleChange}/>
-            <button type="submit" className="btn mt-2" disabled={isLoading}>Update</button>
-            <div class="divider"></div> 
-            <button className='btn mt-2' disabled={values.is_disabled} onClick={handleDisable}>Disable User</button>
-          </form>
+    <div className='p-4'>
+      <h2 className={`font-bold text-2xl ${values.is_disabled ? "text-slate-400": ""}`}>Edit User: {values.username}</h2>
+      <div className='mt-2'>
+        {showAlert && <Alert />}
+      </div>
+      <div className='flex'>
+        <div className="m-6 p-6 w-3/12 border rounded-md flex flex-col items-center"> 
+          <div className="flex justify-between w-full">
+            <form onSubmit={handleSubmit} className='flex justify-between items-end'>
+              <FormRow type="email" name="email" value={values.email} labelText="Update Email" handleChange={handleChange}/>
+              <button type="button" onClick={handleClick} className="btn btn-primary mt-4 mx-2 ">Update Email</button>
+            </form>
+          </div>
+          <div className="divider divider-vertical"></div> 
+          <div className="flex justify-between w-full">
+            <form onSubmit={handleSubmit} className='flex justify-between items-end'>
+              <FormRow type="password" name="password" value={values.password} labelText="Reset Password" handleChange={handleChange}/>
+              <button type="button" onClick={handleClick} className="btn btn-primary mt-4 mx-2 ">Reset Password</button>
+            </form>
+          </div>
+          <div className="divider divider-vertical"></div> 
+            <button type="button" onClick={handleDisable} className="btn bg-blue-300 text-blue-500	hover:bg-primary hover:text-white w-8/12" disabled={values.is_disabled}>Disable user</button>
         </div>
-        <div class="divider divider-horizontal"></div>
-        <div class="grid flex-grow card place-items-center">
-          <form onSubmit={createUserGroup}>
-            <FormRow type="text" name="userGroup" values={values.userGroup} handleChange={handleChange}/>
-            <button className='btn mt-2 btn-primary' type="submit">Add User Group</button>
+        <div className='m-6 p-6 w-6/12 border rounded-md'>
+          <form onSubmit={createUserGroup} className="w-8/12 flex items-end">
+            <FormRow type="text" name="userGroup" labelText="Create User Group in the format <App_Acronmy>_<UserGroup>" values={values.userGroup} handleChange={handleChange}/>
+            <button className='btn mt-2 mx-2 btn-primary' type="submit">Create</button>
           </form>
-          <div class="divider"></div> 
-          <button class="btn">Check group</button>
         </div>
       </div>
-      
-     
     </div>
   );
 };

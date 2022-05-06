@@ -24,12 +24,3 @@ exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   console.log(`user authenticated, id: ${req.user.id}, username: ${req.user.username}`)
   next();
 })
-
-// check if user is admin
-exports.checkAdmin = function(req, res, next) {
-  console.log("checking if admin...")
-    if (!req.user.is_admin) {
-      return next(new ErrorHandler(`Need to be admin to access this resource`, 403));
-    }
-    next();
-}

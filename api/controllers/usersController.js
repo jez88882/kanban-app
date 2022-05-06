@@ -56,19 +56,17 @@ exports.create = catchAsyncErrors( async function(req, res) {
 
 // users#update
 exports.update = catchAsyncErrors( async function(req, res, next) {
-    if (req.params.id != req.user.id||!req.user.is_admin) {
+    console.log(`logged in user is ${req.params.id}`)
+    console.log(`logged in user is ${req.user.id}`)
+    if (req.params.id != req.user.id && !req.user.is_admin) {
         return next(new ErrorHandler(`not authorized to change other's password. you need to be an admin.`, 403));
     }
     console.log('updating')
     const user = await User.unscoped().findByPk(req.params.id)
-    // if (user.is_admin) {
-    //     authorizedFields.push('password')
-    // }
-    console.log(req.body)
 
-    user.email=req.body.email
-    user.username=req.body.username
-
+    if (req.body.email) {
+        user.email = req.body.email
+    }
     if (req.body.password) {
         user.password = req.body.password
     }
@@ -79,11 +77,11 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
         message: "updated user",
         data: user
     });
-    
 });
 
 // users#disable
 exports.disable = catchAsyncErrors( async function(req, res) {
+    console.log('disabling user')
     await User.update({ is_disabled: 1 }, {
         where: {
           id: req.params.id
@@ -101,28 +99,13 @@ exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
     console.log(req.body)
     const { user_id, name } = req.body
 
-    const usergroup = await UserGroup.build({ user_id, name})
+    const usergroup = await UserGroup.create({ user_id, name})
     console.log(usergroup)
-    await usergroup.save()
 
     const user = await User.findByPk(user_id)
     await usergroup.setUser(user)
-    
-    console.log('getting user:')
-    console.log(await usergroup.getUser())
-    console.log('========================')
-    console.log('getting user groups:')
-    console.log(await user.getUserGroups())
-    console.log('========================')
     res.json({
         success: true,
         message: 'ok',
     })
-});
-
-const checkGroup = require('../utils/checkGroup')
-
-exports.checkUserGroup =  catchAsyncErrors( async function(req, res) {
-    console.log('checking group')
-    
 });

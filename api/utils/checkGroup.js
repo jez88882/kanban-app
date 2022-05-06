@@ -1,15 +1,18 @@
-const { User } = require('../models/db') 
+const { User } = require('../models/db')
 
-async function checkGroup(userId, group) {
-  console.log('check group funciton')
-  const user = await User.findByPk(userId)
-  const project_users = await user.getProjectUsers()
-
-  return project_users.filter(project=>{
-    return project.dataValues[group] === true
-    // console.log(group)
-    // console.log(project.dataValues[group])
+// check if user is admin
+async function checkGroup(id, userGroup) {
+  console.log('checking group')
+  const user = await User.findByPk(id)
+  const data = await user.getUserGroups();
+  let result = false
+  await data.forEach(usergroup=>{
+    if (usergroup.dataValues.name === userGroup) {
+        result = true
+    }
   })
+
+  return result
 }
 
 module.exports = checkGroup

@@ -13,6 +13,9 @@ module.exports = function(sequelize) {
     user_id: {
       type: DataTypes.INTEGER,
     },
+    app_Rnumber: {
+      type: DataTypes.INTEGER,
+    },
   }, {
     tableName: 'user_groups'
   });

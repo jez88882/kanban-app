@@ -32,10 +32,6 @@ module.exports = function(sequelize) {
       type: DataTypes.BOOLEAN,
       defaultValue: 0
     },
-    is_admin: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: 0
-    },
     resetPasswordToken: {
       type: DataTypes.TEXT
     },
@@ -76,10 +72,5 @@ module.exports = function(sequelize) {
     this.resetPasswordExpire = Date.now() + 30*60*1000;
     return resetToken
   }
-
-  User.prototype.checkGroup = function() {
-    return 
-  }
-
   return User;
 }

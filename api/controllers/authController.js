@@ -1,11 +1,11 @@
+const crypto = require('crypto');
+
 const { User } = require('../models/db');
 const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
+
 const ErrorHandler = require('../utils/errorHandler');
 const sendToken = require('../utils/jwtToken');
 const sendEmail = require('../utils/sendEmail');
-const crypto = require('crypto');
-const { Sequelize } = require('sequelize');
-
 
 // register a new user
 exports.register = catchAsyncErrors(async function(req, res, next) {
@@ -129,3 +129,22 @@ exports.authenticateUser = catchAsyncErrors( async function(req, res, next){
     user: req.user
   });
 })
+
+// check group
+exports.checkGroup = catchAsyncErrors(async function(req, res, next) {
+  console.log('checking group')
+  const user = await User.findByPk(req.params.id)
+  const group = req.query.group
+  const data = await user.getUserGroups();
+  let result = false
+  data.forEach(usergroup=>{
+    if (usergroup.dataValues.name===group) {
+        result = true
+    }
+  })
+  res.json({
+      success: true,
+      data: result
+  })
+})
+

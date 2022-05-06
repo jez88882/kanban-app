@@ -5,6 +5,9 @@ import Shared from "./Shared";
 import CreateUser from "./CreateUser";
 import AllUsers from "./AllUsers";
 import EditUser from "./EditUser";
+import ResetEmail from './ResetEmail'
+import ResetPassword from './ResetPassword'
+import AccountInfo from "./AccountInfo";
 
 export {
   Overview,
@@ -14,4 +17,7 @@ export {
   CreateUser,
   AllUsers,
   EditUser,
+  ResetEmail,
+  ResetPassword,
+  AccountInfo
 }

@@ -7,7 +7,8 @@ import {  DISPLAY_ALERT,
           LOGIN_USER_ERROR,
           CREATE_USER_BEGIN,
           CREATE_USER_SUCCESS,
-          LOGOUT_USER_SUCCESS
+          LOGOUT_USER_SUCCESS,
+          CHECK_GROUP
         } from "./actions"
 
 const reducer = (draft, action) => {
@@ -29,6 +30,7 @@ const reducer = (draft, action) => {
       draft.isLoading = false
       // draft.token = action.payload.token
       draft.user =  action.payload.user
+      draft.is_admin =  action.payload.is_admin
       // draft.location =  action.payload.location
       return
     case LOGIN_USER_ERROR:
@@ -48,6 +50,9 @@ const reducer = (draft, action) => {
       return
     case LOGOUT_USER_SUCCESS:
       draft.user = null
+      return
+    case CHECK_GROUP:
+      draft.is_admin = action.payload
       return
     default:
       throw new Error(`no such action: ${action.type}`)

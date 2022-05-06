@@ -1,12 +1,12 @@
-import { Outlet, Link } from 'react-router-dom'
-import { Page, Drawer, Navbar } from '../../components'
+import { Outlet } from 'react-router-dom'
+import { Navbar } from '../../components'
 
 const Shared = () => {
   return (
-    <Page title="dashboard">
+    <>
       <Navbar/>
-        <Outlet />
-    </Page>
+      <Outlet />
+    </>
   );
 };
 
