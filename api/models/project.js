@@ -5,13 +5,13 @@ module.exports = function(sequelize) {
     app_Rnumber: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true
     },
-    app_acronym: {
+    app_Acronym: {
       type: DataTypes.STRING,
+      primaryKey: true,
       allowNull: false
     },
-    app_description: {
+    app_Description: {
       type: DataTypes.TEXT,
     },
     startDate: {
@@ -23,7 +23,7 @@ module.exports = function(sequelize) {
       allowNull: false
     }
   }, {
-    tableName: 'projects'
+    tableName: 'applications'
   });
   return Project;
 }  

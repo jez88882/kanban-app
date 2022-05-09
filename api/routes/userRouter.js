@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const projectRouter = require('../routes/projectRouter');
 
 const { index, show, create, update, disable, createUserGroup, userGroups } = require('../controllers/usersController');
 const { isAuthenticatedUser } = require('../middlewares/auth');
@@ -15,16 +16,16 @@ router.get('/:id', show);
 // /* users#show */
 router.get('/:id/groups', userGroups);
 
+// to project actions
+router.use('/:id/projects', projectRouter);
+
 // /* users#create */
-// checkAdmin
 router.post('/', create);
 
 // /* users#update */
-// checkAdmin
-router.put('/:id', update);
+router.patch('/:id', update);
 
 // /* users#disable */
-// checkAdmin
 router.get('/:id/disable', disable);
 
 // /* users#createGroup */

@@ -1,11 +1,18 @@
 const { Op } = require('sequelize')
 const dotenv = require('dotenv');
+// Load the full build.
+var lodash = require('lodash');
+
+// Load method categories.
+var array = require('lodash/array');
 
 // set up config.env file variables
 dotenv.config({path : './config/config.env'});
 
-const { User, Project, UserGroup } = require('./models/db')
+const { User, Project, UserGroup } = require('./models/db');
+const project = require('./models/project');
 
+// extracted functions
 async function createGroups(user){
   let member = await UserGroup.create({
     name: 'team member',
@@ -15,18 +22,25 @@ async function createGroups(user){
   await user.addUserGroup(member)
 }
 
+// main seeding area
 async function seedData() {
-  await User.destroy({ where: { 
-    id: {
-      [Op.gt]: 0
-    }
-  }})
+  // await User.destroy({ where: { 
+  //   id: {
+  //     [Op.gt]: 0
+  //   }
+  // }})
   
-  await UserGroup.destroy({ where: { 
-    id: {
-      [Op.gt]: 0
-    }
-  }})
+  // await UserGroup.destroy({ where: { 
+  //   id: {
+  //     [Op.gt]: 0
+  //   }
+  // }})
+
+  // await Project.destroy({ where: { 
+  //   app_Rnumber: {
+  //     [Op.gt]: 0
+  //   }
+  // }})
   
   // create admin user
   const adminUser = await User.create({
@@ -37,7 +51,6 @@ async function seedData() {
 
   // create users
   for (let i = 2; i < 11; i++) {
-    // Runs 5 times, with values of step 0 through 4.
     await User.create({
       username: `user${i}`,
       email: `user${i}@email.com`,
@@ -60,5 +73,45 @@ async function seedData() {
 
   await admin.setUser(adminUser)
   await adminUser.addUserGroup(admin)
+
+  // create projects
+  for (let i = 1; i < 11; i++) {
+    let acronym = ""
+    
+    for (let n = 0; n < 3; n++) {
+      acronym += lodash.sample(['A', 'B', 'C', 'D', 'E', 'F','G','H','I', 'J'])
+    }
+    acronym += `${i}`
+
+    let start = new Date()
+    start.setDate(start.getDate() +  lodash.random(0, 7));
+
+    await Project.create({
+      app_Acronym: acronym,
+      app_Description: `app ${acronym} is made to be ${i} stars`,
+      startDate: start,
+      endDate: start.setDate(start.getDate() + 7)
+    })
+  }
+
 }
-seedData();
+// seedData();
+
+async function groupupdate(group, acronym) {
+    group.app_Acronym = acronym
+    await group.save()
+}
+
+// one-time functions
+async function oneTime() {
+  const groups = await UserGroup.findAll()
+  const projects = await Project.findAll()
+  groups.forEach((group)=>{
+    let proj = lodash.sample(projects)
+    let acronym = proj.dataValues.app_Acronym
+
+    groupupdate(group, acronym)
+})
+
+}
+oneTime();

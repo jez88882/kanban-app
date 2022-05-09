@@ -9,7 +9,7 @@ const ProtectedRoute = ({children}) => {
   if (!user){
     return <Navigate to="/login" />
   }
-  // return <Navigate to={location.pathname} />
+  // return <Navigate to={location.pathname} />a
   return children
 };
 

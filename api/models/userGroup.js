@@ -13,7 +13,7 @@ module.exports = function(sequelize) {
     user_id: {
       type: DataTypes.INTEGER,
     },
-    app_Rnumber: {
+    app_Acronym: {
       type: DataTypes.INTEGER,
     },
   }, {
