@@ -4,11 +4,11 @@ import { Drawer, Page } from '../../components'
 import { useAppContext } from '../../context/appContext';
 
 const UserManagement = () => {
-  const { user } = useAppContext()
+  const { user, is_admin } = useAppContext()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (!user.is_admin) {
+    if (!is_admin) {
       navigate('/')
     }
   }, [user, navigate])

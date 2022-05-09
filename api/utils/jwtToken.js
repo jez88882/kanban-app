@@ -1,6 +1,3 @@
-const checkGroup = require('./checkGroup')
-
-
 // create and send token and save in cookie
 async function sendToken(user, statusCode, res) {
   // create JWT 
@@ -12,8 +9,6 @@ async function sendToken(user, statusCode, res) {
     httpOnly: true
   }
 
-  const is_admin = await checkGroup(user.id, "admin")
-
   // need the https custom domain(?)
   // if (process.env.NODE_ENV === 'production') {
   //   options.secure = true
@@ -24,7 +19,6 @@ async function sendToken(user, statusCode, res) {
   .json({
     success: true,
     user,
-    is_admin,
     token
   });
 }

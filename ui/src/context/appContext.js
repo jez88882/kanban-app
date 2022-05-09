@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React,{ useEffect, useContext } from 'react'
+import React,{ useContext } from 'react'
 import { useImmerReducer} from 'use-immer'
 import {  DISPLAY_ALERT, 
           CLEAR_ALERT, 
@@ -9,7 +9,7 @@ import {  DISPLAY_ALERT,
           CREATE_USER_BEGIN,
           CREATE_USER_SUCCESS, 
           LOGOUT_USER_SUCCESS,
-          CHECK_GROUP
+          SET_LOCATION,
         } from './actions';
 import reducer from './reducer'
 
@@ -23,9 +23,9 @@ const initialState = {
   alertText: '',
   alertType: '',
   user: null,
-  is_admin: null
+  is_admin: null,
   // token: null
-  // userLocation: location || ''
+  location: null,
 }
 
 const AppContext = React.createContext();
@@ -33,20 +33,26 @@ const AppProvider = ({children}) => {
 
   const [state, dispatch] = useImmerReducer(reducer, initialState)
 
+  const setLocation = (path) => {
+    dispatch({
+      type: SET_LOCATION,
+      payload: path
+    })
+  }
+  
+  const checkGroup = async (id, userGroup) => {
+    const response = await axios.get(`/api/v1/users/${id}/groups?filter=${userGroup}`)
+    return response.data.data
+  }
+
   const fetchUser = async () => {
     const response = await axios.get('/api/v1/auth')
     const user =  response.data.user
+
+    const is_admin = await checkGroup(user.id, "admin")
     dispatch({
       type: LOGIN_USER_SUCCESS,
-      payload: { user }
-    })
-  }
-
-  const checkGroup = async (id, userGroup) => {
-    const response = await axios.get(`/api/v1/auth/${id}?group=${userGroup}`)
-    dispatch({
-      type: CHECK_GROUP,
-      payload: response.data
+      payload: { user, is_admin }
     })
   }
 
@@ -64,15 +70,18 @@ const AppProvider = ({children}) => {
   }
 
   const loginUser = async (currentUser) => {
+    console.log('login user function app context')
     dispatch({type: LOGIN_USER_BEGIN})
     try {
       const response = await axios.post('/api/v1/login', currentUser)
-      console.log(response.data)
-      // console.log(data)
+      
       const { user, token } = response.data
+
+      const is_admin = await checkGroup(user.id, "admin")
+
       dispatch({
         type: LOGIN_USER_SUCCESS,
-        payload: { user, token }
+        payload: { user, token, is_admin }
       })
       
       setTimeout(()=>{
@@ -163,7 +172,7 @@ const AppProvider = ({children}) => {
   }
 
   return (
-  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser, checkGroup }}>
+  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser, setLocation }}>
     {children}
   </AppContext.Provider>);
 }

@@ -28,6 +28,7 @@ const Navbar = () => {
       }, 500)
     }
   }, [user, clearAlert, navigate]) 
+  
   const handleLogout = async() => {
     logoutUser();
     setTimeout(()=>{

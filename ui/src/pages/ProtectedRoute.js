@@ -1,11 +1,15 @@
 import { useAppContext } from "../context/appContext";
-import { Navigate } from "react-router-dom";
+// import { useEffect } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 
 const ProtectedRoute = ({children}) => {
-  const { user } = useAppContext()
+  const location = useLocation()
+  const { user, setLocation } = useAppContext()
+  setLocation(location.pathname)
   if (!user){
     return <Navigate to="/login" />
   }
+  // return <Navigate to={location.pathname} />
   return children
 };
 

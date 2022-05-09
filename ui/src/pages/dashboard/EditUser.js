@@ -60,6 +60,7 @@ const EditUser = () => {
   }
   
   const handleDisable = () => {
+    setValues({...values, is_disabled: true},)
     disableUser(values.id)
   }
 

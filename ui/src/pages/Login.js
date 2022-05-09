@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { FormRow, Alert } from '../components'
 import { useAppContext } from '../context/appContext'
 
@@ -13,15 +13,15 @@ export default function Login() {
   const [values, setValues] = useState(initialState)
 
   // global state and usenavigate
-  const {isLoading, displayAlert, loginUser, user, clearAlert } = useAppContext()
+  const {isLoading, displayAlert, loginUser, user, clearAlert, location } = useAppContext()
   const navigate = useNavigate()
 
   useEffect(() => {
     if (user) {
       setTimeout(() => {
-        navigate('/')
+        navigate(location)
         clearAlert()
-      }, 100)
+      }, 50)
     }
   }, [user, navigate])
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { index, show, create, update, disable, createUserGroup } = require('../controllers/usersController');
+const { index, show, create, update, disable, createUserGroup, userGroups } = require('../controllers/usersController');
 const { isAuthenticatedUser } = require('../middlewares/auth');
 
 router.use(isAuthenticatedUser);
@@ -11,6 +11,9 @@ router.get('/', index);
 
 // /* users#show */
 router.get('/:id', show);
+
+// /* users#show */
+router.get('/:id/groups', userGroups);
 
 // /* users#create */
 // checkAdmin

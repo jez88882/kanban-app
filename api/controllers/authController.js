@@ -17,18 +17,15 @@ exports.register = catchAsyncErrors(async function(req, res, next) {
 
 exports.login = catchAsyncErrors(async function(req, res, next) {
   console.log('logging in...');
-  console.log('parsing cookies');
-  console.log(req.cookies)
-  console.log(req.signedCookies)
 
   const { username, password } = req.body;
-  console.log({username, password})
 
   // check if email or password is entered by user
   if (!username || !password) {
     return next(new ErrorHandler('Please enter username and password'), 400);
   }
   console.log("getting user...")
+  console.log("user:")
   // get user
   console.log(User)
   const user = await User.unscoped().findOne({ where: { username }});
@@ -128,23 +125,5 @@ exports.authenticateUser = catchAsyncErrors( async function(req, res, next){
     success: true,
     user: req.user
   });
-})
-
-// check group
-exports.checkGroup = catchAsyncErrors(async function(req, res, next) {
-  console.log('checking group')
-  const user = await User.findByPk(req.params.id)
-  const group = req.query.group
-  const data = await user.getUserGroups();
-  let result = false
-  data.forEach(usergroup=>{
-    if (usergroup.dataValues.name===group) {
-        result = true
-    }
-  })
-  res.json({
-      success: true,
-      data: result
-  })
 })
 

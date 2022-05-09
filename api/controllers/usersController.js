@@ -109,3 +109,21 @@ exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
         message: 'ok',
     })
 });
+
+exports.userGroups = catchAsyncErrors(async function(req, res, next) {
+    console.log('checking group in users controller')
+    const user = await User.findByPk(req.params.id)
+    const group = req.query.filter
+    const data = await user.getUserGroups();
+    let result = false
+    data.forEach(usergroup=>{
+      if (usergroup.dataValues.name===group) {
+          result = true
+      }
+    })
+    res.json({
+        success: true,
+        data: result
+    })
+  })
+  

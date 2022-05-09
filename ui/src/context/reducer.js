@@ -8,7 +8,7 @@ import {  DISPLAY_ALERT,
           CREATE_USER_BEGIN,
           CREATE_USER_SUCCESS,
           LOGOUT_USER_SUCCESS,
-          CHECK_GROUP
+          SET_LOCATION
         } from "./actions"
 
 const reducer = (draft, action) => {
@@ -51,8 +51,8 @@ const reducer = (draft, action) => {
     case LOGOUT_USER_SUCCESS:
       draft.user = null
       return
-    case CHECK_GROUP:
-      draft.is_admin = action.payload
+    case SET_LOCATION:
+      draft.location = action.payload
       return
     default:
       throw new Error(`no such action: ${action.type}`)

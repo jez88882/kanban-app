@@ -8,12 +8,13 @@ import { Login, Error, ProtectedRoute } from './pages'
 import { useEffect } from "react";
 import { useAppContext } from "./context/appContext";
 
+
+
 export default function App(props){
-  const { user, fetchUser, checkGroup } = useAppContext()
+  const { fetchUser } = useAppContext()
 
   useEffect(()=>{
     fetchUser()
-    // checkGroup(user.id, "admin");
   },[])
 
   return(

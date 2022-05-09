@@ -49,7 +49,7 @@ const CreateUser = () => {
 
   return (
     <>
-      <h1 class="font-bold text-lg">Create User</h1>
+      <h1 className="font-bold text-lg">Create User</h1>
       <form className='form-control w-fit max-w-xs' onSubmit={handleSubmit}>
         { showAlert && <Alert/>}
         
