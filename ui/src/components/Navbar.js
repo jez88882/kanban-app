@@ -12,6 +12,7 @@ const UserManagement = () =>{
       <ul className="p-2 bg-base-100">
         <li><Link to="/users">View All Users</Link></li>
         <li><Link to="/users/new">Create User</Link></li>
+        <li><Link to="/users/assign">Assign</Link></li>
       </ul>
     </li>
   )

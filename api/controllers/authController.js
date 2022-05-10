@@ -17,6 +17,7 @@ exports.register = catchAsyncErrors(async function(req, res, next) {
 
 exports.login = catchAsyncErrors(async function(req, res, next) {
   console.log('logging in...');
+  console.log('--------------------------------------\br')
 
   const { username, password } = req.body;
 
@@ -26,12 +27,10 @@ exports.login = catchAsyncErrors(async function(req, res, next) {
   }
   console.log("getting user...")
   console.log("user:")
-  // get user
-  console.log(User)
   const user = await User.unscoped().findOne({ where: { username }});
 
   if (!user) {
-    return next(new ErrorHandler('Invalid email or password', 401));
+    return next(new ErrorHandler('Invalid username or password', 401));
   }
   console.log("checking password...")
   // check if password is correct

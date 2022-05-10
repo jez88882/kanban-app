@@ -3,7 +3,7 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser, ResetEmail, ResetPassword, AccountInfo } from './pages/dashboard'
+import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser, ResetEmail, ResetPassword, AccountInfo, AssignGroups } from './pages/dashboard'
 import { Login, Error, ProtectedRoute } from './pages'
 import { useEffect } from "react";
 import { useAppContext } from "./context/appContext";
@@ -35,6 +35,7 @@ export default function App(props){
               <Route index element={<AllUsers />}/>
               <Route path="new" element={<CreateUser/>}/>
               <Route path="edit/:id" element={<EditUser/>}/>
+              <Route path="assign" element={<AssignGroups />}/>
             </Route>
           </Route>
           <Route path="/login" element={<Login/>}/>

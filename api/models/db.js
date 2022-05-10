@@ -19,26 +19,30 @@ const sequelize = new Sequelize('database', 'username', 'password', {
   
 const User = require(`./user`)(sequelize); 
 const UserGroup = require(`./userGroup`)(sequelize);
-const Project = require(`./project`)(sequelize);
+const Application = require(`./application`)(sequelize);
+const Plan = require(`./plan`)(sequelize);
+const Task = require(`./task`)(sequelize);
 
 // (async function() {
 //   await sequelize.sync({ force: true })
 // })()
 
-User.hasMany(UserGroup, { foreignKey: 'user_id'} )
-UserGroup.belongsTo(User, { foreignKey: 'user_id'} )
+User.hasMany(UserGroup, { foreignKey: 'username'} )
+UserGroup.belongsTo(User, { foreignKey: 'username'} )
 
-Project.hasMany(UserGroup,  { foreignKey: 'app_Acronym'} )
-UserGroup.belongsTo(Project, { foreignKey: 'app_Acronym'} )
+Application.hasMany(UserGroup,  { foreignKey: 'app_Acronym'} )
+UserGroup.belongsTo(Application, { foreignKey: 'app_Acronym'} )
 
-User.belongsToMany(Project, { through: UserGroup, foreignKey: 'user_id'})
-Project.belongsToMany(User, { through: UserGroup, foreignKey: 'app_Acronym'})
+User.belongsToMany(Application, { through: UserGroup, foreignKey: 'username'})
+Application.belongsToMany(User, { through: UserGroup, foreignKey: 'app_Acronym'})
 
 
 module.exports = {
   User,
-  Project,
-  UserGroup
+  Application,
+  UserGroup,
+  Plan,
+  Task
 };
 
 

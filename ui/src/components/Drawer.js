@@ -17,6 +17,7 @@ const Drawer = (props) => {
           {/* <!-- Sidebar content here --> */}
           <li><Link to="" className="no-underline">All Users</Link></li>
           <li><Link to="new" className="no-underline">Create User</Link></li>
+          <li><Link to="assign" className="no-underline">Assign Groups</Link></li>
         </ul>
       
       </div>

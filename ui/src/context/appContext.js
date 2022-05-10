@@ -24,7 +24,6 @@ const initialState = {
   alertType: '',
   user: null,
   is_admin: null,
-  // token: null
   location: null,
 }
 
@@ -33,6 +32,12 @@ const AppProvider = ({children}) => {
 
   const [state, dispatch] = useImmerReducer(reducer, initialState)
 
+  const fetchUsers = async () => {
+    console.log('fetching users')
+    const res = await axios.get('/api/v1/users?username=')
+    return res.data.data
+  }
+
   const setLocation = (path) => {
     dispatch({
       type: SET_LOCATION,
@@ -40,8 +45,8 @@ const AppProvider = ({children}) => {
     })
   }
   
-  const checkGroup = async (id, userGroup) => {
-    const response = await axios.get(`/api/v1/users/${id}/groups?filter=${userGroup}`)
+  const checkGroup = async (username, userGroup) => {
+    const response = await axios.get(`/api/v1/users/${username}/groups?filter=${userGroup}`)
     return response.data.data
   }
 
@@ -49,7 +54,7 @@ const AppProvider = ({children}) => {
     const response = await axios.get('/api/v1/auth')
     const user =  response.data.user
 
-    const is_admin = await checkGroup(user.id, "admin")
+    const is_admin = await checkGroup(user.username, "admin")
     dispatch({
       type: LOGIN_USER_SUCCESS,
       payload: { user, is_admin }
@@ -172,7 +177,7 @@ const AppProvider = ({children}) => {
   }
 
   return (
-  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser, setLocation }}>
+  <AppContext.Provider value={{...state, displayAlert, clearAlert, loginUser, fetchUser, createUser, disableUser, logoutUser, setLocation, fetchUsers }}>
     {children}
   </AppContext.Provider>);
 }

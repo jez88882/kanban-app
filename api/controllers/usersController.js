@@ -1,4 +1,5 @@
 const ErrorHandler = require('../utils/errorHandler');
+const checkGroup = require('../utils/checkGroup');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const { User, UserGroup } = require('../models/db');
 const Filter = require('../utils/filters');
@@ -6,15 +7,16 @@ const { Op } = require('sequelize');
 
 // users#index
 exports.index = catchAsyncErrors( async function(req, res, next) {
-    console.log(req.query.username)
-    // const users = await User.findAll({ where: req.query });
     const users = await User.findAll({ where: {
         username: {
             [Op.like]: `%${req.query.username}%`
+            }
         }
-    }
     });
-    res.status(200).json({
+
+    res
+    .status(200)
+    .json({
         success: true,
         data: users
     });
@@ -23,11 +25,11 @@ exports.index = catchAsyncErrors( async function(req, res, next) {
 // users#show
 exports.show = catchAsyncErrors(async function(req, res, next) {
     // Find by user ID
-    console.log(`searching for user: ${req.params.id}`)
-    const user = await User.findByPk(req.params.id)
+    console.log(`searching for user: ${req.params.username}`)
+    const user = await User.findByPk(req.params.username)
 
     if (!user) {
-        return next(new ErrorHandler(`no such user: ${req.params.id}`, 404));
+        return next(new ErrorHandler(`no such user: ${req.params.username}`, 404));
     }
 
     res.status(200).json({
@@ -56,13 +58,16 @@ exports.create = catchAsyncErrors( async function(req, res) {
 
 // users#update
 exports.update = catchAsyncErrors( async function(req, res, next) {
-    console.log(`logged in user is ${req.params.id}`)
-    console.log(`logged in user is ${req.user.id}`)
-    if (req.params.id != req.user.id && !req.user.is_admin) {
-        return next(new ErrorHandler(`not authorized to change other's password. you need to be an admin.`, 403));
+    console.log(`updating user: ${req.params.username}`)
+    console.log(`logged in user is ${req.user.username}`)
+
+    const isNot_loggedInUser = req.params.id != req.user.id 
+    const is_admin = checkGroup(req.user, "admin")
+    if (isNot_loggedInUser && !is_admin) {
+        return next(new ErrorHandler(`not authorized.`, 403));
     }
     console.log('updating')
-    const user = await User.unscoped().findByPk(req.params.id)
+    const user = await User.unscoped().findByPk(req.params.username)
 
     if (req.body.email) {
         user.email = req.body.email
@@ -81,10 +86,16 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
 
 // users#disable
 exports.disable = catchAsyncErrors( async function(req, res) {
+
+    const is_admin = checkGroup(req.user, "admin")
+    if (!is_admin) {
+        return next(new ErrorHandler(`not authorized.`, 403));
+    }
+
     console.log('disabling user')
     await User.update({ is_disabled: 1 }, {
         where: {
-          id: req.params.id
+          username: req.params.username
         }
       });
 
@@ -110,20 +121,13 @@ exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
     })
 });
 
-exports.userGroups = catchAsyncErrors(async function(req, res, next) {
-    console.log('checking group in users controller')
-    const user = await User.findByPk(req.params.id)
+exports.checkGroup = catchAsyncErrors(async function(req, res, next) {
+    const user = await User.findByPk(req.params.username)
     const group = req.query.filter
-    const data = await user.getUserGroups();
-    let result = false
-    data.forEach(usergroup=>{
-      if (usergroup.dataValues.name===group) {
-          result = true
-      }
-    })
+    const result = checkGroup(user, group)
     res.json({
         success: true,
         data: result
     })
-  })
+})
   

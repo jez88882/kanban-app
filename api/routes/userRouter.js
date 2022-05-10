@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const projectRouter = require('../routes/projectRouter');
+const applicationRouter = require('./applicationRouter');
 
-const { index, show, create, update, disable, createUserGroup, userGroups } = require('../controllers/usersController');
+const { index, show, create, update, disable, createUserGroup, checkGroup } = require('../controllers/usersController');
 const { isAuthenticatedUser } = require('../middlewares/auth');
 
 router.use(isAuthenticatedUser);
@@ -11,25 +11,24 @@ router.use(isAuthenticatedUser);
 router.get('/', index);
 
 // /* users#show */
-router.get('/:id', show);
+router.get('/:username', show);
 
-// /* users#show */
-router.get('/:id/groups', userGroups);
+// /* users#checkGroup */
+router.get('/:username/groups', checkGroup);
 
 // to project actions
-router.use('/:id/projects', projectRouter);
+router.use('/:username/applications', applicationRouter);
 
 // /* users#create */
 router.post('/', create);
 
 // /* users#update */
-router.patch('/:id', update);
+router.patch('/:username', update);
 
 // /* users#disable */
-router.get('/:id/disable', disable);
+router.get('/:username/disable', disable);
 
 // /* users#createGroup */
-router.post('/:id/groups', createUserGroup);
-
+router.post('/:username/groups', createUserGroup);
 
 module.exports = router;

@@ -9,8 +9,7 @@ var array = require('lodash/array');
 // set up config.env file variables
 dotenv.config({path : './config/config.env'});
 
-const { User, Project, UserGroup } = require('./models/db');
-const project = require('./models/project');
+const { User, Application, UserGroup, Plan, Task } = require('./models/db');
 
 // extracted functions
 async function createGroups(user){
@@ -36,7 +35,7 @@ async function seedData() {
   //   }
   // }})
 
-  // await Project.destroy({ where: { 
+  // await Application.destroy({ where: { 
   //   app_Rnumber: {
   //     [Op.gt]: 0
   //   }
@@ -74,7 +73,7 @@ async function seedData() {
   await admin.setUser(adminUser)
   await adminUser.addUserGroup(admin)
 
-  // create projects
+  // create Applications
   for (let i = 1; i < 11; i++) {
     let acronym = ""
     
@@ -86,7 +85,7 @@ async function seedData() {
     let start = new Date()
     start.setDate(start.getDate() +  lodash.random(0, 7));
 
-    await Project.create({
+    await Application.create({
       app_Acronym: acronym,
       app_Description: `app ${acronym} is made to be ${i} stars`,
       startDate: start,
@@ -104,14 +103,19 @@ async function groupupdate(group, acronym) {
 
 // one-time functions
 async function oneTime() {
-  const groups = await UserGroup.findAll()
-  const projects = await Project.findAll()
-  groups.forEach((group)=>{
-    let proj = lodash.sample(projects)
-    let acronym = proj.dataValues.app_Acronym
+  // const groups = await UserGroup.findAll()
+  // const Applications = await Application.findAll()
+  // groups.forEach((group)=>{
+  //   let proj = lodash.sample(Applications)
+  //   let acronym = proj.dataValues.app_Acronym
 
-    groupupdate(group, acronym)
-})
-
+  //   groupupdate(group, acronym)
+  const adminUser = await User.create({
+    username: `admin`,
+    email: `admin@email.com`,
+    password: '123456A!',
+  })
 }
-oneTime();
+
+
+// oneTime();

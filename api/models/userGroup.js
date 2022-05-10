@@ -10,7 +10,7 @@ module.exports = function(sequelize) {
     name: {
       type: DataTypes.STRING,
     },
-    user_id: {
+    username: {
       type: DataTypes.INTEGER,
     },
     app_Acronym: {

@@ -6,8 +6,9 @@ const ErrorHandler = require('../utils/errorHandler');
 // check if user is authenticated
 exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   console.log('authenticating...')
+  console.log('--------------------------------------\br')
   let token;
-
+  
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1]; // remove "Bearer" from the token
   } else {
@@ -19,8 +20,10 @@ exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
 
   const decoded = jwt.verify(token, process.env.JWT_SECRET); // gets payload
 
-  req.user = await User.findOne({ where: { id: decoded.id } });
-
-  console.log(`user authenticated, id: ${req.user.id}, username: ${req.user.username}`)
+  req.user = await User.findOne({ where: { username: decoded.username } });
+  
+  console.log('--------------------------------------')
+  console.log(`user ${req.user.username} authenticated`)
+  console.log('--------------------------------------')
   next();
 })

@@ -5,15 +5,11 @@ const crypto = require('crypto');
 
 module.exports = function(sequelize) {
   const User = sequelize.define('User', {
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
-    },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      primaryKey: true
     },
     email: {
       type: DataTypes.STRING,
@@ -47,9 +43,10 @@ module.exports = function(sequelize) {
     const hashedPassword = await argon.hash(user.password);
     user.password = hashedPassword;
   });
+
   // Return JSON Web Token
   User.prototype.getJwt = function() {
-    return jwt.sign({ id: this.id}, process.env.JWT_SECRET, {
+    return jwt.sign({ username: this.username}, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_TIME
     });
   };

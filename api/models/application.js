@@ -1,7 +1,7 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { DataTypes } = require('sequelize');
 
 module.exports = function(sequelize) {
-  const Project = sequelize.define('Project', {
+  const Application = sequelize.define('Application', {
     app_Rnumber: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -9,7 +9,8 @@ module.exports = function(sequelize) {
     app_Acronym: {
       type: DataTypes.STRING,
       primaryKey: true,
-      allowNull: false
+      allowNull: false,
+      unique: true,
     },
     app_Description: {
       type: DataTypes.TEXT,
@@ -25,6 +26,6 @@ module.exports = function(sequelize) {
   }, {
     tableName: 'applications'
   });
-  return Project;
+  return Application;
 }  
 

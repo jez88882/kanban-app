@@ -8,6 +8,7 @@ import EditUser from "./EditUser";
 import ResetEmail from './ResetEmail'
 import ResetPassword from './ResetPassword'
 import AccountInfo from "./AccountInfo";
+import AssignGroups from "./AssignGroups";
 
 export {
   Overview,
@@ -19,5 +20,6 @@ export {
   EditUser,
   ResetEmail,
   ResetPassword,
-  AccountInfo
+  AccountInfo,
+  AssignGroups
 }

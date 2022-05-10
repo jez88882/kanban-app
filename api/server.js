@@ -45,10 +45,15 @@ app.use(hpp());
 /** routers */
 const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
+const applicationRouter = require('./routes/applicationRouter');
 
 // use routers
 app.use('/api/v1', authRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/applications', applicationRouter);
+
+const userGroupsController = require('./controllers/userGroupsController')
+app.get('/api/v1/groups', userGroupsController.index)
 
 // handling unhandled routes
 app.all('*', (req, res, next) => {

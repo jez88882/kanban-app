@@ -12,7 +12,7 @@ const Overview = () => {
 
   const fetchUsers = async () => {
     console.log('fetching users')
-    const res = await axios.get('/api/v1/users')
+    const res = await axios.get('/api/v1/users?username=')
     setUsers(res.data.data)
   }
   

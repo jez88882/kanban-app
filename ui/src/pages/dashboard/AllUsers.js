@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useAppContext } from '../../context/appContext'
-import { Alert, Modal, FormRow } from '../../components'
+import { Alert, FormRow } from '../../components'
 
 const initialState = {
   username:"",
