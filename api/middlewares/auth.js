@@ -2,18 +2,15 @@ const jwt = require('jsonwebtoken');
 const { User } = require('../models/db');
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const ErrorHandler = require('../utils/errorHandler');
+const checkGroup = require('../utils/checkGroup');
 
 // check if user is authenticated
 exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   console.log('authenticating...')
-  console.log('--------------------------------------\br')
-  let token;
+  console.log('--------------------------------------\n')
   
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    token = req.headers.authorization.split(' ')[1]; // remove "Bearer" from the token
-  } else {
-    token = req.cookies.token
-  }
+  const token = req.cookies.token
+  
   if (!token) {
     return next(new ErrorHandler('Login first to access this resource', 401));
   }
@@ -26,4 +23,13 @@ exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   console.log(`user ${req.user.username} authenticated`)
   console.log('--------------------------------------')
   next();
+})
+
+exports.checkAdmin = catchAsyncErrors( async function(req, res, next) {
+  const is_admin = await checkGroup(req.user, "admin")
+  if (!is_admin) {
+    return next(new ErrorHandler('not authorized', 401));
+  }
+
+  next()
 })

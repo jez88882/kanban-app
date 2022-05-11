@@ -10,6 +10,7 @@ var array = require('lodash/array');
 dotenv.config({path : './config/config.env'});
 
 const { User, Application, UserGroup, Plan, Task } = require('./models/db');
+const user = require('./models/user');
 
 // extracted functions
 async function createGroups(user){
@@ -96,26 +97,14 @@ async function seedData() {
 }
 // seedData();
 
-async function groupupdate(group, acronym) {
-    group.app_Acronym = acronym
-    await group.save()
-}
-
 // one-time functions
 async function oneTime() {
-  // const groups = await UserGroup.findAll()
-  // const Applications = await Application.findAll()
-  // groups.forEach((group)=>{
-  //   let proj = lodash.sample(Applications)
-  //   let acronym = proj.dataValues.app_Acronym
-
-  //   groupupdate(group, acronym)
-  const adminUser = await User.create({
-    username: `admin`,
-    email: `admin@email.com`,
-    password: '123456A!',
-  })
+  const admingroup = await UserGroup.findOne({where: { name: 'admin' }})
+  const adminuser = await User.findOne({where: { username: 'admin' }})
+  const grps = await user.getUserGroups()
+  // await user.addUserGroup(admingroup)
+  console.log(grps)
 }
 
 
-// oneTime();
+oneTime();

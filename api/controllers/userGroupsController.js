@@ -1,21 +1,26 @@
 const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
 const Sequelize = require('sequelize')
-const { UserGroup, User, Application } = require('../models/db')
+const { UserGroup, User, Application } = require('../models/db');
+const user = require('../models/user');
 
 exports.index = catchAsyncErrors( async function(req, res, next) {
-  const apps = await UserGroup.findAll({
-    attributes: [
-      [Sequelize.fn('DISTINCT', Sequelize.col('app_Acronym')) ,'app_Acronym'],
-    ]
+  const groups = await UserGroup.findAll({
+    where: { 
+      username: req.user.username,
+      name: req.query.name
+    },
+    attributes: ['app_Acronym']
   })
 
-  const array = apps.map(app=> {
-    return app.dataValues.app_Acronym
-  })
-  
+  const existingApps = await Application.findAll({attributes: ['app_Acronym']})
+  // const uncreatedApps = groups
+  console.log(groups)
+  console.log(existingApps)
+
+  const apps = groups.map(group=> group.dataValues.app_Acronym)
   res.json({
     success: true,
-    apps: array
+    apps
   })
 })
 
@@ -26,14 +31,14 @@ exports.create = catchAsyncErrors( async function(req, res, next) {
   // create the userGroup instance
   const usergroup = await UserGroup.create({ name, username, app_Acronym })
   // set the associations with User and Application
-  const user = await User.findbyPk(username)
-  const app = await Application.findByPk(app_Acronym)
+  // const user = await User.findByPk(username)
+  // const app = await Application.findByPk(app_Acronym)
 
-  await user.addUserGroup(usergroup)
-  await app.addUserGroup(usergroup)
+  // await user.addUserGroup(usergroup)
+  // await app.addUserGroup(usergroup)
 
-  await user.addApplication(app)
-  await app.addUser(user)
+  // await user.addApplication(app)
+  // await app.addUser(user)
 
   res.json({
     success: true,

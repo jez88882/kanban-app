@@ -9,6 +9,9 @@ import ResetEmail from './ResetEmail'
 import ResetPassword from './ResetPassword'
 import AccountInfo from "./AccountInfo";
 import AssignGroups from "./AssignGroups";
+import TaskManagement from "./TaskManagement";
+import AllApps from "./AllApps";
+import CreateApp from "./CreateApp";
 
 export {
   Overview,
@@ -21,5 +24,8 @@ export {
   ResetEmail,
   ResetPassword,
   AccountInfo,
-  AssignGroups
+  AssignGroups,
+  TaskManagement,
+  AllApps,
+  CreateApp
 }

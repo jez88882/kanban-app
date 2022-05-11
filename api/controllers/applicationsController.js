@@ -1,7 +1,21 @@
 const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
 
-const { User, Project, UserGroup } = require('../models/db')
+const { User, Application, UserGroup } = require('../models/db')
 
+
+exports.index = catchAsyncErrors( async function(req, res, next) {
+  let apps
+  if (req.chosenUser) {
+    console.log('re fsa')
+    apps = req.chosenUser.getApplications()
+  } else {
+    apps = await Application.findAll()
+  }
+  res.json({
+    success:true,
+    apps
+  })
+});
 
 exports.userProjects = catchAsyncErrors( async function(req, res, next) {
   const projects = await req.user.getProjects() 
@@ -13,7 +27,7 @@ exports.userProjects = catchAsyncErrors( async function(req, res, next) {
 
 exports.show = catchAsyncErrors( async function(req, res, next) {
   console.log(req.params)
-  const project = await Project.findByPk(req.params.id, {
+  const project = await Application.findByPk(req.params.id, {
     include: [{
       model: UserGroup,
       attributes: ['name', 'user_id']
@@ -27,23 +41,24 @@ exports.show = catchAsyncErrors( async function(req, res, next) {
 });
 
 exports.create = catchAsyncErrors( async function(req, res, next) {
-  const data = { 
-    app_Acronym: req.body.acronym, 
-    app_Description: req.body.description, 
-    startDate: req.body.startDate, 
-    endDate: req.body.endDate }
-
+  const { 
+    app_Acronym, 
+    app_Description, 
+    startDate, 
+    endDate } = req.body
   
-  const project = await Project.create(data)
+  const app = await Application.create({ app_Acronym, app_Description, startDate, endDate })
+
+  await req.user.addApplication(app)
   res.status(200).json({
       success: true,
-      data: project
+      app
   });
 });
 
 exports.update = catchAsyncErrors( async function(req, res, next) {
 
-  const project = await Project.findByPk(req.params.id)
+  const project = await Application.findByPk(req.params.id)
   console.log(req.params.id)
   console.log(project)
 

@@ -13,16 +13,6 @@ const CreateUser = () => {
   const [values, setValues] = useState(initialState)
 
   const { isLoading, showAlert, displayAlert, createUser } = useAppContext()
-
-  // use to close modal and go back to user management page
-  // useEffect(() => {
-  //   if (condition) {
-  //     setTimeout(() => {
-  //       navigate('/somewhere')
-  //     }, 500)
-  //   }
-  // }, [user, navigate])
-
   
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -48,8 +38,8 @@ const CreateUser = () => {
   }
 
   return (
-    <>
-      <h1 className="font-bold text-lg">Create User</h1>
+    <div className='p-4'>
+      <h1 className="font-bold text-2xl">Create User</h1>
       <form className='form-control w-fit max-w-xs' onSubmit={handleSubmit}>
         { showAlert && <Alert/>}
         
@@ -58,7 +48,7 @@ const CreateUser = () => {
         <FormRow type="password" name="password" labelText="Password" value={values.password} handleChange={handleChange}/>
         <button type="submit" className="btn btn-block mt-2" disabled={isLoading}>Create</button>
       </form>
-    </>
+    </div>
   );
 };
 

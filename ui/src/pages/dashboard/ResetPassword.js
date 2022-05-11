@@ -19,7 +19,7 @@ const ResetEmail = () => {
       password
      }
     try {
-      const res = await axios.put(`/api/v1/users/${user.id}`, data)
+      const res = await axios.patch(`/api/v1/users/${user.username}`, data)
       console.log(res.data)
       displayAlert('success', res.data.message)
       setTimeout(()=>{

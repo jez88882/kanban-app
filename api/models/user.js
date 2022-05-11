@@ -46,6 +46,7 @@ module.exports = function(sequelize) {
 
   // Return JSON Web Token
   User.prototype.getJwt = function() {
+    console.log(`creating token for ${this.username}`)
     return jwt.sign({ username: this.username}, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_TIME
     });

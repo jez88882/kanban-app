@@ -5,10 +5,10 @@ class APIFilters {
   }
 
   filter() {
-    // this.query = this.query.find(this.queryStr);
-    // return this
+    this.query = this.query.find(this.queryStr);
     console.log(this.query)
     console.log(this.queryStr)
+    return this
   }
 }
 module.exports = APIFilters

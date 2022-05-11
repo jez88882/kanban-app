@@ -53,11 +53,13 @@ const AppProvider = ({children}) => {
   const fetchUser = async () => {
     const response = await axios.get('/api/v1/auth')
     const user =  response.data.user
-
     const is_admin = await checkGroup(user.username, "admin")
     dispatch({
       type: LOGIN_USER_SUCCESS,
-      payload: { user, is_admin }
+      payload: { 
+        user, 
+        is_admin 
+      }
     })
   }
 
@@ -82,7 +84,7 @@ const AppProvider = ({children}) => {
       
       const { user, token } = response.data
 
-      const is_admin = await checkGroup(user.id, "admin")
+      const is_admin = await checkGroup(user.username, "admin")
 
       dispatch({
         type: LOGIN_USER_SUCCESS,
@@ -104,10 +106,10 @@ const AppProvider = ({children}) => {
     }
   }
 
-  const createUser = async (currentUser) => {
+  const createUser = async (newUser) => {
     dispatch({type: CREATE_USER_BEGIN})
     try {
-      const response = await axios.post('/api/v1/users', currentUser)
+      const response = await axios.post('/api/v1/users', newUser)
       // console.log(response.data)
       // const { user, token} = response.data
       dispatch({
@@ -130,14 +132,14 @@ const AppProvider = ({children}) => {
     }, 5000)
   }
   
-  const disableUser = async (userId) => {
+  const disableUser = async (username) => {
     try {
-      const response = await axios.get(`/api/v1/users/${userId}/disable`)
+      const response = await axios.get(`/api/v1/users/${username}/disable`)
       dispatch({
         type: DISPLAY_ALERT,
         payload: {
           type: 'success',
-          text: `user ${userId} disabled`
+          text: `user ${username} disabled`
         }
       })
 

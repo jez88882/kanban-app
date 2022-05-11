@@ -23,7 +23,7 @@ exports.index = catchAsyncErrors( async function(req, res, next) {
 });
 
 // users#show
-exports.show = catchAsyncErrors(async function(req, res, next) {
+exports.show = catchAsyncErrors( async function(req, res, next) {
     // Find by user ID
     console.log(`searching for user: ${req.params.username}`)
     const user = await User.findByPk(req.params.username)
@@ -105,29 +105,34 @@ exports.disable = catchAsyncErrors( async function(req, res) {
     });
 });
 
-exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
-    console.log('creating group')
-    console.log(req.body)
-    const { user_id, name } = req.body
+// exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
+//     console.log('creating group')
+//     console.log(req.body)
+//     const { user_id, name } = req.body
 
-    const usergroup = await UserGroup.create({ user_id, name})
-    console.log(usergroup)
+//     const usergroup = await UserGroup.create({ user_id, name})
+//     console.log(usergroup)
 
-    const user = await User.findByPk(user_id)
-    await usergroup.setUser(user)
-    res.json({
-        success: true,
-        message: 'ok',
-    })
-});
+//     const user = await User.findByPk(user_id)
+//     await usergroup.setUser(user)
+//     res.json({
+//         success: true,
+//         message: 'ok',
+//     })
+// });
 
-exports.checkGroup = catchAsyncErrors(async function(req, res, next) {
+exports.checkGroup = catchAsyncErrors( async function(req, res, next) {
     const user = await User.findByPk(req.params.username)
     const group = req.query.filter
-    const result = checkGroup(user, group)
+    const result = await checkGroup(user, group)
     res.json({
         success: true,
         data: result
     })
 })
   
+exports.userApplications = catchAsyncErrors( async function(req, res, next) {
+    const user = await User.findByPk(req.params.username)
+    req.chosenUser = user
+    next()
+})

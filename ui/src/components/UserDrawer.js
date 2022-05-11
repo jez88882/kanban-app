@@ -1,4 +1,3 @@
-import Navbar from "./Navbar"
 import { Link } from 'react-router-dom'
 
 const Drawer = (props) => {
@@ -9,7 +8,6 @@ const Drawer = (props) => {
         {/* <!-- Page content here --> */}
         <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label>
         {props.children}
-      
       </div> 
       <div className="drawer-side border-r-2 bg-neutral">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label> 
@@ -19,7 +17,6 @@ const Drawer = (props) => {
           <li><Link to="new" className="no-underline">Create User</Link></li>
           <li><Link to="assign" className="no-underline">Assign Groups</Link></li>
         </ul>
-      
       </div>
     </div>
   );

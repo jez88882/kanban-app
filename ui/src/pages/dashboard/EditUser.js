@@ -9,7 +9,6 @@ import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 
 const initialState = {
-  id: null,
   username: '',
   email: '',
   is_disabled: null,
@@ -24,7 +23,7 @@ const EditUser = () => {
   const {disableUser, showAlert, displayAlert, clearAlert } = useAppContext()
 
   const fetchUser = async () => {
-    const res = await axios.get(`/api/v1/users/${params.id}`)
+    const res = await axios.get(`/api/v1/users/${params.username}`)
     const { id, username, email, is_disabled } = res.data.data
     setValues({ id, username, email, is_disabled })
   }
@@ -44,12 +43,11 @@ const EditUser = () => {
       password: values.password
     }
     try {
-      const res = await axios.put(`/api/v1/users/${values.id}`, data)
+      const res = await axios.patch(`/api/v1/users/${values.username}`, data)
       displayAlert('success', res.data.message)
       setTimeout(()=>{
         clearAlert();
       },10000)
-      
     } catch (error) {
       console.log(error.response)
     }
@@ -68,7 +66,7 @@ const EditUser = () => {
     e.preventDefault()
     const data = {
       name: values.userGroup,
-      user_id: values.id
+      username: values.username
     }
     const res = await axios.post(`/api/v1/users/${values.id}/groups`, data)
     console.log(res.data)
@@ -81,7 +79,7 @@ const EditUser = () => {
   return (
     <div className='p-4'>
       <h2 className={`font-bold text-2xl ${values.is_disabled ? "text-slate-400": ""}`}>Edit User: {values.username}</h2>
-      <div className='mt-2'>
+      <div className='mt-2 '>
         {showAlert && <Alert />}
       </div>
       <div className='flex'>
@@ -101,12 +99,6 @@ const EditUser = () => {
           </div>
           <div className="divider divider-vertical"></div> 
             <button type="button" onClick={handleDisable} className="btn bg-blue-300 text-blue-500	hover:bg-primary hover:text-white w-8/12" disabled={values.is_disabled}>Disable user</button>
-        </div>
-        <div className='m-6 p-6 w-6/12 border rounded-md'>
-          <form onSubmit={createUserGroup} className="w-8/12 flex items-end">
-            <FormRow type="text" name="userGroup" labelText="Create User Group in the format <App_Acronmy>_<UserGroup>" values={values.userGroup} handleChange={handleChange}/>
-            <button className='btn mt-2 mx-2 btn-primary' type="submit">Create</button>
-          </form>
         </div>
       </div>
     </div>
