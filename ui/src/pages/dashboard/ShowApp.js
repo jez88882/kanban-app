@@ -1,4 +1,5 @@
 import { useParams } from "react-router-dom";
+import { TaskDrawer } from '../../components'
 
 const plans = [
   {
@@ -39,6 +40,7 @@ const ShowApp = () => {
         <h1 className='font-bold text-3xl'>Application: {params.app_Acronym}</h1>
         <button className="btn btn-primary mx-4">Edit App</button>
       </div>
+    <TaskDrawer>
       <div className="m-6">
         <div className="flex items-center	">
           <h2 className="font-bold text-2xl">Plans</h2>
@@ -51,6 +53,7 @@ const ShowApp = () => {
         <div className='my-2 p-6 w-9/12 border rounded-md'>
         </div>
       </div>
+    </TaskDrawer>
     </>
   );
 };
