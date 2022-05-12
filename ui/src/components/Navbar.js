@@ -21,13 +21,13 @@ const UserManagement = () =>{
 const TaskManagement = () =>{
   return(
     <li tabIndex="0">
-      <Link to="/task-management">
+      <Link to="/">
         Task Management
         <svg className="fill-current" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"/></svg>
       </Link>
       <ul className="p-2 bg-base-100">
-        <li><Link to="/task-management">View All Apps</Link></li>
-        <li><Link to="/task-management/new-app">Create App</Link></li>
+        <li><Link to="/">View All Apps</Link></li>
+        <li><Link to="/new-app">Create App</Link></li>
       </ul>
     </li>
   )
@@ -59,7 +59,7 @@ const Navbar = () => {
       </div>
       <div className="flex-none">
         <ul className="menu menu-horizontal p-0">
-          <li><Link to="/" className='font-bold'>{user.username}</Link></li>
+          <li><Link to="/account" className='font-bold'>{user.username}</Link></li>
           {is_admin ? <UserManagement />:<></>}
           <TaskManagement />
           <li>

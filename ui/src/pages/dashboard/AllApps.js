@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 const initialState = {
   apps: []
@@ -26,25 +27,30 @@ const AllApps = () => {
 
   const appList = values.apps.map((app) => {
     const { app_Acronym, app_Description } = app
-    return( <div className="card bg-base-100 shadow-xl">
-              <div className="card-body">
-                <h2 className="card-title">{app_Acronym}</h2>
-                <p>{app_Description}</p>
-                <div className="card-actions justify-end">
-                  <button className="btn btn-primary">View</button>
-                </div>
-              </div>
-            </div>
+    return( 
+    <Link to={`/application/${app_Acronym}`}>
+      <div className="card bg-base-100 shadow-xl">
+        <div className="card-body">
+          <h2 className="card-title">{app_Acronym}</h2>
+          <p>{app_Description}</p>
+          <div className="card-actions justify-end">
+            <button className="btn btn-primary">View</button>
+          </div>
+        </div>
+      </div>
+    </Link>
     )
   })
 
   return (
-    <div className='p-4'>
-      <h2 className='font-bold text-2xl'>All Apps</h2>
-      <div className='grid grid-cols-4 gap-4'>
-        {appList}
+    <>
+      <h1 className='font-bold text-3xl py-10 px-6 border-b-4'>All Applications</h1>
+      <div className='m-6'>
+        <div className='grid grid-cols-4 gap-4'>
+          {appList}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

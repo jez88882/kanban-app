@@ -12,6 +12,7 @@ import AssignGroups from "./AssignGroups";
 import TaskManagement from "./TaskManagement";
 import AllApps from "./AllApps";
 import CreateApp from "./CreateApp";
+import ShowApp from "./ShowApp";
 
 export {
   Overview,
@@ -27,5 +28,6 @@ export {
   AssignGroups,
   TaskManagement,
   AllApps,
-  CreateApp
+  CreateApp,
+  ShowApp
 }
