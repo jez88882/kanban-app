@@ -26,14 +26,17 @@ const AllApps = () => {
   }
 
   const appList = values.apps.map((app) => {
-    const { app_Acronym, app_Description } = app
+    const { App_Acronym, startDate, endDate } = app
     return( 
-    <Link to={`/application/${app_Acronym}`}>
+    <Link to={`/applications/${App_Acronym}`}>
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
-          <h2 className="card-title">{app_Acronym}</h2>
-          <p>{app_Description}</p>
-          <div className="card-actions justify-end">
+          <h2 className="card-title">{App_Acronym}</h2>
+          <div className="card-actions justify-between">
+            <div>
+              <p>Start Date: {startDate}</p>
+              <p>End Date: {endDate}</p>
+            </div>
             <button className="btn btn-primary">View</button>
           </div>
         </div>
@@ -44,7 +47,10 @@ const AllApps = () => {
 
   return (
     <>
-      <h1 className='font-bold text-3xl py-10 px-6 border-b-4'>All Applications</h1>
+      <div className='py-10 px-6 border-b-4 flex justify-between'>
+        <h1 className='font-bold text-3xl'>All Applications</h1>
+        <Link className='btn btn-primary' to='/applications/new'>Create new app</Link>
+      </div>
       <div className='m-6'>
         <div className='grid grid-cols-4 gap-4'>
           {appList}

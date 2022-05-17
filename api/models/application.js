@@ -2,17 +2,18 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function(sequelize) {
   const Application = sequelize.define('Application', {
-    app_Rnumber: {
+    App_Rnumber: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
+      allowNull: false
     },
-    app_Acronym: {
+    App_Acronym: {
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false,
       unique: true,
     },
-    app_Description: {
+    App_Description: {
       type: DataTypes.TEXT,
     },
     startDate: {
@@ -22,7 +23,19 @@ module.exports = function(sequelize) {
     endDate: {
       type: DataTypes.DATEONLY,
       allowNull: false
-    }
+    },
+    App_permit_Open: {
+      type: DataTypes.STRING,
+    },
+    App_permit_toDoList: {
+      type: DataTypes.STRING,
+    },
+    App_permit_Doing: {
+      type: DataTypes.STRING,
+    },
+    App_permit_Done: {
+      type: DataTypes.STRING,
+    },
   }, {
     tableName: 'applications'
   });

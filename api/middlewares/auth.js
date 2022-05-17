@@ -33,3 +33,12 @@ exports.checkAdmin = catchAsyncErrors( async function(req, res, next) {
 
   next()
 })
+
+exports.checkPM = catchAsyncErrors( async function(req, res, next) {
+  const is_PM = await checkGroup(req.user, "project manager")
+  if (!is_PM) {
+    return next(new ErrorHandler('not authorized', 401));
+  }
+
+  next()
+})

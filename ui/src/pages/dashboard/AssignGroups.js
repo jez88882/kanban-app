@@ -16,7 +16,8 @@ const initialState = {
   app_Acronym: '',
   appList: [],
   application: initialApp,
-  usersList:[]
+  usersList:[],
+  username: ''
 }
 
 const AssignGroups = () => {
@@ -33,36 +34,33 @@ const AssignGroups = () => {
     }
   }
   
-  const fetchApps = async () => {
-    console.log('fetching apps')
-    const res = await axios.get('/api/v1/applications')
-    setValues({...values, appList: res.data.apps})
-  }
+  // const fetchApps = async () => {
+  //   console.log('fetching apps')
+  //   const res = await axios.get('/api/v1/applications')
+  //   setValues({...values, appList: res.data.apps})
+  // }
 
   useEffect(()=>{
-    fetchApps();
+    // fetchApps();
     fetchUsers().then(users => setValues({...values, usersList: users}));
   },[])
 
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
-    if ( e.target.name==='app_Acronym' && e.target.value !== "" ){
-      fetchChosenApp(e.target.value)
-    }
+    // if ( e.target.name==='app_Acronym' && e.target.value !== "" ){
+    //   fetchChosenApp(e.target.value)
+    // }
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-  }
-  
-  const createUserGroup = async(e) =>{
-    e.preventDefault()
     const data = {
       name: values.userGroup,
       app_Acronym: values.app_Acronym,
       username: values.username
     }
+    console.log(data)
     const res = await axios.post(`/api/v1/groups`, data)
     displayAlert('success', `created user group ${values.userGroup}`)
     setTimeout(()=>{
@@ -70,14 +68,14 @@ const AssignGroups = () => {
     }, 3000)
   }
 
-  const appList = values.appList.map((app) => <option key={app} value={app}/>)
+  // const appList = values.appList.map((app) => <option key={app} value={app}/>)
 
   const usersList = values.usersList.map((user) => 
   <option key={user.id} value={user.username}>{user.username}</option>
   )
  
  
-  const { app_Acronym, app_Description, UserGroups } = values.application
+  const { UserGroups } = values.application
  
   const userGroupsList = UserGroups.map((group)=>
         <tr className="hover">
@@ -96,44 +94,26 @@ const AssignGroups = () => {
         <label htmlFor="app_Acronym">Choose an app: </label>
         <input list="appList" id="app_Acronym" name="app_Acronym" onChange={handleChange}/>
         <datalist id="appList">
-          {appList}
+          {/* {appList} */}
         </datalist>
       </form>
       <div className='my-2 p-6 border rounded-md w-9/12'>
-        <form className='form-control' onSubmit={createUserGroup} >
+        <form className='form-control' onSubmit={handleSubmit} >
           <label for="usergroup-select" className='label label-text max-w-xs'>UserGroup</label>
           <select className='input input-bordered input-primary' name="userGroup" id="usergroup-select" onChange={handleChange}>
             <option value="">--Please choose an option--</option>
             <option value="project manager">project manager</option>
+            <option value="admin">admin</option>
             <option value="project lead">project lead</option>
             <option value="team member">team member</option>
           </select>
           <label className='label label-text max-w-xs' for="user-select">User: </label>
-          <select className='input input-bordered input-primary' name="user" id="user-select" onChange={handleChange}>
+          <select className='input input-bordered input-primary' name="username" id="user-select" onChange={handleChange}>
             <option value="">--Please choose an option--</option>
             {usersList}
           </select>
-          <button type="submit" className='btn btn-primary mt-2'>Assign to {values.app_Acronym}</button>
+          <button type="submit" className='btn btn-primary mt-2'>Assign</button>
         </form>
-      </div>
-      <div className=' my-2 p-6 w-9/12 border rounded-md'>
-        <h2 className='font-bold text-lg'>Application: {app_Acronym ? app_Acronym : "please choose an app"}</h2>
-        <p>{app_Description || ""}</p>
-
-        <div class="overflow-x-auto">
-          <table class="table w-full">
-            {/* <!-- head --> */}
-            <thead>
-              <tr>
-                <th>User</th>
-                <th>Group</th>
-              </tr>
-            </thead>
-            <tbody>
-              {userGroupsList}
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   );

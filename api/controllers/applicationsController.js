@@ -1,5 +1,5 @@
-const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
-
+const catchAsyncErrors =require('../middlewares/catchAsyncErrors')
+const { Op } = require('sequelize')
 const { User, Application, UserGroup } = require('../models/db')
 
 
@@ -26,30 +26,23 @@ exports.userProjects = catchAsyncErrors( async function(req, res, next) {
 });
 
 exports.show = catchAsyncErrors( async function(req, res, next) {
-  console.log(req.params)
-  const project = await Application.findByPk(req.params.id, {
-    include: [{
-      model: UserGroup,
-      attributes: ['name', 'user_id']
-    }]
-  })
-  console.log(project)
+  const app = await Application.findByPk(req.params.app_Acronym)
   res.status(200).json({
       success: true,
-      data: project
+      app
   });
 });
 
 exports.create = catchAsyncErrors( async function(req, res, next) {
-  const { 
-    app_Acronym, 
-    app_Description, 
-    startDate, 
-    endDate } = req.body
-  
-  const app = await Application.create({ app_Acronym, app_Description, startDate, endDate })
+  const data = await Application.findOne({
+    order: [
+      ['createdAt', 'DESC']
+    ],
+  });
+  const App_Rnumber =  data ? (data.App_Rnumber + 1) : 1
+  req.body.App_Rnumber = App_Rnumber
+  const app = await Application.create(req.body)  
 
-  await req.user.addApplication(app)
   res.status(200).json({
       success: true,
       app
@@ -58,21 +51,12 @@ exports.create = catchAsyncErrors( async function(req, res, next) {
 
 exports.update = catchAsyncErrors( async function(req, res, next) {
 
-  const project = await Application.findByPk(req.params.id)
-  console.log(req.params.id)
-  console.log(project)
-
-  // const data = { 
-  //   app_Acronym: req.body.acronym, 
-  //   app_Description: req.body.description, 
-  //   startDate: req.body.startDate, 
-  //   endDate: req.body.endDate }
-
+  const app = await Application.findByPk(req.params.app_Acronym)
+  console.log(`updating ${req.params.app_Acronym}`)
   
-  // await project.update(data)
-  // res.status(200).json({
-  //     success: true,
-  //     data: project
-  // });
-  res.send('ok')
+  await app.update(req.body)
+  res.status(200).json({
+      success: true,
+      app
+  });
 });

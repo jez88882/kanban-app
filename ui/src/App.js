@@ -37,14 +37,16 @@ export default function App(props){
               <Route path="edit/:username" element={<EditUser/>}/>
               <Route path="assign" element={<AssignGroups />}/>
             </Route>
-            <Route path="" element={<TaskManagement/>}>
+            <Route path="applications" element={<TaskManagement/>}>
               <Route index element={<AllApps />}/>
-              <Route path='new-app' element={<CreateApp />}/>
-              <Route path='/application/:app_Acronym' element={<ShowApp />}/>
+              <Route path='new' element={<CreateApp />}/>
+              <Route path=':app_Acronym' element={<ShowApp />}/>
+              <Route path=":app_Acronym/edit" element={<CreateApp />}/>
+              <Route path=":app_Acronym/plans/new" element={<CreateApp />}/>
+              <Route path=":app_Acronym/tasks/new" element={<CreateApp />}/>
             </Route>
           </Route>
           <Route path="/login" element={<Login/>}/>
-          {/* <Route path="/register" element={<Register/>}/> */}
           <Route path="*" element={<Error />}/>
       </Routes>
     </BrowserRouter>
