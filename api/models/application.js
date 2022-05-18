@@ -4,8 +4,7 @@ module.exports = function(sequelize) {
   const Application = sequelize.define('Application', {
     App_Rnumber: {
       type: DataTypes.INTEGER,
-      autoIncrement: true,
-      allowNull: false
+      defaultValue: 0
     },
     App_Acronym: {
       type: DataTypes.STRING,

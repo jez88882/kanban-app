@@ -105,7 +105,8 @@ exports.disable = catchAsyncErrors( async function(req, res) {
     });
 });
 
-// exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
+// DELETE IF NOT USED
+exports.createUserGroup =  catchAsyncErrors( async function(req, res) {
 //     console.log('creating group')
 //     console.log(req.body)
 //     const { user_id, name } = req.body
@@ -119,7 +120,7 @@ exports.disable = catchAsyncErrors( async function(req, res) {
 //         success: true,
 //         message: 'ok',
 //     })
-// });
+});
 
 exports.checkGroup = catchAsyncErrors( async function(req, res, next) {
     const user = await User.findByPk(req.params.username)

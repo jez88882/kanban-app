@@ -36,6 +36,9 @@ UserGroup.belongsTo(Application, { foreignKey: 'app_Acronym'} )
 User.belongsToMany(Application, { through: UserGroup, foreignKey: 'username'})
 Application.belongsToMany(User, { through: UserGroup, foreignKey: 'app_Acronym'})
 
+Application.hasMany(Plan,  { foreignKey: 'Plan_app_Acronym'} )
+Plan.belongsTo(Application, { foreignKey: 'Plan_app_Acronym'} )
+
 
 module.exports = {
   User,

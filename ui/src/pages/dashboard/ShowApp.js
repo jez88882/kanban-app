@@ -1,72 +1,63 @@
-import { useParams, Link, Outlet } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-const plans = [
-  {
-    Plan_MVP_name: 'plan1',
-    Plan_startDate: '11/05/2022',
-    Plan_endDate: '15/05/2022'
-  },
-  {
-    Plan_MVP_name: 'plan2',
-    Plan_startDate: '17/05/2022',
-    Plan_endDate: '22/05/2022'
-  },
-  {
-    Plan_MVP_name: 'plan3',
-    Plan_startDate: '23/05/2022',
-    Plan_endDate: '30/05/2022'
-  },
-]
+const initialState = {
+  plans: [],
+  tasks: [],
+}
 
-const tasks = [
-  {
-    Task_name: 'some task one',
-    Task_creator: 'jiane.z',
-    Task_createDate: '30/05/2022'
-  },
-  {
-    Task_name: 'second task',
-    Task_creator: 'chuan.wo',
-    Task_createDate: '20/06/2022'
-  },
-  {
-    Task_name: 'last task hey',
-    Task_creator: 'you',
-    Task_createDate: '21/07/2022'
-  },
-]
-
-const plansList = plans.map(plan=>
-  <div className="border mb-2 px-3 py-1 flex items-center rounded">
-    <p className="text-lg w-1/4">
-      {plan.Plan_MVP_name}
-    </p>
-    <p className="text-lg w-2/4 align-middle">{plan.Plan_startDate} to {plan.Plan_endDate}</p>
-    <button className="btn btn-info w-1/4">Close</button>
-  </div>
-)
-
-const tasksList = tasks.map(task=>
-  <div className="border mb-2 px-3 py-1 flex justify-between rounded items-center">
-    <div className="w-2/4">
-      <p className="text-lg">{task.Task_name}</p>
-      <p className="text-sm text-slate-500">{task.Task_creator}</p>
-    </div>
-    <p className="w-1/4">{task.Task_createDate}</p>
-    <button className="btn btn-info w-1/4">Approve</button>
-  </div>
-)
 
 const ShowApp = () => {
   const params = useParams()
+  const [values, setValues] = useState(initialState)
+  
+  const fetchPlans = async () => {
+    const res = await axios.get(`/api/v1/applications/${params.app_Acronym}/plans`)
+    setValues({...values, plans: res.data.plans})
+  }
 
+  const fetchTasks = async () => {
+    const res = await axios.get(`/api/v1/applications/${params.app_Acronym}/tasks`)
+    setValues({...values, tasks: res.data.tasks})
+  }
+  
+  useEffect(()=>{
+    fetchPlans();
+    fetchTasks();
+  },[])
+  
+  const plansList = values.plans.map(plan=>
+    <Link to={`/applications/${params.app_Acronym}/plans/${plan.Plan_MVP_name}`} key={plan.Plan_MVP_name} >
+      <div className={`border mb-2 px-3 py-1 flex items-center rounded ${plan.closed ? "text-gray-500 bg-gray-200" : ""}`}>
+        <p className="text-lg w-1/4">
+          {plan.Plan_MVP_name}
+        </p>
+        <p className="text-lg w-2/4 align-middle">{plan.Plan_startDate} to {plan.Plan_endDate}</p>
+      </div>
+    </Link>
+  )
+
+  const tasksList = values.tasks.map(task=>
+    <Link to={`/applications/${params.app_Acronym}/tasks/${task.Task_id}`} key={task.Task_id} >
+      <div className="border mb-2 px-3 py-1 flex justify-between rounded items-center">
+        <div className="w-2/4">
+          <p className="text-lg">{task.Task_name}</p>
+          <p className="text-sm text-slate-500">{task.Task_creator}</p>
+        </div>
+        <p className="w-1/4">{task.Task_createDate}</p>
+        <button className="btn btn-info w-1/4">Approve</button>
+      </div>
+    </Link>
+  )
+  
   return (
     <>
       <div className="flex border-b-4 py-8 px-6 items-center	">
         <h1 className='font-bold text-3xl'>Application: {params.app_Acronym}</h1>
         <Link to="edit" className="btn btn-primary mx-4">Edit App</Link>
       </div>
-      <div className="grid grid-cols-2 gap-4 my-4 mx-3">
+      <div className="grid grid-cols-2 gap-4 m-6">
         <div>
           <p className="font-bold text-2xl px-4">Plans</p>
           <div className="bg-white p-6 rounded-lg">
@@ -92,9 +83,9 @@ const ShowApp = () => {
             <div>
               {tasksList}
             </div>
-            <button className="btn btn-outline btn-primary w-full">
+            <Link to="tasks/new" className="btn btn-outline btn-primary w-full">
               Create new task
-            </button>
+            </Link>
           </div>
         </div>
       </div>

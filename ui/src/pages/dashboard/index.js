@@ -13,6 +13,10 @@ import TaskManagement from "./TaskManagement";
 import AllApps from "./AllApps";
 import CreateApp from "./CreateApp";
 import ShowApp from "./ShowApp";
+import CreatePlan from "./CreatePlan";
+import ShowPlan from "./ShowPlan";
+import CreateTask from "./CreateTask";
+import ShowTask from "./ShowTask";
 
 export {
   Overview,
@@ -29,5 +33,9 @@ export {
   TaskManagement,
   AllApps,
   CreateApp,
-  ShowApp
+  ShowApp,
+  CreatePlan,
+  ShowPlan,
+  CreateTask,
+  ShowTask
 }

@@ -16,6 +16,10 @@ module.exports = function(sequelize) {
       type: DataTypes.STRING,
       allowNull: false
     },
+    closed: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: 0
+    },
   }, {
     tableName: 'plans'
   });

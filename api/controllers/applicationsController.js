@@ -6,7 +6,6 @@ const { User, Application, UserGroup } = require('../models/db')
 exports.index = catchAsyncErrors( async function(req, res, next) {
   let apps
   if (req.chosenUser) {
-    console.log('re fsa')
     apps = req.chosenUser.getApplications()
   } else {
     apps = await Application.findAll()

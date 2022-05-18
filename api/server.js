@@ -47,8 +47,6 @@ const authRouter = require('./routes/authRouter');
 const userRouter = require('./routes/userRouter');
 const applicationRouter = require('./routes/applicationRouter');
 const userGroupRouter = require('./routes/userGroupRouter')
-const taskRouter = require('./routes/taskRouter')
-const planRouter = require('./routes/planRouter')
 
 
 // use routers
@@ -59,8 +57,6 @@ app.use('/api/v1', authRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/applications', applicationRouter);
 app.use('/api/v1/groups', userGroupRouter)
-app.use('/api/v1/tasks', taskRouter)
-app.use('/api/v1/plans', planRouter)
 
 // handling unhandled routes
 app.all('*', (req, res, next) => {

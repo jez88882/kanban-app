@@ -3,11 +3,10 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
-import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser, ResetEmail, ResetPassword, AccountInfo, AssignGroups, TaskManagement, AllApps, CreateApp, ShowApp } from './pages/dashboard'
+import { UserManagement, Shared, CreateUser, Account, AllUsers, EditUser, ResetEmail, ResetPassword, AccountInfo, AssignGroups, TaskManagement, AllApps, CreateApp, ShowApp, CreatePlan, ShowPlan, CreateTask, ShowTask } from './pages/dashboard'
 import { Login, Error, ProtectedRoute } from './pages'
 import { useEffect } from "react";
 import { useAppContext } from "./context/appContext";
-
 
 
 export default function App(props){
@@ -42,8 +41,10 @@ export default function App(props){
               <Route path='new' element={<CreateApp />}/>
               <Route path=':app_Acronym' element={<ShowApp />}/>
               <Route path=":app_Acronym/edit" element={<CreateApp />}/>
-              <Route path=":app_Acronym/plans/new" element={<CreateApp />}/>
-              <Route path=":app_Acronym/tasks/new" element={<CreateApp />}/>
+              <Route path=":app_Acronym/plans/new" element={<CreatePlan />}/>
+              <Route path=":app_Acronym/plans/:MVP_name" element={<ShowPlan />}/>
+              <Route path=":app_Acronym/tasks/new" element={<CreateTask />}/>
+              <Route path=":app_Acronym/tasks/:Task_id" element={<ShowTask />}/>
             </Route>
           </Route>
           <Route path="/login" element={<Login/>}/>

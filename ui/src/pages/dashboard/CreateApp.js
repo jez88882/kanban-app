@@ -76,12 +76,12 @@ const CreateApp = () => {
   // const appList = values.apps.map((app) => <option key={app} value={app}/>)
 
   return (
-    <div className='p-4'>
+    <div className='p-6'>
       <h2 className='font-bold text-2xl'>{params.app_Acronym ? `Edit ${params.app_Acronym}` : 'Create App'}</h2>
       <div className='h-15'>
         {showAlert? <Alert /> : " "}
       </div>
-      <form className='my-2 p-6 w-4/12 border rounded-md' onSubmit={handleSubmit}>
+      <form className='my-2 p-6 w-full border rounded-md' onSubmit={handleSubmit}>
         <div>
           <label  className='label label-text w-full max-w-xs' htmlFor="App_Acronym">App Acronym: </label>
           <input className='input input-bordered input-primary w-full' list="appList" id="App_Acronym" name="App_Acronym" onChange={handleChange} value={values.App_Acronym} disabled={params.app_Acronym}/>
