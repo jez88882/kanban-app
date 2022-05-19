@@ -29,8 +29,8 @@ exports.create = catchAsyncErrors( async function( req, res, next) {
   data.Task_state = "open"
   data.Task_createDate = new Date()
 
-  app.App_Rnumber += 1
-  await app.save()
+  await app.increment({'App_Rnumber': 1})
+  
   data.Task_id =`${app.App_Acronym}_${app.App_Rnumber}`
 
   const task = await Task.create(data)
@@ -40,3 +40,28 @@ exports.create = catchAsyncErrors( async function( req, res, next) {
     data
   })
 })
+
+
+exports.update = catchAsyncErrors( async function(req, res, next) {
+
+  const task = await Task.findByPk(req.params.Task_id)
+  console.log(`updating task ${req.params.Task_id}`)
+  
+  await task.update(req.body)
+  res.status(200).json({
+      success: true,
+      task
+  });
+});
+
+exports.approve = catchAsyncErrors( async function(req, res, next) {
+
+  const task = await Task.findByPk(req.params.Task_id)
+  console.log(`approving task ${req.params.Task_id}`)
+  
+  await task.update({Task_state: "toDo"})
+  res.status(200).json({
+      success: true,
+      task
+  });
+});

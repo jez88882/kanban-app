@@ -6,5 +6,6 @@ import Drawer from "./UserDrawer"
 import Modal from "./Modal"
 import AccountInfo from "../pages/dashboard/AccountInfo"
 import TaskDrawer from './TaskDrawer'
+import Task from './Task'
 
-export { FormRow, Alert, Page, Navbar, Drawer, Modal, AccountInfo, TaskDrawer } 
+export { FormRow, Alert, Page, Navbar, Drawer, Modal, AccountInfo, TaskDrawer, Task } 

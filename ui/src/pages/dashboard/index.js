@@ -16,7 +16,6 @@ import ShowApp from "./ShowApp";
 import CreatePlan from "./CreatePlan";
 import ShowPlan from "./ShowPlan";
 import CreateTask from "./CreateTask";
-import ShowTask from "./ShowTask";
 
 export {
   Overview,
@@ -37,5 +36,4 @@ export {
   CreatePlan,
   ShowPlan,
   CreateTask,
-  ShowTask
 }
