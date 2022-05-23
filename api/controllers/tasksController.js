@@ -55,13 +55,49 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
 });
 
 exports.approve = catchAsyncErrors( async function(req, res, next) {
-
+  
   const task = await Task.findByPk(req.params.Task_id)
   console.log(`approving task ${req.params.Task_id}`)
   
   await task.update({Task_state: "toDo"})
   res.status(200).json({
-      success: true,
+    success: true,
       task
   });
 });
+
+exports.workOn = catchAsyncErrors( async function(req, res, next) {
+  const task = await Task.findByPk(req.params.Task_id)
+  console.log(`${req.user.usernam} working on task ${req.params.Task_id}`)
+  await task.update({Task_state: "doing", Task_owner: req.user.username})
+  res.status(200).json({
+    success: true,
+      task
+  });
+});
+
+exports.createNote = catchAsyncErrors( async function( req, res, next) {
+  const task = await Task.findByPk(req.params.Task_id)
+  console.log(req.body)
+
+  const note = {
+    creator: req.user.username,
+    content: req.body.noteContent,
+    createdAt: new Date(),
+    state: task.Task_state
+  }
+
+  const notes = JSON.parse(task.Task_notes)
+  console.log('before')
+  console.log(notes)
+  notes.push(note)
+  console.log('after')
+  console.log(notes)
+
+  task.update({Task_notes: JSON.stringify(notes)})
+
+  res.json({
+    success: true,
+    task
+  })
+})

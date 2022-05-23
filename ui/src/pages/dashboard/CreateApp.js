@@ -93,6 +93,7 @@ const CreateApp = () => {
         <textarea id="App_Description" name="App_Description" className='textarea textarea-bordered textarea-primary w-full' rows="7" cols="33" value={values.App_Description} onChange={handleChange} ></textarea>
         <FormRow type="date" name="startDate" labelText="Start date" value={values.startDate} handleChange={handleChange} />
         <FormRow type="date" name="endDate" labelText="End date" value={values.endDate} handleChange={handleChange} />
+        <Permit permit="Create" label="Permit Create" handleChange={handleChange} value={values.App_permit_Create}/>
         <Permit permit="Open" label="Permit Open" handleChange={handleChange} value={values.App_permit_Open}/>
         <Permit permit="toDo" label="Permit To Do" handleChange={handleChange} value={values.App_permit_toDoList}/>
         <Permit permit="Doing" label="Permit Doing" handleChange={handleChange} value={values.App_permit_Doing}/>
