@@ -49,7 +49,7 @@ const CreateTask = () => {
       <div className='h-15'>
         {showAlert? <Alert /> : " "}
       </div>
-      <form className='my-2 p-6 w-full border rounded-md' onSubmit={handleSubmit}>
+      <form className='my-2 p-6 w-full border rounded-md w-6/12' onSubmit={handleSubmit}>
         <FormRow type="text" name="Task_name" labelText="Task name" value={values.Task_name} handleChange={handleChange} />
         <FormRow type="text" name="Task_plan" labelText="Task plan" value={values.Task_plan} handleChange={handleChange} />
         <label htmlFor='Task_description' className='label label-text w-full max-w-xs'>Task description</label>

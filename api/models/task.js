@@ -9,7 +9,7 @@ module.exports = function(sequelize) {
       type: DataTypes.STRING,
     },
     Task_notes: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
     },
     Task_id: {
       primaryKey: true,

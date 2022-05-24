@@ -3,6 +3,15 @@ import axios from 'axios'
 import { useAppContext } from '../context/appContext'
 import { FormRow, Alert } from '.'
 
+const Note = (props) => {
+  const { creator, content, createdAt, state } = props.note
+  return (
+    <div className='border rounded my-2 p-2'>
+      <p className='text-lg'>{content}</p>
+      <p className='text-sm text-gray-500'>{creator}, at {createdAt.toLocaleString()}</p>
+    </div>
+  )
+}
 
 const Task = (props) => {
   const { Task_id, Task_name, Task_creator, Task_owner, Task_createDate, Task_description, Task_state, Task_plan, Task_notes } = props.task
@@ -11,6 +20,11 @@ const Task = (props) => {
   const { displayAlert, showAlert, clearAlert, user } = useAppContext()
   const [showAddNote, setShowAddNote] = useState(false)
   const [notes, setNotes] = useState([])
+  const [noteContent, setNoteContent] = useState("")
+
+  useEffect(()=>{
+    setNotes(JSON.parse(Task_notes))
+  },[])
 
   const is_user = (currentUser, person) => {
     if (currentUser === person) {
@@ -19,13 +33,6 @@ const Task = (props) => {
       return person
     }
   }
-
-  const [noteContent, setNoteContent] = useState("")
-
-  useEffect(()=>{
-    setNotes(JSON.parse(Task_notes))
-  },[])
-  
 
   const handleChange = (e) => {
     setNoteContent(e.target.value)
@@ -37,7 +44,8 @@ const Task = (props) => {
     console.log('adding note')
     const res = await axios.post(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/notes`, {noteContent})
     if (res.data) {
-      console.log(res.data)
+      const updatedNotes = notes.concat(res.data.note)
+      setNotes(updatedNotes)
       displayAlert('success', "updated task")
       setTimeout(()=>{
         clearAlert();
@@ -57,11 +65,12 @@ const Task = (props) => {
     }
   }
   
-  const moveToDoing = async () => {
-    const res = await axios.get(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/workOn`)
-    moveTask(res.data.task, "toDo", "doing")
+  const changeState = async (currentState, newState) => {
+    const states = { currentState, newState }
+    const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/state`, states)
+    moveTask(res.data.task, currentState, newState)
     if (res.data) {
-      displayAlert('success', "logged task")
+      displayAlert('success', "updated task")
       setTimeout(()=>{
         clearAlert();
       }, 3000)
@@ -76,23 +85,17 @@ const Task = (props) => {
     setShowAddNote(!showAddNote)
   }
 
+  
   const renderButton = (state) => {
-    let action
-    switch (state) {
-      case "toDo":
-        action = "Work on This"
-        break
-      case "doing":
-        action = "Promote"
-        break
-      case "done":
-        action = "Close"
-        break
-      default:
-        return "no such state"
-    }
+    const actions = {
+      "toDo": ["work on"],
+      "doing": ["promote", "return"],
+      "done": ["confirm", "demote"],
+    }  
+    const buttons = actions[state]
+
     return (
-      <button className='btn btn-primary' onClick={moveToDoing}>{action}</button>
+      buttons.map(action => <button className='btn btn-primary' onClick={changeState} value={action}>{action}</button>)
     )
   }
 
@@ -100,21 +103,19 @@ const Task = (props) => {
       <>
       {/** Card **/}
       <label htmlFor={Task_name} className='cursor-pointer'>
-        <div className={`border mb-2 px-3 py-1 flex rounded items-center bg-white`}>
-          <div className="w-2/4">
+        <div className={`border mb-2 px-3 py-1 flex rounded items-center`}>
+          <div className="w-3/4">
             <p className="text-lg">{Task_name}</p>
             <p className='text-sm text-gray-400'>{showCreatorOrOwner}</p>
-            
           </div>
-          <p className="w-1/4">{Task_createDate}</p>
-          {Task_state==="open" && <button className="btn btn-info w-1/4" onClick={approve}>Approve</button>}
+          <p className="">{Task_createDate}</p>
         </div>
       </label>
 
       {/** Modal **/}
       <input type="checkbox" id={Task_name} className="modal-toggle" />
       <label htmlFor={Task_name} className="modal cursor-pointer">
-        <label className="modal-box relative" htmlFor="">
+        <label className="modal-box w-11/12 max-w-5xl overflow-hidden" htmlFor="">
           <div className='flex border-b-2 mb-2 pb-3 justify-between items-center'>
             <div>
               <h2 className='font-bold text-xl'>Task: {Task_name}<span className='badge badge-primary mx-2 align-text-top'>{Task_state}</span></h2>
@@ -124,10 +125,12 @@ const Task = (props) => {
           </div>
           {showAlert && <Alert />}
           <p><span className='text-lg font-bold'>Task plan: </span>{Task_plan === "" ? "none" : Task_plan}</p>
-          <p><span className='text-lg font-bold'>Task description: </span><br/>{Task_description}</p>
+          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task description: </span>{Task_description}</p>
+          <div className="divider divider-vertical"></div> 
           {/** Notes */}
-          <div>
-            {notes.map(note=> <p>{note.noteContent}</p>)}
+          <p className='text-lg font-bold'>Notes</p>
+          <div className='h-64 overflow-y-auto'>
+            {notes.map((note, index)=> <Note key={index} note={note}/>)}
           </div>
           <form onSubmit={handleSubmit}>
             <FormRow type="text" name="Task_note" value={noteContent} handleChange={handleChange} labelText=" " placeholder="Add note here" onFocus={toggleAddNote}/>
@@ -138,5 +141,7 @@ const Task = (props) => {
     </>
   );
 };
+
+
 
 export default Task;

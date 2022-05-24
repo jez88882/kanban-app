@@ -22,7 +22,7 @@ const Permit = (props) => {
     <div>
       <label for="usergroup-select" className='label label-text max-w-xs'>{props.label}</label>
       <select className='input input-bordered input-primary w-full' name={`App_permit_${props.permit}`} id="usergroup-select" onChange={props.handleChange} value={props.value}>
-        <option value="">--Please choose an option--</option>
+        <option value="">Choose usergroup</option>
         <option value="project manager">project manager</option>
         <option value="admin">admin</option>
         <option value="project lead">project lead</option>
@@ -81,7 +81,7 @@ const CreateApp = () => {
       <div className='h-15'>
         {showAlert? <Alert /> : " "}
       </div>
-      <form className='my-2 p-6 w-full border rounded-md' onSubmit={handleSubmit}>
+      <form className='my-2 p-6 w-6/12 border rounded-md' onSubmit={handleSubmit}>
         <div>
           <label  className='label label-text w-full max-w-xs' htmlFor="App_Acronym">App Acronym: </label>
           <input className='input input-bordered input-primary w-full' list="appList" id="App_Acronym" name="App_Acronym" onChange={handleChange} value={values.App_Acronym} disabled={params.app_Acronym}/>
@@ -91,13 +91,18 @@ const CreateApp = () => {
         </datalist>
         <label htmlFor='App_Description' className='label label-text w-full max-w-xs'>App description</label>
         <textarea id="App_Description" name="App_Description" className='textarea textarea-bordered textarea-primary w-full' rows="7" cols="33" value={values.App_Description} onChange={handleChange} ></textarea>
-        <FormRow type="date" name="startDate" labelText="Start date" value={values.startDate} handleChange={handleChange} />
-        <FormRow type="date" name="endDate" labelText="End date" value={values.endDate} handleChange={handleChange} />
+        <div className='grid grid-cols-2 gap-2'>
+          <FormRow type="date" name="startDate" labelText="Start date" value={values.startDate} handleChange={handleChange} />
+          <FormRow type="date" name="endDate" labelText="End date" value={values.endDate} handleChange={handleChange} />
+        </div>
+        <div className='grid grid-cols-5 gap-3'>
+
         <Permit permit="Create" label="Permit Create" handleChange={handleChange} value={values.App_permit_Create}/>
         <Permit permit="Open" label="Permit Open" handleChange={handleChange} value={values.App_permit_Open}/>
         <Permit permit="toDo" label="Permit To Do" handleChange={handleChange} value={values.App_permit_toDoList}/>
         <Permit permit="Doing" label="Permit Doing" handleChange={handleChange} value={values.App_permit_Doing}/>
         <Permit permit="Done" label="Permit Done" handleChange={handleChange} value={values.App_permit_Done}/>
+        </div>
         <button type="submit" className='btn btn-primary my-2 btn-block'>{params.app_Acronym ? "Update" : "Create"}</button>
       </form>
     </div>

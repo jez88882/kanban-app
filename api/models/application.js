@@ -23,6 +23,9 @@ module.exports = function(sequelize) {
       type: DataTypes.DATEONLY,
       allowNull: false
     },
+    App_permit_Create: {
+      type: DataTypes.STRING,
+    },
     App_permit_Open: {
       type: DataTypes.STRING,
     },

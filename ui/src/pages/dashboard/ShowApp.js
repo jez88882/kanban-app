@@ -139,21 +139,21 @@ const ShowApp = () => {
           <div className="col-span-3 bg-white p-6 rounded-lg">
             <p className="font-bold text-2xl text-gray-600 mb-2">In progress</p>
             <div className="grid grid-cols-3 gap-2">
-              <div className="">
-                <p className="font-bold text-gray-600 text-md overflow-y-auto">To-do</p>
-                <div className="bg-gray-300 rounded p-2">
+              <div className="mx-2">
+                <p className="my-2"><span className="font-bold text-white text-md rounded bg-blue-300 p-2">To-do</span></p>
+                <div className="overflow-y-auto">
                   {toDo && listTasks(toDo)}
                 </div>
               </div>
-              <div className="">
-                <p className="font-bold text-gray-600 text-md">Doing</p>
-                <div className="bg-gray-300 rounded p-2 overflow-y-auto">
+              <div className="mx-2">
+                <p className="my-2"><span className="font-bold text-white text-md rounded bg-orange-300 p-2">Doing</span></p>
+                <div className="overflow-y-auto">
                 {doing && listTasks(doing)}
                 </div>
               </div>
-              <div className="">
-                <p className="font-bold text-gray-600 text-md">Done</p>
-                <div className="bg-gray-300 rounded p-2">
+              <div className="mx-2">
+                <p className="my-2"><span className="font-bold text-white text-md rounded bg-emerald-300 p-2">Done</span></p>
+                <div className="overflow-y-auto">
                 {done && listTasks(done)}
                 </div>
               </div>

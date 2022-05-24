@@ -13,12 +13,12 @@ function keepAcronym(req, res, next) {
 
 router.get('/', index)
 router.get('/:app_Acronym', show)
-router.use('/:app_Acronym/plans', keepAcronym, checkPM, planRouter)
+router.use('/:app_Acronym/plans', keepAcronym, planRouter)
 router.use('/:app_Acronym/tasks', keepAcronym, taskRouter)
 
 
 router.post('/', checkPM, create)
-router.patch('/:app_Acronym', checkPM, update)
+router.patch('/:app_Acronym', update)
 
 
 
