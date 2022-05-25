@@ -17,7 +17,7 @@ router.use('/:app_Acronym/plans', keepAcronym, planRouter)
 router.use('/:app_Acronym/tasks', keepAcronym, taskRouter)
 
 
-router.post('/', checkPM, create)
+router.post('/', keepAcronym, checkPM, create)
 router.patch('/:app_Acronym', update)
 
 

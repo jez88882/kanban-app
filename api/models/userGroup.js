@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 
 module.exports = function(sequelize) {
   const UserGroup = sequelize.define('UserGroup', {
-    name: {
+    group: {
       type: DataTypes.STRING,
     },
     username: {
@@ -12,7 +12,7 @@ module.exports = function(sequelize) {
       type: DataTypes.INTEGER,
     },
   }, {
-    tableName: 'user_groups'
+    tableName: 'usergroups'
   });
   
   return UserGroup;

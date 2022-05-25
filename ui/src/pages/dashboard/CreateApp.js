@@ -10,6 +10,7 @@ const initialState = {
   App_Description: '',
   startDate: '',
   endDate: '',
+  App_permit_Create: '',
   App_permit_Open: '',
   App_permit_Doing: '',
   App_permit_toDo: '',

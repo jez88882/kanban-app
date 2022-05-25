@@ -16,18 +16,6 @@ const CreatePlan = () => {
   
   const [values, setValues] = useState(initialState)
   const { displayAlert, showAlert, clearAlert } = useAppContext()
-  
-  // const fetchApp = async (app_Acronym) => {
-  //   const res = await axios.get(`/api/v1/applications/${app_Acronym}`)
-  //   console.log(res)
-  //   setValues(res.data.app)
-  // }
-
-  // useEffect(()=>{
-  //   if ( params.app_Acronym ) {
-  //     fetchApp(params.app_Acronym)
-  //   }
-  // },[params.app_Acronym])
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -36,16 +24,8 @@ const CreatePlan = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    
     const res = await axios.post(`/api/v1/applications/${values.Plan_app_Acronym}/plans`, values)
 
-    // if (params.app_Acronym) {
-    //   res = await axios.patch(`/api/v1/applications/${params.app_Acronym}`, values)
-    // } else {
-    //   res = await axios.post('/api/v1/applications', values)
-    // }
-    // console.log(res.data)
-    // const alertMessage = params.app_Acronym ? `updated ${params.app_Acronym}` : 'created app'
     const alertMessage = 'created plan'
     if (res.data) {
       displayAlert('success', alertMessage)
@@ -54,8 +34,6 @@ const CreatePlan = () => {
       }, 3000)
     }
   }
-
-  // const appList = values.apps.map((app) => <option key={app} value={app}/>)
 
   return (
     <div className='p-4'>

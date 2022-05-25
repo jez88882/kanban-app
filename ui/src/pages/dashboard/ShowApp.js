@@ -77,12 +77,13 @@ const ShowApp = () => {
   
   const OpenTasksList = open ? open.map(task=> <OpenTask key={task.Task_id} task={task} app_Acronym={app_Acronym} moveTask={moveTask}/>) : []
   
-  function moveTask(selectTask, sourceName, destinationName) {
-    console.log(`moving task from ${sourceName} to ${destinationName}`)
+  function moveTask(selectTask, source, destination) {
+    console.log(`moving task from ${source} to ${destination}`)
     // // source and destination are Task_idarrays
     setTasks({
-      [sourceName]: tasks[sourceName].filter(task => task.Task_id !== selectTask.Task_id),
-      [destinationName]: tasks[destinationName].concat(selectTask)
+      ...tasks,
+      [source]: tasks[source].filter(task => task.Task_id !== selectTask.Task_id),
+      [destination]: tasks[destination].concat(selectTask)
     })
   }
 

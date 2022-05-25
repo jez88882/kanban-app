@@ -2,7 +2,6 @@ const catchAsyncErrors =require('../middlewares/catchAsyncErrors')
 const { Op } = require('sequelize')
 const { User, Application, UserGroup } = require('../models/db')
 
-
 exports.index = catchAsyncErrors( async function(req, res, next) {
   let apps
   if (req.chosenUser) {
@@ -33,13 +32,7 @@ exports.show = catchAsyncErrors( async function(req, res, next) {
 });
 
 exports.create = catchAsyncErrors( async function(req, res, next) {
-  const data = await Application.findOne({
-    order: [
-      ['createdAt', 'DESC']
-    ],
-  });
-  const App_Rnumber =  data ? (data.App_Rnumber + 1) : 1
-  req.body.App_Rnumber = App_Rnumber
+  req.body.App_Rnumber = 0
   const app = await Application.create(req.body)  
 
   res.status(200).json({

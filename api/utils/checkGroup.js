@@ -1,18 +1,14 @@
 
 async function checkGroup(user, group, app="") {
-  console.log(`checking ${group} from app:${app}`)
-  const data = await user.getUserGroups();
+  console.log(`checking if ${user.username} is ${group} from app:${app}`)
   const checkAdmin = group === "admin"
+  const data = await user.getUserGroups({ where: { app_Acronym: app}});
   
   let result = false
   data.forEach( usergroup => {
-    const groupMatches = usergroup.dataValues.name === group
-    const appMatches = usergroup.dataValues.app_Acronym === app
-  
+    const groupMatches = usergroup.dataValues.group === group
     if (groupMatches) {
-      if (appMatches || checkAdmin) {
-        result = true
-      }
+      result = true
     }
   })
   return result

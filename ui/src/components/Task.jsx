@@ -52,22 +52,24 @@ const Task = (props) => {
       }, 1000)
     }
   }
-    
-  const approve = async () => {
-    const res = await axios.get(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/approve`)
-    console.log(res.data)
-    moveTask(res.data.task, "open", "toDo")
-    if (res.data) {
-      displayAlert('success', "approved task")
-      setTimeout(()=>{
-        clearAlert();
-      }, 3000)
-    }
-  }
   
-  const changeState = async (currentState, newState) => {
-    const states = { currentState, newState }
-    const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/state`, states)
+  const changeState = async (e) => {
+    console.log(e.target.value)
+    const action = { action: e.target.value}
+    
+    const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/state`, action)
+    console.log(res.data)
+
+    const stateChanges = {
+      "approve": { currentState: "open", newState: "toDo"},
+      "work on": { currentState: "toDo", newState: "doing"},
+      "promote": { currentState: "doing", newState: "done"},
+      "return": { currentState: "doing", newState: "toDo"},
+      "confirm": { currentState: "done", newState: "closed"},
+      "demote": { currentState: "done", newState: "doing"},
+    }
+
+    const { currentState , newState } = stateChanges[e.target.value]
     moveTask(res.data.task, currentState, newState)
     if (res.data) {
       displayAlert('success', "updated task")
@@ -95,7 +97,7 @@ const Task = (props) => {
     const buttons = actions[state]
 
     return (
-      buttons.map(action => <button className='btn btn-primary' onClick={changeState} value={action}>{action}</button>)
+      buttons.map(action => <button key={action} className='btn btn-primary' onClick={changeState} value={action}>{action}</button>)
     )
   }
 

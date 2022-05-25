@@ -20,7 +20,6 @@ exports.show = catchAsyncErrors( async function( req, res, next) {
 
 exports.create = catchAsyncErrors( async function( req, res, next) {
   const data = req.body
-
   const plan = await Plan.create(data)
 
   res.json({
