@@ -1,16 +1,16 @@
+const { UserGroup } = require("../models/db")
 
-async function checkGroup(user, group, app="") {
-  console.log(`checking if ${user.username} is ${group} from app:${app}`)
-  const checkAdmin = group === "admin"
-  const data = await user.getUserGroups({ where: { app_Acronym: app}});
-  
+async function checkGroup(user, group) {
+  console.log(`checking if ${user.username} is ${group}`)
   let result = false
-  data.forEach( usergroup => {
-    const groupMatches = usergroup.dataValues.group === group
-    if (groupMatches) {
-      result = true
-    }
-  })
+  const data = await UserGroup.findOne({ where: {
+    username: user.username,
+    group
+  }})
+  if (data) {
+    result = true 
+  }
+  console.log(`${user.username} is ${result ? "": "NOT"} ${group}`)
   return result
 }
 

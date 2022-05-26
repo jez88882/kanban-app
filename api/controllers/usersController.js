@@ -67,16 +67,15 @@ exports.update = catchAsyncErrors( async function(req, res, next) {
         return next(new ErrorHandler(`not authorized.`, 403));
     }
     console.log('updating')
-    const user = await User.unscoped().findByPk(req.params.username)
+    const user = await User.findByPk(req.params.username)
 
     if (req.body.email) {
-        user.email = req.body.email
+        await user.update({email: req.body.email})
     }
     if (req.body.password) {
-        user.password = req.body.password
+        await user.update({password: req.body.password})
     }
-    
-    user.save()
+
     res.json({
         success: true,
         message: "updated user",

@@ -8,77 +8,88 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
 
 
+const initialValues = {
+ email:'',
+ password: '',
+ is_disabled: false
+}
+
 const initialState = {
-  username: '',
-  email: '',
-  is_disabled: null,
-  password: null,
-  userGroup:'',
+  alluserGroups: [],
+  thisUserGroups: []
 }
 
 const EditUser = () => {
   const params = useParams();
-  const [values, setValues] = useState(initialState)
+  const [values, setValues] = useState(initialValues)
+  const [state, setState] = useState(initialState)
 
   const {disableUser, showAlert, displayAlert, clearAlert } = useAppContext()
 
   const fetchUser = async () => {
     const res = await axios.get(`/api/v1/users/${params.username}`)
-    const { id, username, email, is_disabled } = res.data.data
-    setValues({ id, username, email, is_disabled })
+    const { email, is_disabled } = res.data.data
+    setValues({ ...values, email, is_disabled })
+  }
+
+  const fetchUserGroups = async() => {
+    const thisusergroups = await axios.get(`/api/v1/groups?user=${params.username}`)
+    setState({...state, thisUserGroups: thisusergroups.data.groups})
   }
   
   useEffect(()=>{
     fetchUser();
+    fetchUserGroups()
   },[])
 
   const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value })
+    setValues({...values, [e.target.name]: e.target.value })
   }
 
   const handleClick = async (e) => {
-    const data = {
-      id: values.id,
-      email: values.email,
-      password: values.password
-    }
+    console.log(values)
+
     try {
-      const res = await axios.patch(`/api/v1/users/${values.username}`, data)
+      const res = await axios.patch(`/api/v1/users/${params.username}`, values)
       displayAlert('success', res.data.message)
-      setTimeout(()=>{
-        clearAlert();
-      },10000)
     } catch (error) {
-      console.log(error.response)
+      displayAlert('error', error.response.data.errMessage)
     }
+    setTimeout(()=>{
+      clearAlert();
+    },10000)
+
   }
   
   const handleSubmit = (e) => {
     e.preventDefault();
   }
+  const usergroupsubmit = (e) => {
+    e.preventDefault()
+  }
   
   const handleDisable = () => {
     setValues({...values, is_disabled: true},)
-    disableUser(values.id)
+    disableUser(params.username)
   }
 
   const createUserGroup = async(e) =>{
     e.preventDefault()
     const data = {
       name: values.userGroup,
-      username: values.username
+      username: params.username
     }
-    const res = await axios.post(`/api/v1/users/${values.id}/groups`, data)
-    console.log(res.data)
-    displayAlert('success', "Added user group")
-    setTimeout(()=>{
-      clearAlert()
-    }, 2000)
+    // const res = await axios.post(`/api/v1/users/${values.id}/groups`, data)
+    // console.log(res.data)
+    // displayAlert('success', "Added user group")
+    // setTimeout(()=>{
+    //   clearAlert()
+    // }, 2000)
   }
 
   return (
     <div className='p-4'>
-      <h2 className={`font-bold text-2xl ${values.is_disabled ? "text-slate-400": ""}`}>Edit User: {values.username}</h2>
+      <h2 className={`font-bold text-2xl ${values.is_disabled ? "text-slate-400": ""}`}>Edit User: {params.username}</h2>
       <div className='mt-2 '>
         {showAlert && <Alert />}
       </div>
@@ -99,6 +110,15 @@ const EditUser = () => {
           </div>
           <div className="divider divider-vertical"></div> 
             <button type="button" onClick={handleDisable} className="btn bg-blue-300 text-blue-500	hover:bg-primary hover:text-white w-8/12" disabled={values.is_disabled}>Disable user</button>
+        </div>
+        <div className='m-6 p-6 w-4/12 border rounded-md'>
+        <p className='text-lg font-bold'>Usergroups</p>
+        {state.thisUserGroups.map(usergroup=> 
+          <div key={usergroup.id} className='border rounded-md my-2 p-1'>{usergroup.group}</div>
+        )}
+        <form onSubmit={usergroupsubmit}>
+          
+        </form>
         </div>
       </div>
     </div>

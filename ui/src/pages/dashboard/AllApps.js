@@ -10,6 +10,7 @@ const AllApps = () => {
   const [values, setValues] = useState(initialState)
 
   const fetchApps = async () => {
+    console.log('fetching Apps')
     const res = await axios.get('api/v1/applications/')
     setValues({...values, apps: res.data.apps})
   }

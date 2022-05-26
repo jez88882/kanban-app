@@ -1,8 +1,10 @@
+const { User, Task, Application } = require('../models/db')
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors')
-const checkGroup = require('../utils/checkGroup')
-const { Task, Application } = require('../models/db')
 const { Op } = require('sequelize')
+const checkGroup = require('../utils/checkGroup')
 const ErrorHandler = require('../utils/errorHandler')
+const sendEmail = require('../utils/sendEmail');
+
 
 exports.index = catchAsyncErrors( async function( req, res, next) {
   const tasks = await Task.findAll({
@@ -28,8 +30,9 @@ exports.show = catchAsyncErrors( async function( req, res, next) {
 exports.create = catchAsyncErrors( async function( req, res, next) {
   const app = await Application.findByPk(req.app_Acronym)
   const data = req.body
-  data.Task_state = "open"
+  data.Task_state = "Open"
   data.Task_createDate = new Date().toLocaleString()
+  data.Task_app_Acronym = req.app_Acronym
   
   const note = {
     creator: req.user.username,
@@ -40,7 +43,8 @@ exports.create = catchAsyncErrors( async function( req, res, next) {
 
   data.Task_notes = JSON.stringify([note])
 
-  await app.increment({'App_Rnumber': 1})
+  await app.increment('App_Rnumber')
+  await app.reload()
   
   data.Task_id =`${app.App_Acronym}_${app.App_Rnumber}`
 
@@ -70,7 +74,7 @@ exports.approve = catchAsyncErrors( async function(req, res, next) {
   const task = await Task.findByPk(req.params.Task_id)
   console.log(`approving task ${req.params.Task_id}`)
   
-  await task.update({Task_state: "toDo"})
+  await task.update({Task_state: "toDoList"})
   res.status(200).json({
     success: true,
       task
@@ -86,8 +90,8 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
   const permissions = {
     "approve": app.App_permit_Open,
     "work on": app.App_permit_toDoList,
-    "promote": task.Task_owner === req.user.username, 
-    "return": task.Task_owner === req.user.username,
+    "promote": app.App_permit_Doing, 
+    "return": app.App_permit_Doing,
     "confirm": app.App_permit_Done,
     "demote": app.App_permit_Done
   }
@@ -98,14 +102,14 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
   
   if (["approve", "confirm", "demote"].includes(req.body.action)) {
     authorized = await checkGroup(req.user, permissions[req.body.action], req.app_Acronym)
-    
+
     if (req.body.action === "approve") {
       // will NOT be checking your own work if you are not the creator
-      ownselfCheckOwnself = req.user !== task.Task_creator
+      ownselfCheckOwnself = req.user === task.Task_creator
     } else {
       // req.body.action is "confirm" or "demote"
       // will NOT be checking your own work if you are not the owner
-      ownselfCheckOwnself = req.user !== task.Task_owner
+      ownselfCheckOwnself = req.user === task.Task_owner
     }
     // only permitted if user is authorized and you are NOT checking your own work
     permitted = authorized && !ownselfCheckOwnself
@@ -125,12 +129,12 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
   }
   
   const stateChanges = {
-    "approve": { currentState: "open", newState: "toDo"},
-    "work on": { currentState: "toDo", newState: "doing"},
-    "promote": { currentState: "doing", newState: "done"},
-    "return": { currentState: "doing", newState: "toDo"},
-    "confirm": { currentState: "done", newState: "closed"},
-    "demote": { currentState: "done", newState: "doing"},
+    "approve": { currentState: "Open", newState: "toDoList"},
+    "work on": { currentState: "toDoList", newState: "Doing"},
+    "promote": { currentState: "Doing", newState: "Done"},
+    "return": { currentState: "Doing", newState: "toDoList"},
+    "confirm": { currentState: "Done", newState: "Closed"},
+    "demote": { currentState: "Done", newState: "Doing"},
   }
   
   if (task.Task_state !== stateChanges[req.body.action].currentState) {
@@ -139,24 +143,51 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
 
   task.Task_state = stateChanges[req.body.action].newState
 
-  if (req.body.action === "work on") {
-    task.Task_owner = req.user.username
+  task.Task_owner = req.user.username
+
+  const note = {
+    creator: req.user.username,
+    content: `${req.user}- [${req.body.action}] task`,
+    createdAt: new Date().toLocaleString(),
+    state: task.Task_state
   }
   
-  if (req.body.action === "return") {
-    task.Task_owner = ""
-  }
+  const notes = JSON.parse(task.Task_notes)
+  notes.push(note)
+  task.Task_notes(JSON.stringify(notes))
 
   await task.save()
-  res.status(200).json({
-    success: true,
-    task
-  });
+
+  if (req.body.action === "promote") {
+    const message = `Task ${task.Task_id}: ${task.Task_name} has been promoted by ${task.Task_owner}`
+    const creator = await User.findByPk(task.Task_creator)
+
+    try {
+      await sendEmail({
+        email: creator.email,
+        subject: `[NOTIFICATION]: Task ${task.Task_id}: ${task.Task_name} promoted`,
+        text: message
+      })
+    
+      res.status(200).json({
+        success: true,
+        message: `email sent successfully to ${creator.email}`,
+        task
+      });
+    } catch (error) {
+        return next(new ErrorHandler(error, 500));
+    }
+  } else {
+    res.status(200).json({
+      success: true,
+      task
+    });
+  }
+    
 });
 
 exports.createNote = catchAsyncErrors( async function( req, res, next) {
   const task = await Task.findByPk(req.params.Task_id)
-  console.log(req.body)
 
   const note = {
     creator: req.user.username,
@@ -167,10 +198,8 @@ exports.createNote = catchAsyncErrors( async function( req, res, next) {
 
   const notes = JSON.parse(task.Task_notes)
   notes.push(note)
-  console.log('stringified notes:')
-  console.log(JSON.stringify(notes))
 
-  task.update({Task_notes: JSON.stringify(notes)})
+  task.update({Task_notes: JSON.stringify(notes), Task_owner: req.user.username})
 
   res.json({
     success: true,

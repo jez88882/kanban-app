@@ -9,7 +9,11 @@ const ProtectedRoute = ({children}) => {
   useEffect(()=>{
     setLocation(location.pathname)
   },[])
-  
+
+  if (location.pathname === '/') {
+    return <Navigate to='/applications'/>
+  }
+
   if (!user){
     return <Navigate to="/login" />
   }

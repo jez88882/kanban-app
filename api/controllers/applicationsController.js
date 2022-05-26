@@ -3,12 +3,7 @@ const { Op } = require('sequelize')
 const { User, Application, UserGroup } = require('../models/db')
 
 exports.index = catchAsyncErrors( async function(req, res, next) {
-  let apps
-  if (req.chosenUser) {
-    apps = req.chosenUser.getApplications()
-  } else {
-    apps = await Application.findAll()
-  }
+  const  apps = await Application.findAll()
   res.json({
     success:true,
     apps

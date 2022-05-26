@@ -36,10 +36,8 @@ const AllUsers = () => {
 
   const listUsers = users.map( (user, index) =>
   <Link to={`edit/${user.username}`} key={index}>
-    <div className={`border border-2 border-primary	rounded-md text-primary hover:bg-primary hover:text-white my-2 p-2 ${user.is_disabled ? "bg-base-300 " : ""}`}>
-      <p className={user.is_disabled ? "text-slate-400" : ""}>
-        {user.username}
-      </p>
+    <div className={`border border-2 border-primary	rounded-md text-primary  flex hover:bg-primary hover:text-white my-2 p-2 ${user.is_disabled ? "bg-base-300 " : ""}`}>
+      <p className={user.is_disabled ? "text-slate-400" : ""}>{user.username}</p>
     </div>
   </Link>
     )

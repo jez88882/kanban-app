@@ -7,6 +7,7 @@ const OpenTask = (props) => {
   const { Task_id, Task_name, Task_creator, Task_createDate, Task_description, Task_state, Task_plan } = props.task
   const moveTask = props.moveTask
   const app_Acronym = props.app_Acronym
+  const permits = props.permits
   const { displayAlert, showAlert, clearAlert, user } = useAppContext()
   const [disabled, setDisabled] = useState(true)
 
@@ -58,7 +59,7 @@ const OpenTask = (props) => {
   return (
     <>
     {/** Card **/}
-      <label for={Task_name} className='cursor-pointer'>
+      <label htmlFor={Task_name} className='cursor-pointer'>
         <div className={`border mb-2 px-3 py-1 flex rounded items-center`}>
           <div className="w-1/4">
             <p className="text-lg">{Task_name}</p>
@@ -67,20 +68,24 @@ const OpenTask = (props) => {
             <p className="text-lg text-slate-500">{is_creator? "you" : Task_creator}</p>
           </div>
           <p className="w-1/4">{Task_createDate}</p>
+          {permits[Task_state] &&
           <button className="btn btn-info w-1/4" onClick={approve}>Approve</button>
+          }
         </div>
       </label>
       {/** Modal **/}
       <input type="checkbox" id={Task_name} className="modal-toggle" />
-      <label for={Task_name} className="modal cursor-pointer">
-        <label className="modal-box relative" for="">
+      <label htmlFor={Task_name} className="modal cursor-pointer">
+        <label className="modal-box relative" htmlFor="">
           <div className='flex justify-between'>
             <div>
               <h2 className='font-bold text-xl'>Task: {Task_name}</h2>
               <p className='text-sm ml-1 text-gray-400'>Created by <span className='font-bold'>{is_creator? "you" : Task_creator}</span></p>
             </div>
             <div>
+              {permits[Task_state] &&
               <button type="button" className={`btn btn-sm ${disabled ? "btn-outline btn-primary" : "btn-ghost text-gray-500"}`}onClick={toggle}>Edit task</button>
+              }
             </div>
           </div>
           {showAlert && <Alert />}

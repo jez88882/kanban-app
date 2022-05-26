@@ -8,6 +8,9 @@ module.exports = function(sequelize) {
     Task_description: {
       type: DataTypes.STRING,
     },
+    Task_app_Acronym: {
+      type: DataTypes.STRING,
+    },
     Task_notes: {
       type: DataTypes.TEXT,
     },

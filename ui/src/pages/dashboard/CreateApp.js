@@ -35,9 +35,10 @@ const Permit = (props) => {
 
 const CreateApp = () => {
   const [values, setValues] = useState(initialState)
-  const { displayAlert, showAlert, clearAlert } = useAppContext()
+  const [apps, setApps] = useState([])
+  const { user, displayAlert, showAlert, clearAlert } = useAppContext()
   const params = useParams()
-  
+
   const fetchApp = async (app_Acronym) => {
     const res = await axios.get(`/api/v1/applications/${app_Acronym}`)
     console.log(res)

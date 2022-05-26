@@ -6,7 +6,7 @@ const Drawer = (props) => {
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle"/>
       <div className="drawer-content flex flex-col">
         {/* <!-- Page content here --> */}
-        <label htmlFor="my-drawer-2" className="btn btn-primary drawer-button lg:hidden">Open drawer</label>
+        <label htmlFor="my-drawer-2"></label>
         {props.children}
       </div> 
       <div className="drawer-side border-r-2 bg-neutral">

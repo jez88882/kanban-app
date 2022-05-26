@@ -6,6 +6,9 @@ module.exports = function(sequelize) {
       type: DataTypes.STRING,
       primaryKey: true,
     },
+    Plan_description: {
+      type: DataTypes.TEXT,
+    },
     Plan_startDate: {
       type: DataTypes.DATEONLY,
     },

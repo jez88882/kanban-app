@@ -1,26 +1,22 @@
 const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
-const Sequelize = require('sequelize')
+const sequelize = require('sequelize')
 const { UserGroup, User, Application } = require('../models/db');
 const user = require('../models/user');
 
 exports.index = catchAsyncErrors( async function(req, res, next) {
-  const groups = await UserGroup.findAll({
-    where: { 
-      username: req.user.username,
-      name: req.query.name
-    },
-    attributes: ['app_Acronym']
-  })
-
-  const existingApps = await Application.findAll({attributes: ['app_Acronym']})
-  // const uncreatedApps = groups
-  console.log(groups)
-  console.log(existingApps)
-
-  const apps = groups.map(group=> group.dataValues.app_Acronym)
+  let groups
+  if (req.query.user) {
+    groups = await UserGroup.findAll({where: {username : req.query.user}})
+  } else {
+    groups = await UserGroup.findAll({
+      attributes: [
+        [sequelize.fn('DISTINCT', sequelize.col('group')), 'group']
+      ]
+    })
+  }
   res.json({
     success: true,
-    apps
+    groups
   })
 })
 

@@ -16,6 +16,7 @@ const Note = (props) => {
 const Task = (props) => {
   const { Task_id, Task_name, Task_creator, Task_owner, Task_createDate, Task_description, Task_state, Task_plan, Task_notes } = props.task
   const moveTask = props.moveTask
+  const permits = props.permits
   const app_Acronym = props.app_Acronym
   const { displayAlert, showAlert, clearAlert, user } = useAppContext()
   const [showAddNote, setShowAddNote] = useState(false)
@@ -56,17 +57,16 @@ const Task = (props) => {
   const changeState = async (e) => {
     console.log(e.target.value)
     const action = { action: e.target.value}
-    
     const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/state`, action)
     console.log(res.data)
 
     const stateChanges = {
-      "approve": { currentState: "open", newState: "toDo"},
-      "work on": { currentState: "toDo", newState: "doing"},
-      "promote": { currentState: "doing", newState: "done"},
-      "return": { currentState: "doing", newState: "toDo"},
-      "confirm": { currentState: "done", newState: "closed"},
-      "demote": { currentState: "done", newState: "doing"},
+      "approve": { currentState: "Open", newState: "toDoList"},
+      "work on": { currentState: "toDoList", newState: "Doing"},
+      "promote": { currentState: "Doing", newState: "Done"},
+      "return": { currentState: "Doing", newState: "toDoList"},
+      "confirm": { currentState: "Done", newState: "Closed"},
+      "demote": { currentState: "Done", newState: "Doing"},
     }
 
     const { currentState , newState } = stateChanges[e.target.value]
@@ -79,7 +79,7 @@ const Task = (props) => {
     }
   }
 
-  const showCreatorOrOwner = Task_state === 'toDo' ? 
+  const showCreatorOrOwner = Task_state === 'toDoList' ? 
   <>Created by <span className='font-bold'>{is_user(user.username, Task_creator)}</span></> :
   <>Owned by <span className='font-bold'>{is_user(user.username, Task_owner)}</span></>
     
@@ -90,12 +90,14 @@ const Task = (props) => {
   
   const renderButton = (state) => {
     const actions = {
-      "toDo": ["work on"],
-      "doing": ["promote", "return"],
-      "done": ["confirm", "demote"],
+      "Open": [],
+      "toDoList": ["work on"],
+      "Doing": ["promote", "return"],
+      "Done": ["confirm", "demote"],
+      "Closed": []
     }  
     const buttons = actions[state]
-
+    
     return (
       buttons.map(action => <button key={action} className='btn btn-primary' onClick={changeState} value={action}>{action}</button>)
     )
@@ -123,7 +125,7 @@ const Task = (props) => {
               <h2 className='font-bold text-xl'>Task: {Task_name}<span className='badge badge-primary mx-2 align-text-top'>{Task_state}</span></h2>
               <p className='text-sm ml-1 text-gray-400'>{showCreatorOrOwner}</p>
             </div>
-            {renderButton(Task_state)}
+            {permits[Task_state] && renderButton(Task_state) }
           </div>
           {showAlert && <Alert />}
           <p><span className='text-lg font-bold'>Task plan: </span>{Task_plan === "" ? "none" : Task_plan}</p>
@@ -134,10 +136,12 @@ const Task = (props) => {
           <div className='h-64 overflow-y-auto'>
             {notes.map((note, index)=> <Note key={index} note={note}/>)}
           </div>
+          {permits[Task_state] &&
           <form onSubmit={handleSubmit}>
             <FormRow type="text" name="Task_note" value={noteContent} handleChange={handleChange} labelText=" " placeholder="Add note here" onFocus={toggleAddNote}/>
             <button className={`btn btn-primary btn-sm mt-2 ${showAddNote ? "": "hidden"}`} type="submit">Add Note</button>
           </form>
+          }
         </label>
       </label>
     </>

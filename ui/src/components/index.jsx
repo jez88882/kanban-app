@@ -8,5 +8,6 @@ import AccountInfo from "../pages/dashboard/AccountInfo"
 import TaskDrawer from './TaskDrawer'
 import Task from './Task'
 import OpenTask from "./OpenTask"
+import Plan from "./Plan"
 
-export { FormRow, Alert, Page, Navbar, Drawer, Modal, AccountInfo, TaskDrawer, Task, OpenTask } 
+export { FormRow, Alert, Page, Navbar, Drawer, Modal, AccountInfo, TaskDrawer, Task, OpenTask, Plan } 

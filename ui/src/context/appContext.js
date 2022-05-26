@@ -32,7 +32,7 @@ const AppProvider = ({children}) => {
 
   const [state, dispatch] = useImmerReducer(reducer, initialState)
 
-  const fetchUsers = async () => {
+  const fetchUsers = async () => {    
     console.log('fetching users')
     const res = await axios.get('/api/v1/users?username=')
     return res.data.data
