@@ -16,7 +16,7 @@ const ResetEmail = () => {
     e.preventDefault();
     const data = { email }
     try {
-      const res = await axios.put(`/api/v1/users/${user.id}`, data)
+      const res = await axios.patch(`/api/v1/users/${user.username}`, data)
       console.log(res.data)
       displayAlert('success', res.data.message)
       setTimeout(()=>{
@@ -31,9 +31,7 @@ const ResetEmail = () => {
 
   return (
     <div>
-      <div className="w-3/12">
-        {showAlert && <Alert />}
-      </div>
+     
       <div className="m-6 p-6 w-2/12 border rounded-md">
         <form onSubmit={handleSubmit}>
           <FormRow type="email" name="email" value={email} labelText="Reset email" handleChange={handleChange}/>

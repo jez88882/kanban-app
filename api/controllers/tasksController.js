@@ -40,13 +40,26 @@ exports.create = catchAsyncErrors( async function( req, res, next) {
     createdAt: new Date().toLocaleString(),
     state: data.Task_state
   }
+  
+  const notes = [note]
+  console.log(data.Task_note)
+  if (data.Task_note !== "") {
+    notes.push({
+      creator: req.user.username,
+      content: data.Task_note,
+      createdAt: new Date().toLocaleString(),
+      state: data.Task_state
+    })
+  }
 
-  data.Task_notes = JSON.stringify([note])
+  data.Task_notes = JSON.stringify(notes)
 
   await app.increment('App_Rnumber')
   await app.reload()
   
   data.Task_id =`${app.App_Acronym}_${app.App_Rnumber}`
+
+  
 
   const task = await Task.create(data)
 
@@ -147,14 +160,14 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
 
   const note = {
     creator: req.user.username,
-    content: `${req.user}- [${req.body.action}] task`,
+    content: `${req.user.username}- [${req.body.action}] task`,
     createdAt: new Date().toLocaleString(),
     state: task.Task_state
   }
   
   const notes = JSON.parse(task.Task_notes)
   notes.push(note)
-  task.Task_notes(JSON.stringify(notes))
+  task.Task_notes = JSON.stringify(notes)
 
   await task.save()
 

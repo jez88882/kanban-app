@@ -44,7 +44,6 @@ export default function App(props){
               <Route path=":app_Acronym/edit" element={<CreateApp />}/>
               <Route path=":app_Acronym/plans/new" element={<CreatePlan />}/>
               <Route path=":app_Acronym/plans/:MVP_name" element={<ShowPlan />}/>
-              <Route path=":app_Acronym/tasks/new" element={<CreateTask />}/>
             </Route>
           </Route>
           <Route path="/login" element={<Login/>}/>

@@ -3,37 +3,52 @@ import axios from 'axios'
 import { useAppContext } from '../context/appContext'
 import { FormRow, Alert } from '.'
 
+
+const Note = (props) => {
+  const { creator, content, createdAt, state } = props.note
+  return (
+    <div className='border rounded my-2 p-2'>
+      <p className='text-lg'>{content}</p>
+      <p className='text-sm text-gray-500'>{creator}, at {createdAt.toLocaleString()}</p>
+    </div>
+  )
+}
+
 const OpenTask = (props) => {
-  const { Task_id, Task_name, Task_creator, Task_createDate, Task_description, Task_state, Task_plan } = props.task
+  const { Task_id, Task_name, Task_creator, Task_createDate, Task_description, Task_state, Task_plan, Task_notes, Task_owner } = props.task
   const moveTask = props.moveTask
   const app_Acronym = props.app_Acronym
   const permits = props.permits
   const { displayAlert, showAlert, clearAlert, user } = useAppContext()
   const [disabled, setDisabled] = useState(true)
+  const [noteContent, setNoteContent] = useState("")
+  const [notes, setNotes] = useState([])
+  const [taskOwner, setTaskOwner ] = useState(Task_owner)
 
   const is_creator = user.username === Task_creator
 
-  const initialState = {
-    Task_description,
-    Task_plan,
-  }
-
-  const [values, setValues] = useState(initialState)
-
   useEffect(()=>{
+    setNotes(JSON.parse(Task_notes))
   },[])
   
-  const handleChange = (e) => {
-    setValues({ ...values, [e.target.name]: e.target.value })
+  const handleNoteContent = (e) => {
+    setNoteContent(e.target.value)
   }
   
   const handleSubmit = async (e) => {
     e.preventDefault();
     toggle()
     
-    const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}`, values)
+    const res = await axios.post(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/notes`, {noteContent})
+
     if (res.data) {
-      displayAlert('success', "updated task")
+      const updatedNotes = notes.concat(res.data.note)
+      setNotes(updatedNotes)
+      setNoteContent('')
+      console.log(props.username)
+      setTaskOwner(props.username)
+
+      displayAlert('success', "added note")
       setTimeout(()=>{
         clearAlert();
       }, 1000)
@@ -47,7 +62,7 @@ const OpenTask = (props) => {
   const approve = async () => {
     const res = await axios.get(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/approve`)
     console.log(res.data)
-    moveTask(res.data.task, "open", "toDo")
+    moveTask(res.data.task, "Open", "toDoList")
     if (res.data) {
       displayAlert('success', "approved task")
       setTimeout(()=>{
@@ -76,26 +91,27 @@ const OpenTask = (props) => {
       {/** Modal **/}
       <input type="checkbox" id={Task_name} className="modal-toggle" />
       <label htmlFor={Task_name} className="modal cursor-pointer">
-        <label className="modal-box relative" htmlFor="">
-          <div className='flex justify-between'>
+        <label className="modal-box w-11/12 max-w-5xl overflow-hidden" htmlFor="">
+        <div className='flex border-b-2 mb-2 pb-3 justify-between items-center'>
             <div>
-              <h2 className='font-bold text-xl'>Task: {Task_name}</h2>
-              <p className='text-sm ml-1 text-gray-400'>Created by <span className='font-bold'>{is_creator? "you" : Task_creator}</span></p>
+              <h2 className='font-bold text-xl'>Task: {Task_name}<span className='badge badge-primary mx-2 align-text-top'>{Task_state}</span></h2>
             </div>
-            <div>
-              {permits[Task_state] &&
-              <button type="button" className={`btn btn-sm ${disabled ? "btn-outline btn-primary" : "btn-ghost text-gray-500"}`}onClick={toggle}>Edit task</button>
-              }
-            </div>
+           
           </div>
-          {showAlert && <Alert />}
-          <form className='form-control' onSubmit={handleSubmit}>
-            <FormRow type="text" name="Task_plan" labelText="Task plan" value={values.Task_plan} handleChange={handleChange} disabled={disabled}/>
-            <label htmlFor='Task_description' className='label label-text w-full max-w-xs'>Task description</label>
-            <textarea id="Task_description" name="Task_description" className='textarea textarea-bordered textarea-primary w-full' rows="7" cols="33" value={values.Task_description} onChange={handleChange} disabled={disabled}></textarea>
-            {!disabled && <button type="submit" className='btn btn-primary my-2 btn-block'>Update Task</button>}
-          </form>
-         
+          
+          <p><span className='text-lg font-bold'>Task plan: </span>{Task_plan === "" ? "none" : Task_plan}</p>
+          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task description: </span>{Task_description}</p>
+          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{taskOwner}</p>
+          <div className="divider divider-vertical"></div> 
+          <p className='text-lg font-bold'>Notes</p>
+          <div className='h-64 overflow-y-auto'>
+            {notes.map((note, index)=> <Note key={index} note={note}/>)}
+          </div>
+          {permits[Task_state] &&
+          <form onSubmit={handleSubmit}>
+            <FormRow type="text" name="Task_note" value={noteContent} handleChange={handleNoteContent} labelText=" " placeholder="Add note here"/>
+            <button className='btn btn-primary btn-sm mt-2' type="submit">Add Note</button>
+          </form>}
         </label>
       </label>
     </>

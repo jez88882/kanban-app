@@ -1,5 +1,5 @@
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors')
-const { Application, Plan } = require('../models/db')
+const { Plan } = require('../models/db')
 
 exports.index = catchAsyncErrors( async function( req, res, next) {
   const plans = await Plan.findAll({where: { Plan_app_Acronym: req.app_Acronym}})

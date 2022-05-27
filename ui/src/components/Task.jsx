@@ -19,9 +19,9 @@ const Task = (props) => {
   const permits = props.permits
   const app_Acronym = props.app_Acronym
   const { displayAlert, showAlert, clearAlert, user } = useAppContext()
-  const [showAddNote, setShowAddNote] = useState(false)
   const [notes, setNotes] = useState([])
   const [noteContent, setNoteContent] = useState("")
+  const [taskOwner, setTaskOwner ] = useState(Task_owner)
 
   useEffect(()=>{
     setNotes(JSON.parse(Task_notes))
@@ -47,6 +47,9 @@ const Task = (props) => {
     if (res.data) {
       const updatedNotes = notes.concat(res.data.note)
       setNotes(updatedNotes)
+
+      setNoteContent('')
+      setTaskOwner(props.username)
       displayAlert('success', "updated task")
       setTimeout(()=>{
         clearAlert();
@@ -83,11 +86,6 @@ const Task = (props) => {
   <>Created by <span className='font-bold'>{is_user(user.username, Task_creator)}</span></> :
   <>Owned by <span className='font-bold'>{is_user(user.username, Task_owner)}</span></>
     
-  const toggleAddNote = (e) => {
-    setShowAddNote(!showAddNote)
-  }
-
-  
   const renderButton = (state) => {
     const actions = {
       "Open": [],
@@ -107,7 +105,7 @@ const Task = (props) => {
       <>
       {/** Card **/}
       <label htmlFor={Task_name} className='cursor-pointer'>
-        <div className={`border mb-2 px-3 py-1 flex rounded items-center`}>
+        <div className={`border mb-2 px-3 py-1 flex rounded items-center ${Task_state === 'Closed' ? "bg-white": ""}`}>
           <div className="w-3/4">
             <p className="text-lg">{Task_name}</p>
             <p className='text-sm text-gray-400'>{showCreatorOrOwner}</p>
@@ -127,9 +125,10 @@ const Task = (props) => {
             </div>
             {permits[Task_state] && renderButton(Task_state) }
           </div>
-          {showAlert && <Alert />}
+          
           <p><span className='text-lg font-bold'>Task plan: </span>{Task_plan === "" ? "none" : Task_plan}</p>
           <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task description: </span>{Task_description}</p>
+          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{Task_owner}</p>
           <div className="divider divider-vertical"></div> 
           {/** Notes */}
           <p className='text-lg font-bold'>Notes</p>
@@ -138,8 +137,8 @@ const Task = (props) => {
           </div>
           {permits[Task_state] &&
           <form onSubmit={handleSubmit}>
-            <FormRow type="text" name="Task_note" value={noteContent} handleChange={handleChange} labelText=" " placeholder="Add note here" onFocus={toggleAddNote}/>
-            <button className={`btn btn-primary btn-sm mt-2 ${showAddNote ? "": "hidden"}`} type="submit">Add Note</button>
+            <FormRow type="text" name="Task_note" value={noteContent} handleChange={handleChange} labelText=" " placeholder="Add note here"/>
+            <button className='btn btn-primary btn-sm mt-2' type="submit">Add Note</button>
           </form>
           }
         </label>

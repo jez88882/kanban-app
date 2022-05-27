@@ -40,6 +40,8 @@ module.exports = function(sequelize) {
   });
 
   User.beforeSave(async function(user, options) {
+    console.log('hashing password')
+    console.log(user)
     const hashedPassword = await argon.hash(user.password);
     user.password = hashedPassword;
   });

@@ -5,8 +5,8 @@ import { useAppContext } from '../../context/appContext'
 import { Modal, FormRow, Alert } from '../../components'
 
 const initialValues = {
-  usergroup: '',
-  user: '',
+  userGroup: '',
+  username: '',
 }
 
 const initialState = {
@@ -41,12 +41,19 @@ const AssignGroups = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // console.log(values.)
+
+    if ([values.userGroup, values.username].includes('')) {
+      displayAlert('error', 'please fill in all values')
+      return
+    }
     const data = {
-      name: values.usergroup,
+      group: values.userGroup,
       username: values.username
     }
+    console.log(data)
     const res = await axios.post(`/api/v1/groups`, data)
-    displayAlert('success', `created user group ${values.usergroup}`)
+    displayAlert('success', `created user group ${values.userGroup}`)
     setTimeout(()=>{
       clearAlert()
     }, 3000)
@@ -67,9 +74,10 @@ const AssignGroups = () => {
       <div className='mt-2'>
         {showAlert && <Alert />}
       </div>
-      <div className='my-2 p-6 border rounded-md w-3/12'>
+      <div className='my-2 p-6 border rounded-md w-6/12'>
         <form className='form-control' onSubmit={handleSubmit} >
-          <label htmlFor="usergroup-select" className='label label-text max-w-xs'>UserGroup</label>
+          <label htmlFor="usergroup-select" className='label label-text max-w-xs'>UserGroup:</label>
+          <p className='text-sm text-red-500'>please use format: 'AppAcronym_Group' e.g. 'API_project manager'</p>
           <input type="text" list="usergroupslist" className='input input-bordered input-primary' name="userGroup" id="usergroup-input" onChange={handleChange} />
           <datalist id="usergroupslist">
             {userGroupsList}

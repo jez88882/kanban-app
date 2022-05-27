@@ -10,42 +10,23 @@ const { User, Application, UserGroup, Plan, Task } = require('./models/db');
 
 // main seeding area
 async function seedData() {
-  await UserGroup.create({
-    group: 'admin',
-    username: 'admin'
-  })
-  console.log('creating usergroups...')
-  for (let i = 1; i < 3; i++) {
-    const proj_manager = `proj_manager${i}`
-    const proj_lead = `proj_lead${i}`
-    const team_member = `team_member${i}`
-    const app_Acronym = `APP${i}`
-    await UserGroup.create({ group: `${app_Acronym}-project manager`, username: proj_manager})
-    await UserGroup.create({ group: `${app_Acronym}-project lead`, username: proj_lead})
-    await UserGroup.create({ group: `${app_Acronym}-team member`, username: team_member})
-  }
-  console.log('created usergroups')
-  /** 
+
   // clear previous seeds
   await Task.destroy({
     truncate: true
    });
-  
   await Plan.destroy({
     truncate: true
   });
   await User.destroy({
     truncate: true
   });
-  
   await UserGroup.destroy({
     truncate: true
   });
-  
   await Application.destroy({
     truncate: true
   });
-  
   
   // create admin user
   const adminUser = await User.create({
@@ -79,9 +60,26 @@ async function seedData() {
       email: `${team_member}@email.com`,
       password: '123456A!',
     })
-    
   }
   
+  await UserGroup.create({
+    group: 'admin',
+    username: 'admin'
+  })
+
+  console.log('creating usergroups...')
+  for (let i = 1; i < 3; i++) {
+    const proj_manager = `proj_manager${i}`
+    const proj_lead = `proj_lead${i}`
+    const team_member = `team_member${i}`
+    const app_Acronym = `APP${i}`
+    await UserGroup.create({ group: `${app_Acronym}-project manager`, username: proj_manager})
+    await UserGroup.create({ group: `${app_Acronym}-project lead`, username: proj_lead})
+    await UserGroup.create({ group: `${app_Acronym}-team member`, username: team_member})
+  }
+  console.log('created usergroups')
+
+
   const endingdate = new Date() + 14
   // create 1 app
   console.log('creating app...')
@@ -211,7 +209,6 @@ async function seedData() {
     
     console.log(`created 2 tasks of state: ${state}`)
   })
-  */
   console.log('done')
   return
 

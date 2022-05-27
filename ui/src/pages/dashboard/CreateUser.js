@@ -41,8 +41,7 @@ const CreateUser = () => {
     <div className='p-4'>
       <h1 className="font-bold text-2xl">Create User</h1>
       <form className='form-control w-fit max-w-xs' onSubmit={handleSubmit}>
-        { showAlert && <Alert/>}
-        
+       
         <FormRow type="text" name="username" labelText="Username" value={values.username} handleChange={handleChange}/>
         <FormRow type="email" name="email" labelText="Email" value={values.email} handleChange={handleChange}/>
         <FormRow type="password" name="password" labelText="Password" value={values.password} handleChange={handleChange}/>

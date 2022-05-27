@@ -9,5 +9,6 @@ import TaskDrawer from './TaskDrawer'
 import Task from './Task'
 import OpenTask from "./OpenTask"
 import Plan from "./Plan"
+import CreateTask from "./CreateTask"
 
-export { FormRow, Alert, Page, Navbar, Drawer, Modal, AccountInfo, TaskDrawer, Task, OpenTask, Plan } 
+export { FormRow, Alert, Page, Navbar, Drawer, Modal, AccountInfo, TaskDrawer, Task, OpenTask, Plan, CreateTask } 

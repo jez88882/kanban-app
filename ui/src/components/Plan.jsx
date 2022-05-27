@@ -5,39 +5,21 @@ import axios from 'axios'
 import { useAppContext } from '../context/appContext'
 import { FormRow } from './index'
 
-
-
 const Plan = (props) => {
-  const { Plan_MVP_name, Plan_startDate, Plan_endDate, closed } = props.plan
-  const params = useParams()
+  const { Plan_MVP_name, Plan_startDate, Plan_endDate, closed, Plan_app_Acronym, Plan_description } = props.plan
   const permits = props.permits
   const { displayAlert, showAlert, clearAlert } = useAppContext()
   
   const initialState = {
-    Plan_MVP_name: params.MVP_name,
-    Plan_startDate: '',
-    Plan_endDate: '',
-    Plan_app_Acronym: params.app_Acronym,
-    closed: null
+    Plan_startDate,
+    Plan_endDate,
+    Plan_description,
   }
   
   const [values, setValues] = useState(initialState)
   
-  const fetchPlan = async () => {
-    const res = await axios.get(`/api/v1/applications/${params.app_Acronym}/plans/${params.MVP_name}`)
-    setValues({
-      ...values,
-      Plan_startDate: res.data.plan.Plan_startDate,
-      Plan_endDate: res.data.plan.Plan_endDate,
-      closed: res.data.plan.closed
-    })
-  }
-
   useEffect(()=>{
-    fetchPlan()
   },[])
-  
-  
 
   const handleChange = (e) => {
     setValues({ ...values, [e.target.name]: e.target.value })
@@ -48,10 +30,11 @@ const Plan = (props) => {
 
     const data = {
       Plan_startDate: values.Plan_startDate,
-      Plan_endDate: values.Plan_endDate
+      Plan_endDate: values.Plan_endDate,
+      Plan_description: values.Plan_description
     }
 
-    const res = await axios.patch(`/api/v1/applications/${values.Plan_app_Acronym}/plans/${values.Plan_MVP_name}`, data)
+    const res = await axios.patch(`/api/v1/applications/${Plan_app_Acronym}/plans/${Plan_MVP_name}`, data)
     console.log(res.data)
     const alertMessage = 'updated plan'
     if (res.data) {
@@ -70,7 +53,7 @@ const Plan = (props) => {
   return (
     <>
       {/* Card */}
-      <label for="my-modal-4" class="cursor-pointer">
+      <label htmlFor={Plan_MVP_name} className="cursor-pointer">
          <div key={Plan_MVP_name} className={`border mb-2 px-3 py-1 flex items-center rounded ${closed ? "text-gray-500 bg-gray-200" : ""}`}>
             <p className="text-lg w-1/4">
               {Plan_MVP_name}
@@ -80,9 +63,9 @@ const Plan = (props) => {
       </label>
 
       {/* Modal */}
-      <input type="checkbox" id="my-modal-4" class="modal-toggle" />
-      <label for="my-modal-4" class="modal cursor-pointer">
-        <label class="modal-box relative" for="">
+      <input type="checkbox" id={Plan_MVP_name} className="modal-toggle" />
+      <label htmlFor={Plan_MVP_name} className="modal cursor-pointer">
+        <label className="modal-box relative" htmlFor="">
         <div className='p-2'>
           <div className='flex items-center'>
             <h2 className='font-bold text-2xl'>Plan: {Plan_MVP_name}</h2>
@@ -90,13 +73,15 @@ const Plan = (props) => {
               <button className='btn btn-info ml-2' onClick={closePlan} disabled={closed}>Close Plan</button>
             }
           </div>
-          <div className='h-15'>
-            {showAlert? <Alert /> : " "}
-          </div>
+         
           <form className='my-2 p-6 border rounded-md' onSubmit={handleSubmit}>
-            <FormRow type='date' name='Plan_startDate' value={Plan_startDate} handleChange={handleChange} labelText='Start date' disabled={closed}/>
-            <FormRow type='date' name='Plan_endDate' value={Plan_endDate} handleChange={handleChange} labelText='End date' disabled={closed}/>
-            <button type="submit" className='btn btn-primary my-2 btn-block' disabled={closed}>Update Plan</button>
+            <label htmlFor='Plan_description' className='label label-text w-full max-w-xs' >Description</label>
+            <textarea id="Plan_description" name="Plan_description" className='textarea textarea-bordered textarea-primary w-full' rows="7" cols="33" value={values.Plan_description} onChange={handleChange}  disabled={!permits.Open}></textarea>
+            <FormRow type='date' name='Plan_startDate' value={values.Plan_startDate} handleChange={handleChange} labelText='Start date' disabled={closed || !permits.Open}/>
+            <FormRow type='date' name='Plan_endDate' value={values.Plan_endDate} handleChange={handleChange} labelText='End date' disabled={closed || !permits.Open}/>
+            {permits.Open && 
+              <button type="submit" className='btn btn-primary my-2 btn-block' disabled={closed}>Update Plan</button>
+            }
           </form>
         </div>
         </label>

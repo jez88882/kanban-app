@@ -1,7 +1,7 @@
 const catchAsyncErrors =require('../middlewares/catchAsyncErrors');
 const sequelize = require('sequelize')
-const { UserGroup, User, Application } = require('../models/db');
-const user = require('../models/user');
+const ErrorHandler = require('../utils/errorHandler')
+const { UserGroup } = require('../models/db');
 
 exports.index = catchAsyncErrors( async function(req, res, next) {
   let groups
@@ -21,14 +21,40 @@ exports.index = catchAsyncErrors( async function(req, res, next) {
 })
 
 exports.create = catchAsyncErrors( async function(req, res, next) {
-  // extract data from body
-  const { name, username, app_Acronym} = req.body
-  console.log(req.body)
+  // check if group x username already exists
+  const userGroupExists = await UserGroup.findOne({ 
+    where: req.body
+  })
+  
+  if (userGroupExists) {
+    return next(new ErrorHandler('User has already been assigned', 401));
+  }
+
   // create the userGroup instance
-  const usergroup = await UserGroup.create({ name, username, app_Acronym })
+  const usergroup = await UserGroup.create(req.body)
   
   res.json({
     success: true,
-    // data: usergroup
+    usergroup
   })
 })
+
+exports.checkCreateApp = catchAsyncErrors( async function(req, res, next) {
+
+  const isPM = await UserGroup.findOne({
+    where: {
+      username: req.user.username,
+      group: {
+        [sequelize.Op.endsWith]: 'project manager',
+      }
+    }
+  })
+
+  const result = isPM ? true : false
+
+  res.json({
+    success: true,
+    result
+  })
+})
+

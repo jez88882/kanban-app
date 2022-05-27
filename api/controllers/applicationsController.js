@@ -27,8 +27,9 @@ exports.show = catchAsyncErrors( async function(req, res, next) {
 });
 
 exports.create = catchAsyncErrors( async function(req, res, next) {
+
   req.body.App_Rnumber = 0
-  const app = await Application.create(req.body)  
+  const app = await Application.create(req.body)
 
   res.status(200).json({
       success: true,

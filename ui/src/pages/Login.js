@@ -13,7 +13,7 @@ export default function Login() {
   const [values, setValues] = useState(initialState)
 
   // global state and usenavigate
-  const {isLoading, displayAlert, loginUser, user, clearAlert, location } = useAppContext()
+  const {isLoading, showAlert, displayAlert, loginUser, user, clearAlert, location } = useAppContext()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -33,18 +33,15 @@ export default function Login() {
     e.preventDefault();
     const { username, password } = values
     if (username==="" || !password==="") {
-      displayAlert({
-        type: 'error',
-        text: 'please enter all values'
-      })
+      displayAlert('error', 'please enter all values')
       return
     }
     try {
       loginUser({username, password})
-      displayAlert({
-        type:'success',
-        text:'success. logging in...'
-      })
+      displayAlert(
+        'success',
+        'success. logging in...'
+      )
       
     } catch (error) {
       displayAlert(
@@ -59,7 +56,9 @@ export default function Login() {
       <div className="hero-content text-center">
         <div className="max-w-md">
           <h1 className='text-5xl font-bold my-2'>Login</h1>
-          {displayAlert && <Alert />}
+          <div className='h-15'>
+            {showAlert && <Alert />}
+          </div>
           <form className='form-control w-fit max-w-xs' onSubmit={handleSubmit}>
             <FormRow type="username" name="username" value={values.username} labelText="Username" handleChange={handleChange}/>
             <FormRow type="password" name="password" value={values.password} labelText="Password" handleChange={handleChange}/>

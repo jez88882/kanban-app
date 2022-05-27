@@ -25,6 +25,7 @@ const initialState = {
   user: null,
   is_admin: null,
   location: null,
+  userGroups: []
 }
 
 const AppContext = React.createContext();

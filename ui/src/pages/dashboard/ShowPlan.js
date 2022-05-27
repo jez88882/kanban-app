@@ -70,9 +70,7 @@ const ShowPlan = () => {
         <h2 className='font-bold text-2xl'>Plan {values.Plan_MVP_name}</h2>
         <button className='btn btn-info ml-2' onClick={closePlan} disabled={values.closed}>Close Plan</button>
       </div>
-      <div className='h-15'>
-        {showAlert? <Alert /> : " "}
-      </div>
+     
       <form className='my-2 p-6 w-8/12 border rounded-md' onSubmit={handleSubmit}>
         <FormRow type='date' name='Plan_startDate' value={values.Plan_startDate} handleChange={handleChange} labelText='Start date' disabled={values.closed}/>
         <FormRow type='date' name='Plan_endDate' value={values.Plan_endDate} handleChange={handleChange} labelText='End date' disabled={values.closed}/>

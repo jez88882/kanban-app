@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { User } = require('../models/db');
+const { User, Application, UserGroup } = require('../models/db');
+const { Op } = require('sequelize')
 const catchAsyncErrors = require('../middlewares/catchAsyncErrors');
 const ErrorHandler = require('../utils/errorHandler');
 const checkGroup = require('../utils/checkGroup');
@@ -11,7 +12,7 @@ exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   
   const token = req.cookies.token
   
-  if (!token) {
+  if (token==="none") {
     return next(new ErrorHandler('Login first to access this resource', 401));
   }
 
@@ -30,21 +31,37 @@ exports.checkAdmin = catchAsyncErrors( async function(req, res, next) {
   if (!is_admin) {
     return next(new ErrorHandler('not authorized', 401));
   }
-
+  
   next()
 })
 
 exports.checkPM = catchAsyncErrors( async function(req, res, next) {
-  const is_PM = await checkGroup(req.user, "project manager", req.app_Acronym)
-  if (!is_PM) {
+ 
+  const app = await Application.findByPk(req.app_Acronym)
+  const permittedGroup = app.App_permit_Open
+  const user = req.user
+  const is_permitted = await checkGroup(user, permittedGroup)
+  
+  if (!is_permitted) {
     return next(new ErrorHandler('not authorized', 401));
   }
+
   next()
 })
 
-exports.checkProjLead = catchAsyncErrors( async function(req, res, next) {
-  const is_lead = await checkGroup(req.user, "project lead", req.app_Acronym)
-  if (!is_lead) {
+exports.checkGeneralPM = catchAsyncErrors( async function(req, res, next) {
+  console.log(req.body)
+
+  const usergroup = await UserGroup.findOne({
+    where: {
+      username: req.user.username,
+      group: {
+        [Op.endsWith]: 'project manager'
+      }
+    }
+  })
+  
+  if (!usergroup) {
     return next(new ErrorHandler('not authorized', 401));
   }
   next()

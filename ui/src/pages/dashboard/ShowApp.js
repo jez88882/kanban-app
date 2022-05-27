@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Task, Alert, OpenTask, Plan } from '../../components'
+import { Task, Alert, OpenTask, Plan, CreateTask } from '../../components'
 import { useAppContext } from "../../context/appContext";
 
 const ShowApp = () => {
@@ -10,10 +10,11 @@ const ShowApp = () => {
   const [permits, setPermits] = useState({})
   const { Open, toDoList, Doing, Done, Closed } = tasks
 
+  
   const params = useParams()
   const app_Acronym = params.app_Acronym
   const { user, showAlert } = useAppContext() //to change!!! temp for development
-
+  
   const checkPermits = async () => {
     const groupsRes = await axios.get(`/api/v1/groups?user=${user.username}`)
     const appRes = await axios.get(`/api/v1/applications/${app_Acronym}`)
@@ -44,7 +45,11 @@ const ShowApp = () => {
     setPermits({Create, Open, toDoList, Doing, Done})
     console.log('checked permissions')
   }
-
+  const addOpenTask = (task) => {
+    const newOpenTasks = tasks.Open.concat(task)
+    setTasks({...tasks, Open: newOpenTasks})
+  }
+  
   const fetchPlans = async () => {
     const res = await axios.get(`/api/v1/applications/${app_Acronym}/plans`)
     setPlans(res.data.plans)
@@ -91,15 +96,15 @@ const ShowApp = () => {
   },[])
   
   const plansList = plans.map(plan=>
-   <Plan plan={plan} permits={permits}/>
+   <Plan key={plan.Plan_MVP_name} plan={plan} permits={permits}/>
   )
 
   // const openTasks = open.map(task=> <Task key={task.Task_id} task={task} app_Acronym={app_Acronym}/>)
   const listTasks = (tasks) => {
-    return tasks.map(task=> <Task key={task.Task_id} task={task} app_Acronym={app_Acronym} moveTask={moveTask} permits={permits}/>)
+    return tasks.map(task=> <Task key={task.Task_id} task={task} app_Acronym={app_Acronym} moveTask={moveTask} permits={permits}  username={user.username}/>)
   }
   
-  const OpenTasksList = Open ? Open.map(task=> <OpenTask key={task.Task_id} task={task} app_Acronym={app_Acronym} moveTask={moveTask} permits={permits}/>) : []
+  const OpenTasksList = Open ? Open.map(task=> <OpenTask key={task.Task_id} task={task} app_Acronym={app_Acronym} moveTask={moveTask} permits={permits}  username={user.username}/>) : []
   
   function moveTask(selectTask, source, destination) {
     console.log(`moving task from ${source} to ${destination}`)
@@ -110,6 +115,7 @@ const ShowApp = () => {
       [destination]: tasks[destination].concat(selectTask)
     })
   }
+  const showPlansAndOpen = permits.Open || permits.Create
 
   return (
     <>
@@ -119,9 +125,9 @@ const ShowApp = () => {
           <Link to="edit" className="btn btn-primary mx-4">Edit App</Link>
         }
       </div>
-      {showAlert && <Alert />}
+     
       <div className="m-6">
-        <div className={`collapse ${permits.Open ? "collapse-open" : ""}`}>
+        <div className={`collapse ${showPlansAndOpen ? "collapse-open" : ""}`}>
           <input type="checkbox" /> 
           <div className="collapse-title border-b-4 mb-4">
             <p className="font-bold text-2xl">Plans and Open Tasks</p>
@@ -157,9 +163,7 @@ const ShowApp = () => {
                     {Open && OpenTasksList}
                   </div>
                   {permits.Create &&
-                  <Link to="tasks/new" className="btn btn-outline btn-primary w-full">
-                    Create new task
-                  </Link>
+                 <CreateTask plans={plans} addOpenTask={addOpenTask} />
                   }
                 </div>
             </div>

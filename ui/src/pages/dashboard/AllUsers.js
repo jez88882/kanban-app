@@ -52,7 +52,7 @@ const AllUsers = () => {
             <button type="submit" className="btn btn-primary mt-2 mx-2" disabled={isLoading}>Search</button>
           </div>
         </form>
-        {showAlert && <Alert />}
+       
         <div className="w-full justify-items-center">
           {listUsers}
         </div>     

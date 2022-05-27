@@ -3,7 +3,7 @@ const router = express.Router();
 const planRouter = require('./planRouter')
 const taskRouter = require('./taskRouter')
 const { index, show, create, update } = require('../controllers/applicationsController.js');
-const { checkPM } = require('../middlewares/auth')
+const { checkGeneralPM, checkPM } = require('../middlewares/auth')
 
 // keep app_Acronym in request
 function keepAcronym(req, res, next) {
@@ -17,8 +17,8 @@ router.use('/:app_Acronym/plans', keepAcronym, planRouter)
 router.use('/:app_Acronym/tasks', keepAcronym, taskRouter)
 
 
-router.post('/', keepAcronym, checkPM, create)
-router.patch('/:app_Acronym', update)
+router.post('/', checkGeneralPM, create)
+router.patch('/:app_Acronym', keepAcronym, checkPM, update)
 
 
 

@@ -3,6 +3,7 @@ const { UserGroup } = require("../models/db")
 async function checkGroup(user, group) {
   console.log(`checking if ${user.username} is ${group}`)
   let result = false
+  
   const data = await UserGroup.findOne({ where: {
     username: user.username,
     group
