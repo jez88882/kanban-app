@@ -18,11 +18,11 @@ const AllUsers = () => {
     const res = await axios.get('/api/v1/users?username=')
     setUsers(res.data.data)
   }
-  
+
   const handleSearch = (e) => {
     e.preventDefault();
     setValues({ ...values, [e.target.name]: e.target.value })
-    
+
     setTimeout(async()=>{
       const res = await axios.get(`/api/v1/users?username=${values.username}`)
       setUsers(res.data.data)
@@ -47,19 +47,18 @@ const AllUsers = () => {
       <h2 className='font-bold text-2xl'>All Users</h2>
       <div className='w-8/12'>
         <form className='form-control' onSubmit={handleSearch}>
-          <div className='w-3/12 flex items-end'>
+          <div className='flex items-end'>
             <FormRow type="text" name="username" value={values.username} labelText="Search by username" handleChange={handleSearch}/>
             <button type="submit" className="btn btn-primary mt-2 mx-2" disabled={isLoading}>Search</button>
           </div>
         </form>
-       
+
         <div className="w-full justify-items-center">
           {listUsers}
-        </div>     
+        </div>
       </div>
     </div>
   );
 };
 
 export default AllUsers;
-

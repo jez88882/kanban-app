@@ -10,15 +10,6 @@ const AllApps = () => {
   const [values, setValues] = useState(initialState)
   const [isPM, setIsPM] = useState(false)
 
-  const checkPM = async () => {
-    try {
-      const res= await axios.get('/api/v1/groups/checkGeneralPM')
-      if (res.data.result) { setIsPM(true) }
-    } catch (error) {
-      console.log(error.response)
-    }
-  }
-
   const fetchApps = async () => {
     console.log('fetching Apps')
     const res = await axios.get('api/v1/applications/')
@@ -26,12 +17,12 @@ const AllApps = () => {
   }
   useEffect(()=>{
     fetchApps()
-    checkPM()
+    // checkPM()
   },[])
 
   const appList = values.apps.map((app) => {
     const { App_Acronym, startDate, endDate } = app
-    return( 
+    return(
     <Link to={`/applications/${App_Acronym}`}>
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">

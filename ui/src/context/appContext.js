@@ -1,13 +1,13 @@
 import axios from 'axios';
 import React,{ useContext } from 'react'
 import { useImmerReducer } from 'use-immer'
-import {  DISPLAY_ALERT, 
-          CLEAR_ALERT, 
-          LOGIN_USER_BEGIN, 
-          LOGIN_USER_SUCCESS, 
-          LOGIN_USER_ERROR, 
+import {  DISPLAY_ALERT,
+          CLEAR_ALERT,
+          LOGIN_USER_BEGIN,
+          LOGIN_USER_SUCCESS,
+          LOGIN_USER_ERROR,
           CREATE_USER_BEGIN,
-          CREATE_USER_SUCCESS, 
+          CREATE_USER_SUCCESS,
           LOGOUT_USER_SUCCESS,
           SET_LOCATION,
         } from './actions';
@@ -24,6 +24,7 @@ const initialState = {
   alertType: '',
   user: null,
   is_admin: null,
+  is_PM: null,
   location: null,
   userGroups: []
 }
@@ -33,7 +34,7 @@ const AppProvider = ({children}) => {
 
   const [state, dispatch] = useImmerReducer(reducer, initialState)
 
-  const fetchUsers = async () => {    
+  const fetchUsers = async () => {
     console.log('fetching users')
     const res = await axios.get('/api/v1/users?username=')
     return res.data.data
@@ -45,7 +46,7 @@ const AppProvider = ({children}) => {
       payload: path
     })
   }
-  
+
   const checkGroup = async (username, userGroup) => {
     const response = await axios.get(`/api/v1/users/${username}/groups?filter=${userGroup}`)
     return response.data.data
@@ -55,11 +56,15 @@ const AppProvider = ({children}) => {
     const response = await axios.get('/api/v1/auth')
     const user =  response.data.user
     const is_admin = await checkGroup(user.username, "admin")
+    const resPM = await axios.get("/api/v1/groups/checkGeneralPM")
+    console.log(resPM)
+
     dispatch({
       type: LOGIN_USER_SUCCESS,
-      payload: { 
-        user, 
-        is_admin 
+      payload: {
+        user,
+        is_admin,
+        // is_PM: resPM.data
       }
     })
   }
@@ -67,12 +72,12 @@ const AppProvider = ({children}) => {
   const displayAlert = (alerttype, alerttext) => {
     dispatch({
       type: DISPLAY_ALERT,
-      payload: { 
-        type: alerttype, 
+      payload: {
+        type: alerttype,
         text: alerttext }
     })
   }
-  
+
   const clearAlert = () => {
     dispatch({type: CLEAR_ALERT})
   }
@@ -82,7 +87,7 @@ const AppProvider = ({children}) => {
     dispatch({type: LOGIN_USER_BEGIN})
     try {
       const response = await axios.post('/api/v1/login', currentUser)
-      
+
       const { user, token } = response.data
 
       const is_admin = await checkGroup(user.username, "admin")
@@ -91,11 +96,11 @@ const AppProvider = ({children}) => {
         type: LOGIN_USER_SUCCESS,
         payload: { user, token, is_admin }
       })
-      
+
       setTimeout(()=>{
         clearAlert()
       }, 1000)
-      
+
     } catch (error) {
       console.log(error.response)
       dispatch({
@@ -127,12 +132,12 @@ const AppProvider = ({children}) => {
         }
       })
     }
-    
+
     setTimeout(()=>{
       clearAlert()
     }, 5000)
   }
-  
+
   const disableUser = async (username) => {
     try {
       const response = await axios.get(`/api/v1/users/${username}/disable`)
@@ -147,7 +152,7 @@ const AppProvider = ({children}) => {
       setTimeout(()=>{
         dispatch({type: CLEAR_ALERT})
       }, 5000)
-      
+
     } catch (error) {
       console.log(error.response)
       dispatch({
@@ -173,9 +178,9 @@ const AppProvider = ({children}) => {
           text: 'logged out successfully'
         }
       })
-      
+
     } catch (error) {
-      
+
     }
   }
 
