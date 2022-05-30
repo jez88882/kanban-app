@@ -24,30 +24,39 @@ const initialState = {
     return(
       <div>
         <label for="usergroup-select" className='label label-text max-w-xs'>{props.label}</label>
-        <select className='input input-bordered input-primary w-full' name={`App_permit_${props.permit}`} id="usergroup-select" onChange={props.handleChange} value={props.value}>
-          {props.userGroups.map(group=> <option value={group.group}>{group.group}</option>)}
+        <select className='input input-bordered input-primary w-full' name={`App_permit_${props.permit}`} id="usergroup-select" onChange={props.handleChange} value={props.value} disabled={props.disabled}>
+          {props.userGroups.map(group=> <option key={group.group} value={group.group}>{group.group}</option>)}
           
         </select>
       </div>
     );
   }
 
-const CreateApp = () => {
-  const [values, setValues] = useState(initialState)
-  const [apps, setApps] = useState([])
-  const { user, displayAlert, showAlert, clearAlert } = useAppContext()
-  const params = useParams()
-  const [userGroups, setUserGroups] = useState([])
   
+  
+  const CreateApp = () => {
+    const [values, setValues] = useState(initialState)
+    const { displayAlert, clearAlert } = useAppContext()
+    const params = useParams()
+    const [userGroups, setUserGroups] = useState([])
+    const [isPM, setIsPM] = useState(false)
+    
+    const checkPM = async() => {
+      try {
+        const resPM= await axios.get('/api/v1/groups/checkGeneralPM')
+        setIsPM(resPM.data.result)
+      } catch (error) {
+        console.log(error)
+      }
+    }
   const fetchData = async () => {
     console.log('fetching usergroups')
     const res = await axios.get('/api/v1/groups')
-    console.log(res.data)
     setUserGroups(res.data.groups)
   }
   const fetchApp = async (app_Acronym) => {
     const res = await axios.get(`/api/v1/applications/${app_Acronym}`)
-    console.log(res)
+    console.log(`fetched App: ${app_Acronym}`)
     setValues(res.data.app)
   }
   
@@ -56,6 +65,7 @@ const CreateApp = () => {
       fetchApp(params.app_Acronym)
     }
     fetchData()
+    checkPM()
   },[params.app_Acronym])
   
   const handleChange = (e) => {
@@ -69,6 +79,10 @@ const CreateApp = () => {
     
     if (formIsNotCompletelyFilled) {
       displayAlert('error', 'please fill up all fields')
+      setTimeout(()=>{
+        clearAlert();
+      }, 3000)
+      
       return
     }
     
@@ -99,7 +113,7 @@ const CreateApp = () => {
     <div className='p-6'>
       <h2 className='font-bold text-2xl'>{params.app_Acronym ? `Edit ${params.app_Acronym}` : 'Create App'}</h2>
       
-      <form className='my-2 p-6 w-6/12 border rounded-md' onSubmit={handleSubmit}>
+      <form className='my-2 p-6 w-7/12 border rounded-md' onSubmit={handleSubmit}>
         <div>
           <label  className='label label-text w-full max-w-xs' htmlFor="App_Acronym">App Acronym: </label>
           <input className='input input-bordered input-primary w-full' list="appList" id="App_Acronym" name="App_Acronym" onChange={handleChange} value={values.App_Acronym} disabled={params.app_Acronym}/>
@@ -108,20 +122,20 @@ const CreateApp = () => {
           {/* {appList} */}
         </datalist>
         <label htmlFor='App_Description' className='label label-text w-full max-w-xs'>App description</label>
-        <textarea id="App_Description" name="App_Description" className='textarea textarea-bordered textarea-primary w-full' rows="7" cols="33" value={values.App_Description} onChange={handleChange} ></textarea>
+        <textarea id="App_Description" name="App_Description" className='textarea textarea-bordered textarea-primary w-full' rows="7" cols="33" value={values.App_Description} onChange={handleChange} disabled={!isPM}></textarea>
         <div className='grid grid-cols-2 gap-2'>
-          <FormRow type="date" name="startDate" labelText="Start date" value={values.startDate} handleChange={handleChange} />
-          <FormRow type="date" name="endDate" labelText="End date" value={values.endDate} handleChange={handleChange} />
+          <FormRow type="date" name="startDate" labelText="Start date" value={values.startDate} handleChange={handleChange} disabled={!isPM}/>
+          <FormRow type="date" name="endDate" labelText="End date" value={values.endDate} handleChange={handleChange} disabled={!isPM}/>
         </div>
         <div className='grid grid-cols-5 gap-3'>
 
-        <Permit userGroups={userGroups} permit="Create" label="Permit Create" handleChange={handleChange} value={values.App_permit_Create}/>
-        <Permit userGroups={userGroups} permit="Open" label="Permit Open" handleChange={handleChange} value={values.App_permit_Open}/>
-        <Permit userGroups={userGroups} permit="toDoList" label="Permit To Do" handleChange={handleChange} value={values.App_permit_toDoList}/>
-        <Permit userGroups={userGroups} permit="Doing" label="Permit Doing" handleChange={handleChange} value={values.App_permit_Doing}/>
-        <Permit userGroups={userGroups} permit="Done" label="Permit Done" handleChange={handleChange} value={values.App_permit_Done}/>
+        <Permit userGroups={userGroups} permit="Create" label="Permit Create" handleChange={handleChange} value={values.App_permit_Create} disabled={!isPM}/>
+        <Permit userGroups={userGroups} permit="Open" label="Permit Open" handleChange={handleChange} value={values.App_permit_Open} disabled={!isPM}/>
+        <Permit userGroups={userGroups} permit="toDoList" label="Permit To Do" handleChange={handleChange} value={values.App_permit_toDoList} disabled={!isPM}/>
+        <Permit userGroups={userGroups} permit="Doing" label="Permit Doing" handleChange={handleChange} value={values.App_permit_Doing} disabled={!isPM}/>
+        <Permit userGroups={userGroups} permit="Done" label="Permit Done" handleChange={handleChange} value={values.App_permit_Done} disabled={!isPM}/>
         </div>
-        <button type="submit" className='btn btn-primary my-2 btn-block'>{params.app_Acronym ? "Update" : "Create"}</button>
+        <button type="submit" className='btn btn-primary my-2 btn-block' disabled={!isPM}>{params.app_Acronym ? "Update" : "Create"}</button>
       </form>
     </div>
   );

@@ -127,16 +127,13 @@ async function seedData() {
   const app = await Application.findByPk('APP1')
   
   // create 2 of each task, 1 of which will be assigned to a plan
-  const states = ['open', 'toDo', 'doing', 'done', 'closed']
   
-  //idk if this would work...
-  await mapping(states, async (state) => {
-    // const state = 'closed'
+    let state = 'Open'
     console.log(`now creating tasks of state: ${state}`)
     
     let teamMember
     switch (state) {
-      case 'open':
+      case 'Open':
         teamMember = ''
         break
         case 'toDo':
@@ -158,7 +155,7 @@ async function seedData() {
     }
     console.log(task1)
     
-    const note = {
+    let note = {
       creator: 'proj_lead1',
       content: 'proj_lead1 created task',
       createdAt: new Date().toLocaleString(),
@@ -168,10 +165,11 @@ async function seedData() {
     
     task1.Task_notes = JSON.stringify([note])
     task1.Task_id =`APP1_${app.App_Rnumber}`
-    
+    task1.Task_app_Acronym = 'APP1'
     await Task.create(task1)
+    
     console.log(`created first ${state} task`)
-
+    
     console.log(`app Rnumber is now ${app.App_Rnumber}`)
     console.log('incrementing...')
     await app.increment({'App_Rnumber': 1})
@@ -188,7 +186,7 @@ async function seedData() {
       Task_owner: teamMember
     }
     
-    const note2 = {
+    let note2 = {
       creator: 'proj_lead1',
       content: 'proj_lead1 created task',
       createdAt: new Date().toLocaleString(),
@@ -198,6 +196,7 @@ async function seedData() {
     task2.Task_notes = JSON.stringify([note2])
     
     task2.Task_id =`APP1_${app.App_Rnumber}`
+    task2.Task_app_Acronym = 'APP1'
     await Task.create(task2)
     
     console.log(`app Rnumber is now ${app.App_Rnumber}`)
@@ -208,7 +207,168 @@ async function seedData() {
     
     
     console.log(`created 2 tasks of state: ${state}`)
-  })
+  
+
+    state = 'toDoList'
+    console.log(`now creating tasks of state: ${state}`)
+    
+    switch (state) {
+      case 'open':
+        teamMember = ''
+        break
+        case 'toDo':
+          teamMember = 'proj_manager1'
+        break
+      default:
+        teamMember = 'team_member1'
+      }
+      
+    console.log(`team member is now: ${teamMember}`)
+    const task3 = {
+      Task_name: `${state} Task3`,
+      Task_description: `this is ${state} task one`,
+      Task_plan: 'plan1',
+      Task_creator: 'proj_lead1',
+      Task_state: state,
+      Task_createDate: new Date().toLocaleString(),
+      Task_owner: teamMember
+    }
+    console.log(task3)
+    
+    note = {
+      creator: 'proj_lead1',
+      content: 'proj_lead1 created task',
+      createdAt: new Date().toLocaleString(),
+      state
+    }
+    console.log(note)
+    
+    task3.Task_notes = JSON.stringify([note])
+    task3.Task_id =`APP1_${app.App_Rnumber}`
+    task3.Task_app_Acronym = 'APP1'
+    await Task.create(task3)
+    
+    console.log(`created first ${state} task`)
+    
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    console.log('incrementing...')
+    await app.increment({'App_Rnumber': 1})
+    await app.reload()
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    
+    const task4 = {
+      Task_name: `${state} Task4`,
+      Task_description: `this is the second *${state}* task. not assigned to any plan`,
+      Task_plan: '',
+      Task_creator: 'proj_lead1',
+      Task_state: state,
+      Task_createDate: new Date().toLocaleString(),
+      Task_owner: teamMember
+    }
+    
+    note2 = {
+      creator: 'proj_lead1',
+      content: 'proj_lead1 created task',
+      createdAt: new Date().toLocaleString(),
+      state
+    }
+    
+    task4.Task_notes = JSON.stringify([note2])
+    
+    task4.Task_id =`APP1_${app.App_Rnumber}`
+    task4.Task_app_Acronym = 'APP1'
+    await Task.create(task4)
+    
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    console.log('incrementing...')
+    await app.increment('App_Rnumber')
+    await app.reload()
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    
+    
+    console.log(`created 2 tasks of state: ${state}`)
+
+    state = 'Doing'
+    console.log(`now creating tasks of state: ${state}`)
+    
+    switch (state) {
+      case 'open':
+        teamMember = ''
+        break
+        case 'toDo':
+          teamMember = 'proj_manager1'
+        break
+      default:
+        teamMember = 'team_member1'
+      }
+      
+    console.log(`team member is now: ${teamMember}`)
+    const task5 = {
+      Task_name: `${state} Task5`,
+      Task_description: `this is ${state} task one`,
+      Task_plan: 'plan1',
+      Task_creator: 'proj_lead1',
+      Task_state: state,
+      Task_createDate: new Date().toLocaleString(),
+      Task_owner: teamMember
+    }
+    console.log(task5)
+    
+    note = {
+      creator: 'proj_lead1',
+      content: 'proj_lead1 created task',
+      createdAt: new Date().toLocaleString(),
+      state
+    }
+    console.log(note)
+    
+    task5.Task_notes = JSON.stringify([note])
+    task5.Task_id =`APP1_${app.App_Rnumber}`
+    task5.Task_app_Acronym = 'APP1'
+    await Task.create(task5)
+    
+    console.log(`created first ${state} task`)
+    
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    console.log('incrementing...')
+    await app.increment({'App_Rnumber': 1})
+    await app.reload()
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    
+    const task6 = {
+      Task_name: `${state} Task6`,
+      Task_description: `this is the second *${state}* task. not assigned to any plan`,
+      Task_plan: '',
+      Task_creator: 'proj_lead1',
+      Task_state: state,
+      Task_createDate: new Date().toLocaleString(),
+      Task_owner: teamMember
+    }
+    
+    note2 = {
+      creator: 'proj_lead1',
+      content: 'proj_lead1 created task',
+      createdAt: new Date().toLocaleString(),
+      state
+    }
+    
+    task6.Task_notes = JSON.stringify([note2])
+    
+    task6.Task_id =`APP1_${app.App_Rnumber}`
+    task6.Task_app_Acronym = 'APP1'
+    await Task.create(task6)
+    
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    console.log('incrementing...')
+    await app.increment('App_Rnumber')
+    await app.reload()
+    console.log(`app Rnumber is now ${app.App_Rnumber}`)
+    
+    
+    console.log(`created 2 tasks of state: ${state}`)
+  
+
+
   console.log('done')
   return
 

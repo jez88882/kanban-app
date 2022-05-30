@@ -39,18 +39,20 @@ exports.create = catchAsyncErrors( async function(req, res, next) {
   })
 })
 
-exports.checkCreateApp = catchAsyncErrors( async function(req, res, next) {
-
+exports.checkGeneralPM = catchAsyncErrors( async function(req, res, next) {
+  console.log('checking if is project manager')
   const isPM = await UserGroup.findOne({
     where: {
       username: req.user.username,
       group: {
-        [sequelize.Op.endsWith]: 'project manager',
+        [sequelize.Op.like]: '%project manager%',
       }
     }
   })
 
   const result = isPM ? true : false
+  console.log(`${req.user.username} is ${result ? "": "NOT"} a PM}`)
+
 
   res.json({
     success: true,

@@ -53,7 +53,7 @@ const AssignGroups = () => {
     }
     console.log(data)
     const res = await axios.post(`/api/v1/groups`, data)
-    displayAlert('success', `created user group ${values.userGroup}`)
+    displayAlert('success', `assigned ${values.username} to ${values.userGroup}`)
     setTimeout(()=>{
       clearAlert()
     }, 3000)

@@ -8,12 +8,22 @@ const ShowApp = () => {
   const [plans, setPlans] = useState([])
   const [tasks, setTasks] = useState([])
   const [permits, setPermits] = useState({})
+  const [isPM, setIsPM] = useState(false)
   const { Open, toDoList, Doing, Done, Closed } = tasks
 
   
   const params = useParams()
   const app_Acronym = params.app_Acronym
-  const { user, showAlert } = useAppContext() //to change!!! temp for development
+  const { user } = useAppContext() //to change!!! temp for development
+
+  const checkPM = async() => {
+    try {
+      const resPM= await axios.get('/api/v1/groups/checkGeneralPM')
+      setIsPM(resPM.data.result)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   
   const checkPermits = async () => {
     const groupsRes = await axios.get(`/api/v1/groups?user=${user.username}`)
@@ -93,10 +103,11 @@ const ShowApp = () => {
     fetchPlans()
     fetchTasks()
     checkPermits()
+    checkPM()
   },[])
   
   const plansList = plans.map(plan=>
-   <Plan key={plan.Plan_MVP_name} plan={plan} permits={permits}/>
+   <Plan key={plan.Plan_MVP_name} plan={plan} isPM={isPM}/>
   )
 
   // const openTasks = open.map(task=> <Task key={task.Task_id} task={task} app_Acronym={app_Acronym}/>)
@@ -115,21 +126,19 @@ const ShowApp = () => {
       [destination]: tasks[destination].concat(selectTask)
     })
   }
-  const showPlansAndOpen = permits.Open || permits.Create
+  const showPlansAndOpen = isPM || permits.Create
 
   return (
     <>
       <div className="flex border-b-4 py-8 px-6 items-center	">
         <h1 className='font-bold text-3xl'>Application: {app_Acronym}</h1>
-        {permits.Open &&
-          <Link to="edit" className="btn btn-primary mx-4">Edit App</Link>
-        }
+        <Link to="edit" className="btn btn-primary mx-4">{isPM ? "Edit App" : "View App Details"}</Link>
       </div>
      
       <div className="m-6">
         <div className={`collapse ${showPlansAndOpen ? "collapse-open" : ""}`}>
           <input type="checkbox" /> 
-          <div className="collapse-title border-b-4 mb-4">
+          <div className="collapse-title border-b-2 mb-4 shadow-sm">
             <p className="font-bold text-2xl">Plans and Open Tasks</p>
           </div>
           <div className="collapse-content"> 

@@ -4,10 +4,6 @@ import { useParams, Link } from 'react-router-dom'
 import { useAppContext } from '../../context/appContext'
 import { Modal, FormRow, Alert } from '../../components'
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPen } from '@fortawesome/free-solid-svg-icons'
-
-
 const initialValues = {
  email:'',
  password: '',
@@ -25,7 +21,7 @@ const EditUser = () => {
   const [state, setState] = useState(initialState)
   const [newUserGroup, setNewUserGroup] = useState('')
 
-  const {disableUser, showAlert, displayAlert, clearAlert } = useAppContext()
+  const {disableUser, displayAlert, clearAlert } = useAppContext()
 
   const fetchUser = async () => {
     const res = await axios.get(`/api/v1/users/${params.username}`)
@@ -93,7 +89,8 @@ const EditUser = () => {
     try {
       const res = await axios.post(`/api/v1/groups`, data)
       const updatedGroups = state.thisUserGroups.concat(res.data.usergroup)
-      setState({...state, thisusergroups: updatedGroups})
+      setState({...state, thisUserGroups: updatedGroups})
+      setNewUserGroup('')
       displayAlert('success', "Added user group")
     } catch (error) {
       console.log(error.response)
@@ -139,7 +136,7 @@ const EditUser = () => {
           <form className='form-control' onSubmit={createUserGroup} >
             <label htmlFor="usergroup-select" className='label label-text max-w-xs'>UserGroup:</label>
             <p className='text-sm text-red-500'>please use format: 'AppAcronym_Group' e.g. 'API_project manager'</p>
-            <input type="text" list="usergroupslist" className='input input-bordered input-primary' name="userGroup" id="usergroup-input" onChange={handleChangeUserGroups} />
+            <input type="text" list="usergroupslist" className='input input-bordered input-primary' name="userGroup" id="usergroup-input" onChange={handleChangeUserGroups} value={newUserGroup}/>
             <datalist id="usergroupslist">
               {userGroupsList}
             </datalist>

@@ -104,7 +104,7 @@ const OpenTask = (props) => {
           <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{taskOwner}</p>
           <div className="divider divider-vertical"></div> 
           <p className='text-lg font-bold'>Notes</p>
-          <div className='h-64 overflow-y-auto'>
+          <div className='h-64 overflow-y-auto max-h-48	'>
             {notes.map((note, index)=> <Note key={index} note={note}/>)}
           </div>
           {permits[Task_state] &&

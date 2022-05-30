@@ -58,7 +58,7 @@ const Task = (props) => {
   }
   
   const changeState = async (e) => {
-    console.log(e.target.value)
+    displayAlert('info', 'updating task state...')
     const action = { action: e.target.value}
     const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/state`, action)
     console.log(res.data)
@@ -71,10 +71,10 @@ const Task = (props) => {
       "confirm": { currentState: "Done", newState: "Closed"},
       "demote": { currentState: "Done", newState: "Doing"},
     }
-
+    
     const { currentState , newState } = stateChanges[e.target.value]
-    moveTask(res.data.task, currentState, newState)
     if (res.data) {
+      moveTask(res.data.task, currentState, newState)
       displayAlert('success', "updated task")
       setTimeout(()=>{
         clearAlert();
@@ -84,7 +84,7 @@ const Task = (props) => {
 
   const showCreatorOrOwner = Task_state === 'toDoList' ? 
   <>Created by <span className='font-bold'>{is_user(user.username, Task_creator)}</span></> :
-  <>Owned by <span className='font-bold'>{is_user(user.username, Task_owner)}</span></>
+  <>Owned by <span className='font-bold'>{is_user(user.username, taskOwner)}</span></>
     
   const renderButton = (state) => {
     const actions = {
@@ -117,7 +117,7 @@ const Task = (props) => {
       {/** Modal **/}
       <input type="checkbox" id={Task_name} className="modal-toggle" />
       <label htmlFor={Task_name} className="modal cursor-pointer">
-        <label className="modal-box w-11/12 max-w-5xl overflow-hidden" htmlFor="">
+        <label className="modal-box" htmlFor="">
           <div className='flex border-b-2 mb-2 pb-3 justify-between items-center'>
             <div>
               <h2 className='font-bold text-xl'>Task: {Task_name}<span className='badge badge-primary mx-2 align-text-top'>{Task_state}</span></h2>
@@ -128,11 +128,11 @@ const Task = (props) => {
           
           <p><span className='text-lg font-bold'>Task plan: </span>{Task_plan === "" ? "none" : Task_plan}</p>
           <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task description: </span>{Task_description}</p>
-          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{Task_owner}</p>
+          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{taskOwner}</p>
           <div className="divider divider-vertical"></div> 
           {/** Notes */}
           <p className='text-lg font-bold'>Notes</p>
-          <div className='h-64 overflow-y-auto'>
+          <div className='h-64 overflow-y-auto max-h-44'>
             {notes.map((note, index)=> <Note key={index} note={note}/>)}
           </div>
           {permits[Task_state] &&

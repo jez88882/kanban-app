@@ -32,11 +32,10 @@ const CreateTask = (props) => {
   }
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
+    e.preventDefault();
+    
     const res = await axios.post(`/api/v1/applications/${params.app_Acronym}/tasks`, values)
     
-
     console.log(res.data)
     setValues(initialState)
     addOpenTask(res.data.task)

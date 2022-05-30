@@ -114,7 +114,7 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
   let ownselfCheckOwnself = true
   
   if (["approve", "confirm", "demote"].includes(req.body.action)) {
-    authorized = await checkGroup(req.user, permissions[req.body.action], req.app_Acronym)
+    authorized = await checkGroup(req.user, permissions[req.body.action])
 
     if (req.body.action === "approve") {
       // will NOT be checking your own work if you are not the creator
@@ -172,30 +172,23 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
   await task.save()
 
   if (req.body.action === "promote") {
-    const message = `Task ${task.Task_id}: ${task.Task_name} has been promoted by ${task.Task_owner}`
     const creator = await User.findByPk(task.Task_creator)
+    const message = `Hi ${creator.username},\n Task ${task.Task_id}: ${task.Task_name} has been promoted by ${task.Task_owner}. Please proceed to KanbanApp to review the task.\n Thanks`
 
     try {
-      await sendEmail({
+      sendEmail({
         email: creator.email,
         subject: `[NOTIFICATION]: Task ${task.Task_id}: ${task.Task_name} promoted`,
         text: message
       })
-    
-      res.status(200).json({
-        success: true,
-        message: `email sent successfully to ${creator.email}`,
-        task
-      });
     } catch (error) {
         return next(new ErrorHandler(error, 500));
     }
-  } else {
-    res.status(200).json({
-      success: true,
-      task
-    });
-  }
+  } 
+  res.status(200).json({
+    success: true,
+    task
+  });
     
 });
 
