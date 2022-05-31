@@ -8,7 +8,7 @@ import { FormRow } from '.'
 
 
 const CreateTask = (props) => {
-  const { displayAlert, showAlert, clearAlert, user } = useAppContext()
+  const { displayAlert, clearAlert } = useAppContext()
   const {plans, addOpenTask } = props
   
   
@@ -17,9 +17,9 @@ const CreateTask = (props) => {
     Task_name: '',
     Task_description: '',
     Task_plan: '',
-    Task_creator: user.username,
     Task_note: ''
   }
+
   const [values, setValues] = useState(initialState)
   const params = useParams()
 

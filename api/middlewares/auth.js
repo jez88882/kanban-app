@@ -10,9 +10,15 @@ exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   console.log('authenticating...')
   console.log('--------------------------------------\n')
   
-  const token = req.cookies.token
-  
-  if (token==="none") {
+  let token
+
+  if((req.headers.authorization && req.headers.authorization.startsWith('Bearer'))) {
+    token = req.headers.authorization.split(' ')[1]
+  } else {
+    token = req.cookies.token
+  }
+
+  if (token==="none" || !token) {
     return next(new ErrorHandler('Login first to access this resource', 401));
   }
 
@@ -66,3 +72,4 @@ exports.checkGeneralPM = catchAsyncErrors( async function(req, res, next) {
   }
   next()
 })
+

@@ -7,12 +7,22 @@ const sendEmail = require('../utils/sendEmail');
 
 
 exports.index = catchAsyncErrors( async function( req, res, next) {
-  const tasks = await Task.findAll({
-    where: {
-      Task_id: {
-        [Op.startsWith]: `${req.app_Acronym}_`,
-      }
-  }})
+  console.log('tasks#index')
+  let tasks
+  if (req.query.state) {
+    tasks = await Task.findAll({ 
+      where: { 
+        Task_state: req.query.state 
+      }})
+  } else {
+    tasks = await Task.findAll({
+      where: {
+        Task_id: {
+          [Op.startsWith]: `${req.app_Acronym}_`,
+        }
+    }})
+  }
+
   res.json({
     success: true,
     tasks
@@ -28,8 +38,16 @@ exports.show = catchAsyncErrors( async function( req, res, next) {
 })
 
 exports.create = catchAsyncErrors( async function( req, res, next) {
+  console.log('creaing task')
   const app = await Application.findByPk(req.app_Acronym)
+  const permitted = await checkGroup(req.user, app.App_permit_Create)
+
+  if (!permitted) {
+    return next(new ErrorHandler('not permitted to do this action',401))
+  }
+
   const data = req.body
+  data.Task_creator = req.user.username
   data.Task_state = "Open"
   data.Task_createDate = new Date().toLocaleString()
   data.Task_app_Acronym = req.app_Acronym
@@ -42,7 +60,6 @@ exports.create = catchAsyncErrors( async function( req, res, next) {
   }
   
   const notes = [note]
-  console.log(data.Task_note)
   if (data.Task_note !== "") {
     notes.push({
       creator: req.user.username,
@@ -127,12 +144,9 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
     // only permitted if user is authorized and you are NOT checking your own work
     permitted = authorized && !ownselfCheckOwnself
 
-  } else if (req.body.action === "work on") {
+  } else {
     permitted = await checkGroup(req.user, permissions[req.body.action], req.app_Acronym)
     
-  } else {
-    // permitted if you are the owner of the task
-    permitted = permissions[req.body.action]
   }
   
   console.log(`permitted: ${permitted}`)
@@ -185,6 +199,63 @@ exports.changeState = catchAsyncErrors( async function(req, res, next) {
         return next(new ErrorHandler(error, 500));
     }
   } 
+  res.status(200).json({
+    success: true,
+    task
+  });
+})
+
+exports.promote = catchAsyncErrors( async function(req, res, next) {
+  console.log('user is trying to promote task')
+
+  const task = await Task.findByPk(req.params.Task_id)
+  const app = await Application.findByPk(req.app_Acronym)
+  
+  const permittedGroup = app.App_permit_Doing
+  
+  let permitted = false
+  
+  permitted = await checkGroup(req.user, permittedGroup, req.app_Acronym)
+    
+  console.log(`permitted: ${permitted}`)
+  
+  if (!permitted) {
+    return next(new ErrorHandler('not permitted to do this action',401))
+  }
+  
+  const stateChanges = {
+    currentState: "Doing", newState: "Done" }
+  
+  if (task.Task_state !== stateChanges.currentState) {
+    return next(new ErrorHandler('task cannot be promoted',401))
+  }
+
+  task.Task_state = stateChanges.newState
+
+  task.Task_owner = req.user.username
+
+  const note = {
+    creator: req.user.username,
+    content: `${req.user.username}- [${req.body.action}] task`,
+    createdAt: new Date().toLocaleString(),
+    state: task.Task_state
+  }
+  
+  const notes = JSON.parse(task.Task_notes)
+  notes.push(note)
+  task.Task_notes = JSON.stringify(notes)
+
+  await task.save()
+
+  const creator = await User.findByPk(task.Task_creator)
+  const message = `Hi ${creator.username},\n Task ${task.Task_id}: ${task.Task_name} has been promoted by ${task.Task_owner}. Please proceed to KanbanApp to review the task.\n Thanks`
+
+  sendEmail({
+    email: creator.email,
+    subject: `[NOTIFICATION]: Task ${task.Task_id}: ${task.Task_name} promoted`,
+    text: message
+  })
+  
   res.status(200).json({
     success: true,
     task
