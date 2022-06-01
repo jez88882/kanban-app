@@ -10,10 +10,14 @@ exports.index = catchAsyncErrors( async function( req, res, next) {
   console.log('tasks#index')
   let tasks
   if (req.query.state) {
-    tasks = await Task.findAll({ 
-      where: { 
-        Task_state: req.query.state 
-      }})
+    if (req.query.state === "") {
+      tasks = await Task.findAll()
+    } else {
+      tasks = await Task.findAll({ 
+        where: { 
+          Task_state: req.query.state 
+        }})
+    }
   } else {
     tasks = await Task.findAll({
       where: {
