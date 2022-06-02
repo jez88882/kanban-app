@@ -7,10 +7,8 @@ module.exports = function(err, req, res, next) {
 
   if (process.env.NODE_ENV === 'development') {
     res.status(err.statusCode).json({
-      success: false,
-      error: err,
-      errMessage: err.message,
-      stack: err.stack
+      error: {statusCode: err.statusCode, message: err.message},
+      // stack: err.stack
     })
   } 
   

@@ -13,12 +13,13 @@ const Note = (props) => {
   )
 }
 
+
 const Task = (props) => {
   const { Task_id, Task_name, Task_creator, Task_owner, Task_createDate, Task_description, Task_state, Task_plan, Task_notes } = props.task
   const moveTask = props.moveTask
   const permits = props.permits
   const app_Acronym = props.app_Acronym
-  const { displayAlert, showAlert, clearAlert, user } = useAppContext()
+  const { displayAlert, clearAlert, user } = useAppContext()
   const [notes, setNotes] = useState([])
   const [noteContent, setNoteContent] = useState("")
   const [taskOwner, setTaskOwner ] = useState(Task_owner)

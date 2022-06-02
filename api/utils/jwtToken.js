@@ -14,11 +14,19 @@ async function sendToken(user, statusCode, res) {
   //   options.secure = true
   // }
 
+  const userData = {
+    username: user.username,
+    email: user.email,
+    is_disabled: user.is_disabled,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
+  }
+
   res.status(statusCode)
   .cookie('token', token, options)
   .json({
     success: true,
-    user,
+    user: userData,
     token
   });
 }

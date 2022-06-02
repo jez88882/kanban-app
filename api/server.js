@@ -8,6 +8,7 @@ const dotenv = require('dotenv');
 const hpp = require('hpp');
 const errorsMiddleware = require('./middlewares/errors')
 const ErrorHandler = require('./utils/errorHandler');
+const sanitize = require('sanitize')
 
 // handling Uncaught Exception
 process.on('uncaughtException', err => {
@@ -41,6 +42,8 @@ app.use(session({
 
 // prevent parameter pollution
 app.use(hpp());
+app.use(sanitize.middleware);
+
 
 /** routers */
 const authRouter = require('./routes/authRouter');
@@ -48,21 +51,22 @@ const userRouter = require('./routes/userRouter');
 const applicationRouter = require('./routes/applicationRouter');
 const userGroupRouter = require('./routes/userGroupRouter')
 const taskRouter = require('./routes/taskRouter')
-
+const apiRouter = require('./routes/apiRouter')
 const {isAuthenticatedUser, authenticateAPICall} = require('./middlewares/auth')
 
 // use routers
-app.use('/api/v1', authRouter);
+app.use('/api/v1', apiRouter)
+app.use('/api/v2', authRouter)
 app.use(isAuthenticatedUser) // authenticate first
-app.use('/api/v1/users', userRouter);
-app.use('/api/v1/applications', applicationRouter);
-app.use('/api/v1/groups', userGroupRouter)
-app.use('/api/v1/tasks', taskRouter)
+app.use('/api/v2/users', userRouter)
+app.use('/api/v2/applications', applicationRouter)
+app.use('/api/v2/groups', userGroupRouter)
+app.use('/api/v2/tasks', taskRouter)
 
 
 // handling unhandled routes
 app.all('*', (req, res, next) => {
-  next(new ErrorHandler(`${req.originalUrl} route not found`), 404);
+  next(new ErrorHandler(`Error: 402`), 404);
 });
 
 /** error handling */
