@@ -52,7 +52,7 @@ const applicationRouter = require('./routes/applicationRouter');
 const userGroupRouter = require('./routes/userGroupRouter')
 const taskRouter = require('./routes/taskRouter')
 const apiRouter = require('./routes/apiRouter')
-const {isAuthenticatedUser, authenticateAPICall} = require('./middlewares/auth')
+const {isAuthenticatedUser} = require('./middlewares/auth')
 
 // use routers
 app.use('/api/v1', apiRouter)

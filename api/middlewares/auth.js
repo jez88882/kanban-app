@@ -94,7 +94,7 @@ exports.authAPIuser = catchAsyncErrors(async function(req, res, next) {
     // check if password is correct
     const passwordMatches = await user.checkPassword(password);
     if (!passwordMatches) {
-      return next(new ErrorHandler('Error: 105',401));
+      return next(new ErrorHandler('Error: 103',401));
     }
 
     req.user = user
@@ -105,5 +105,11 @@ exports.isActiveUser = catchAsyncErrors(async function(req, res, next) {
   if (req.user.dataValues.is_disabled) {
     return next(new ErrorHandler('Error: 104'))
   }
+  next()
+})
+
+exports.checkReq = catchAsyncErrors(async function(req, res, next) {
+  console.log('this is the path')
+  console.log(req.path)
   next()
 })

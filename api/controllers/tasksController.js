@@ -252,7 +252,7 @@ exports.getTaskbyState = catchAsyncErrors( async function( req, res, next) {
 exports.createTask = catchAsyncErrors( async function( req, res, next) {
   console.log('creating task')
   const Task_app_Acronym = req.bodyString('Task_app_Acronym')
-
+ 
   if (!Task_app_Acronym) {
     return next(new ErrorHandler('Error: 305'))
   }
@@ -275,7 +275,7 @@ exports.createTask = catchAsyncErrors( async function( req, res, next) {
   if (data.Task_name === "" || !req.bodyString('Task_name')) {
     return next(new ErrorHandler('Error: 305'))
   }
-
+  
   data.Task_description = req.bodyString('Task_description')
 
   const Task_plan = req.bodyString('Task_plan')
@@ -383,7 +383,7 @@ exports.promote = catchAsyncErrors( async function(req, res, next) {
     subject: `[NOTIFICATION]: Task ${task.Task_id}: ${task.Task_name} promoted`,
     text: message
   })
-  
+
   res.status(200).json({
     task
   });
