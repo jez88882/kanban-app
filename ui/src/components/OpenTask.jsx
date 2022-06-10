@@ -62,7 +62,7 @@ const OpenTask = (props) => {
   const approve = async () => {
     const res = await axios.get(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/approve`)
     console.log(res.data)
-    moveTask(res.data.task, "Open", "toDoList")
+    moveTask(res.data.task, "open", "todolist")
     if (res.data) {
       displayAlert('success', "approved task")
       setTimeout(()=>{

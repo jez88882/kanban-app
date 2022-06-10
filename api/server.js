@@ -55,13 +55,13 @@ const apiRouter = require('./routes/apiRouter')
 const {isAuthenticatedUser} = require('./middlewares/auth')
 
 // use routers
-app.use('/api/v1', apiRouter)
-app.use('/api/v2', authRouter)
+// app.use('/api/v1', apiRouter)
+app.use('/api/v1', authRouter)
 app.use(isAuthenticatedUser) // authenticate first
-app.use('/api/v2/users', userRouter)
-app.use('/api/v2/applications', applicationRouter)
-app.use('/api/v2/groups', userGroupRouter)
-app.use('/api/v2/tasks', taskRouter)
+app.use('/api/v1/users', userRouter)
+app.use('/api/v1/applications', applicationRouter)
+app.use('/api/v1/groups', userGroupRouter)
+app.use('/api/v1/tasks', taskRouter)
 
 
 // handling unhandled routes

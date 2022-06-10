@@ -65,12 +65,12 @@ const Task = (props) => {
     console.log(res.data)
 
     const stateChanges = {
-      "approve": { currentState: "Open", newState: "toDoList"},
-      "work on": { currentState: "toDoList", newState: "Doing"},
-      "promote": { currentState: "Doing", newState: "Done"},
-      "return": { currentState: "Doing", newState: "toDoList"},
-      "confirm": { currentState: "Done", newState: "Closed"},
-      "demote": { currentState: "Done", newState: "Doing"},
+      "approve": { currentState: "open", newState: "todolist"},
+      "work on": { currentState: "todolist", newState: "doing"},
+      "promote": { currentState: "doing", newState: "done"},
+      "return": { currentState: "doing", newState: "todolist"},
+      "confirm": { currentState: "done", newState: "closed"},
+      "demote": { currentState: "done", newState: "doing"},
     }
     
     const { currentState , newState } = stateChanges[e.target.value]
@@ -89,11 +89,11 @@ const Task = (props) => {
     
   const renderButton = (state) => {
     const actions = {
-      "Open": [],
-      "toDoList": ["work on"],
-      "Doing": ["promote", "return"],
-      "Done": ["confirm", "demote"],
-      "Closed": []
+      "open": [],
+      "todolist": ["work on"],
+      "doing": ["promote", "return"],
+      "done": ["confirm", "demote"],
+      "closed": []
     }  
     const buttons = actions[state]
     
