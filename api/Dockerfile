@@ -1,7 +1,7 @@
-FROM node:16
+FROM node:alpine
 
-# Create app directory
-WORKDIR /kanban/api
+# Create api directory
+WORKDIR /api
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
