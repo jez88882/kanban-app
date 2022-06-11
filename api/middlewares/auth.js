@@ -10,9 +10,15 @@ exports.isAuthenticatedUser = catchAsyncErrors( async function(req, res, next) {
   console.log('authenticating...')
   console.log('--------------------------------------\n')
   
-  const token = req.cookies.token
-  
-  if (token==="none") {
+  let token
+
+  if((req.headers.authorization && req.headers.authorization.startsWith('Bearer'))) {
+    token = req.headers.authorization.split(' ')[1]
+  } else {
+    token = req.cookies.token
+  }
+
+  if (token==="none" || !token) {
     return next(new ErrorHandler('Login first to access this resource', 401));
   }
 
@@ -64,5 +70,46 @@ exports.checkGeneralPM = catchAsyncErrors( async function(req, res, next) {
   if (!usergroup) {
     return next(new ErrorHandler('not authorized', 401));
   }
+  next()
+})
+
+exports.authAPIuser = catchAsyncErrors(async function(req, res, next) {
+    console.log('auth API');
+    console.log('--------------------------------------\br')
+    const username = req.paramString('username')
+    const password = req.paramString('password')
+    // check if email or password is entered by user
+    if (!username || !password) {
+      return next(new ErrorHandler('Error: 101'), 400); //Missing details
+    }
+
+    console.log("getting user...")
+    const user = await User.unscoped().findOne({ where: { username }});
+  
+    if (!user) {
+      return next(new ErrorHandler('Error: 102', 401));
+    }
+
+    console.log("checking password...")
+    // check if password is correct
+    const passwordMatches = await user.checkPassword(password);
+    if (!passwordMatches) {
+      return next(new ErrorHandler('Error: 103',401));
+    }
+
+    req.user = user
+    next()
+})
+
+exports.isActiveUser = catchAsyncErrors(async function(req, res, next) {
+  if (req.user.dataValues.is_disabled) {
+    return next(new ErrorHandler('Error: 104'))
+  }
+  next()
+})
+
+exports.checkReq = catchAsyncErrors(async function(req, res, next) {
+  console.log('this is the path')
+  console.log(req.path)
   next()
 })

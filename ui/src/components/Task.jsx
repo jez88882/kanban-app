@@ -13,12 +13,13 @@ const Note = (props) => {
   )
 }
 
+
 const Task = (props) => {
   const { Task_id, Task_name, Task_creator, Task_owner, Task_createDate, Task_description, Task_state, Task_plan, Task_notes } = props.task
   const moveTask = props.moveTask
   const permits = props.permits
   const app_Acronym = props.app_Acronym
-  const { displayAlert, showAlert, clearAlert, user } = useAppContext()
+  const { displayAlert, clearAlert, user } = useAppContext()
   const [notes, setNotes] = useState([])
   const [noteContent, setNoteContent] = useState("")
   const [taskOwner, setTaskOwner ] = useState(Task_owner)
@@ -58,23 +59,23 @@ const Task = (props) => {
   }
   
   const changeState = async (e) => {
-    console.log(e.target.value)
+    displayAlert('info', 'updating task state...')
     const action = { action: e.target.value}
     const res = await axios.patch(`/api/v1/applications/${app_Acronym}/tasks/${Task_id}/state`, action)
     console.log(res.data)
 
     const stateChanges = {
-      "approve": { currentState: "Open", newState: "toDoList"},
-      "work on": { currentState: "toDoList", newState: "Doing"},
-      "promote": { currentState: "Doing", newState: "Done"},
-      "return": { currentState: "Doing", newState: "toDoList"},
-      "confirm": { currentState: "Done", newState: "Closed"},
-      "demote": { currentState: "Done", newState: "Doing"},
+      "approve": { currentState: "open", newState: "todolist"},
+      "work on": { currentState: "todolist", newState: "doing"},
+      "promote": { currentState: "doing", newState: "done"},
+      "return": { currentState: "doing", newState: "todolist"},
+      "confirm": { currentState: "done", newState: "closed"},
+      "demote": { currentState: "done", newState: "doing"},
     }
-
+    
     const { currentState , newState } = stateChanges[e.target.value]
-    moveTask(res.data.task, currentState, newState)
     if (res.data) {
+      moveTask(res.data.task, currentState, newState)
       displayAlert('success', "updated task")
       setTimeout(()=>{
         clearAlert();
@@ -84,15 +85,15 @@ const Task = (props) => {
 
   const showCreatorOrOwner = Task_state === 'toDoList' ? 
   <>Created by <span className='font-bold'>{is_user(user.username, Task_creator)}</span></> :
-  <>Owned by <span className='font-bold'>{is_user(user.username, Task_owner)}</span></>
+  <>Owned by <span className='font-bold'>{is_user(user.username, taskOwner)}</span></>
     
   const renderButton = (state) => {
     const actions = {
-      "Open": [],
-      "toDoList": ["work on"],
-      "Doing": ["promote", "return"],
-      "Done": ["confirm", "demote"],
-      "Closed": []
+      "open": [],
+      "todolist": ["work on"],
+      "doing": ["promote", "return"],
+      "done": ["confirm", "demote"],
+      "closed": []
     }  
     const buttons = actions[state]
     
@@ -117,7 +118,7 @@ const Task = (props) => {
       {/** Modal **/}
       <input type="checkbox" id={Task_name} className="modal-toggle" />
       <label htmlFor={Task_name} className="modal cursor-pointer">
-        <label className="modal-box w-11/12 max-w-5xl overflow-hidden" htmlFor="">
+        <label className="modal-box" htmlFor="">
           <div className='flex border-b-2 mb-2 pb-3 justify-between items-center'>
             <div>
               <h2 className='font-bold text-xl'>Task: {Task_name}<span className='badge badge-primary mx-2 align-text-top'>{Task_state}</span></h2>
@@ -128,11 +129,11 @@ const Task = (props) => {
           
           <p><span className='text-lg font-bold'>Task plan: </span>{Task_plan === "" ? "none" : Task_plan}</p>
           <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task description: </span>{Task_description}</p>
-          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{Task_owner}</p>
+          <p className='max-h-32 overflow-y-auto'><span className='text-lg font-bold'>Task owner: </span>{taskOwner}</p>
           <div className="divider divider-vertical"></div> 
           {/** Notes */}
           <p className='text-lg font-bold'>Notes</p>
-          <div className='h-64 overflow-y-auto'>
+          <div className='h-64 overflow-y-auto max-h-44'>
             {notes.map((note, index)=> <Note key={index} note={note}/>)}
           </div>
           {permits[Task_state] &&
