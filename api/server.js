@@ -20,7 +20,7 @@ process.on('uncaughtException', err => {
 const app = express();
 
 // set up config.env file variables
-dotenv.config({path : './config/config.env'});
+dotenv.config({path : './config/.env'});
 
 /** load middlewares */
 app.use(express.json()) // for parsing application/json
