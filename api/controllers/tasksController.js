@@ -355,7 +355,7 @@ exports.promote = catchAsyncErrors( async function(req, res, next) {
   const stateChanges = { currentState: "doing", newState: "done" }
   
   if (task.Task_state !== stateChanges.currentState) {
-    return next(new ErrorHandler('Erro: 401', 401))
+    return next(new ErrorHandler('Error: 401', 401))
   }
 
   task.Task_state = stateChanges.newState

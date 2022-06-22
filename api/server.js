@@ -1,11 +1,9 @@
 const express = require('express');
 const session = require('express-session');
 const logger = require('morgan');
-// const cors = require('cors');
-const createError = require('http-errors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
-const hpp = require('hpp');
+// const hpp = require('hpp');
 const errorsMiddleware = require('./middlewares/errors')
 const ErrorHandler = require('./utils/errorHandler');
 const sanitize = require('sanitize')
@@ -41,7 +39,7 @@ app.use(session({
 }));
 
 // prevent parameter pollution
-app.use(hpp());
+// app.use(hpp());
 app.use(sanitize.middleware);
 
 
