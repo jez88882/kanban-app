@@ -53,12 +53,15 @@ const AppProvider = ({children}) => {
   }
 
   const fetchUser = async () => {
-    const response = await axios.get('/api/v1/auth')
-    const user =  response.data.user
-    const is_admin = await checkGroup(user.username, "admin")
-    const resPM = await axios.get("/api/v1/groups/checkGeneralPM")
-    console.log(resPM)
-
+    console.log('fetchingUser')
+    try {
+      const response = await axios.get('/api/v1/auth')
+      const user =  response.data.user
+      const is_admin = await checkGroup(user.username, "admin")
+      const resPM = await axios.get("/api/v1/groups/checkGeneralPM")
+      
+      console.log(resPM)
+      
     dispatch({
       type: LOGIN_USER_SUCCESS,
       payload: {
@@ -67,8 +70,11 @@ const AppProvider = ({children}) => {
         // is_PM: resPM.data
       }
     })
-  }
+  } catch (error) {
 
+  }
+  }
+  
   const displayAlert = (alerttype, alerttext) => {
     dispatch({
       type: DISPLAY_ALERT,
@@ -102,11 +108,11 @@ const AppProvider = ({children}) => {
       }, 1000)
 
     } catch (error) {
-      console.log(error.response)
+      console.log(error.response.data.error.message)
       dispatch({
         type: LOGIN_USER_ERROR,
         payload: {
-          message: error.response.data.errMessage
+          message: error.response.data.error.message
         }
       })
     }
