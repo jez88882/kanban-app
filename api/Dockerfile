@@ -1,8 +1,8 @@
-# FROM node:16-alpine
-FROM node:16
+FROM node:16-alpine
+# FROM node:16
 
 # create a user in the container, -u to set user's ID, -D to disable password
-# *alpine uses adduser instead of useradd
+
 # RUN adduser -u 8851 -D newuser
 RUN adduser -u 8851 newuser
 #sets the user to the newly created user
@@ -28,3 +28,4 @@ ENV PORT=8080
 EXPOSE $PORT
 
 CMD ["node", "server.js"]
+

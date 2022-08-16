@@ -93,11 +93,7 @@ const EditUser = () => {
     try {
       const res = await axios.post(`/api/v1/groups`, data)
       const updatedGroups = state.thisUserGroups.concat(res.data.usergroup)
-<<<<<<< HEAD
-      setState({ ...state, thisUserGroups: updatedGroups })
-=======
       setState({...state, thisUserGroups: updatedGroups})
->>>>>>> 738ccfc19c38aa49ef5b17fca811bc08ffe2657a
       setNewUserGroup('')
       displayAlert('success', "Added user group")
     } catch (error) {

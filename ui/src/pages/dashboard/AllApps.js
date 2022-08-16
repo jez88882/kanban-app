@@ -9,18 +9,6 @@ const initialState = {
 
 const AllApps = () => {
   const [values, setValues] = useState(initialState)
-<<<<<<< HEAD
-  const [isPM, setIsPM] = useState(false)
-
-  const fetchApps = async () => {
-    console.log('fetching Apps')
-    const res = await axios.get('api/v1/applications/')
-    setValues({...values, apps: res.data.apps})
-  }
-  useEffect(()=>{
-    fetchApps()
-    // checkPM()
-=======
   
   const fetchData = async () => {
     console.log('fetching Apps and checking if PM')
@@ -34,18 +22,12 @@ const AllApps = () => {
   }
   useEffect(()=>{
    fetchData()
->>>>>>> 738ccfc19c38aa49ef5b17fca811bc08ffe2657a
   },[])
 
   const appList = values.apps.map((app) => {
     const { App_Acronym, startDate, endDate } = app
-<<<<<<< HEAD
-    return(
-    <Link to={`/applications/${App_Acronym}`}>
-=======
     return( 
     <Link key={App_Acronym} to={`/applications/${App_Acronym}`}>
->>>>>>> 738ccfc19c38aa49ef5b17fca811bc08ffe2657a
       <div className="card bg-base-100 shadow-xl">
         <div className="card-body">
           <h2 className="card-title">{App_Acronym}</h2>
