@@ -4,10 +4,6 @@ import { useParams, Link } from 'react-router-dom'
 import { useAppContext } from '../../context/appContext'
 import { Modal, FormRow, Alert } from '../../components'
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 738ccfc19c38aa49ef5b17fca811bc08ffe2657a
 const initialValues = {
   email:'',
   password: '',
