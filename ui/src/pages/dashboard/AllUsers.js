@@ -62,9 +62,3 @@ const AllUsers = () => {
 };
 
 export default AllUsers;
-<<<<<<< HEAD
-=======
-
-
-
->>>>>>> 738ccfc19c38aa49ef5b17fca811bc08ffe2657a
